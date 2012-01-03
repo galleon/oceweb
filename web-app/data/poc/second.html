@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Second </title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <style>
+        body {
+            font-family: Monospace;
+            background-color: #f0f0f0;
+            margin: 0px;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+<div id="container"></div>
+<script src="Three.js"></script>
+<script src="jquery-1.7.1.js"></script>
+<script src="RequestAnimationFrame.js"></script>
+<script src="Stats.js"></script>
+
+<script>
+
+    var camera, scene, renderer, geometry, material, mesh, plane;
+
+    var windowWidth = window.innerWidth;
+    var windowHeight = window.innerHeight;
+
+    init();
+    animate();
+
+    function init() {
+
+        scene = new THREE.Scene();
+
+        camera = new THREE.PerspectiveCamera(75, windowWidth / windowHeight, 1, 10000);
+        camera.position.z = 1000;
+        scene.add(camera);
+
+        geometry = new THREE.CylinderGeometry(300, 300, 600, 30, true);
+        material = new THREE.MeshBasicMaterial({ color:0xff0000, wireframe:false });
+
+        mesh = new THREE.Mesh(geometry, material);
+        scene.add(mesh);
+
+        renderer = new THREE.CanvasRenderer();
+        renderer.setSize(windowWidth, windowHeight);
+
+        $("body").append(renderer.domElement);
+
+    }
+    function animate() {
+
+        // Include examples/js/RequestAnimationFrame.js for cross-browser compatibility.
+        requestAnimationFrame(animate);
+        render();
+
+    }
+
+    function render() {
+
+        mesh.rotation.x += 0.01;
+        mesh.rotation.y += 0.01;
+        mesh.rotation.z += 0.01;
+        geometry.color = 0xff0000;
+        renderer.render(scene, camera);
+
+    }
+</script>
+
+</body>
+</html>

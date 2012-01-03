@@ -1,0 +1,8 @@
+.classpath
+.project
+.settings/
+ThreedViewer.iml
+threedViewer.ipr
+threedViewer.iws
+target/
+ThreedViewer-grailsPlugins.iml
