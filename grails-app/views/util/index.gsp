@@ -1,105 +1,121 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <title>three.js canvas - geometry - terrain</title>
+    <title>index</title>
     <meta name="layout" content="main"/>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-    <style>
-    body {
-        color: #71544e;
-        font-family: Monospace;
-        font-size: 13px;
-        text-align: center;
 
-        background-color: #bfd1e5;
-        margin: 0px;
-        overflow: hidden;
-    }
-
-    #info {
-        position: absolute;
-        top: 0px;
-        width: 100%;
-        padding: 5px;
-    }
-
-    a {
-
-        color: #b07861;
-    }
-
-    </style>
 </head>
 
 <body>
-
-<div id="container"><br/><br/><br/><br/><br/>Generating...</div>
-
-<div id="info"><a href="http://github.com/mrdoob/three.js" target="_blank">three.js</a> - terrain demo. <a href="canvas_geometry_terrain.html">generate another</a></div>
-
+<jq:resources/>
 <script src="${resource(dir: 'data/three.js/build', file: 'Three.js')}"></script>
 <script src="${resource(dir: 'data/three.js/examples/js', file: 'ImprovedNoise.js')}"></script>
 <script src="${resource(dir: 'data/three.js/examples/js', file: 'RequestAnimationFrame.js')}"></script>
 <script src="${resource(dir: 'data/three.js/examples/js', file: 'Stats.js')}"></script>
+<script src="${resource(dir: 'js', file: 'cube.js')}"></script>
+<script src="${resource(dir: 'js', file: 'cylinder.js')}"></script>
 
-<script>
+<body>
+<div id="create" class="content scaffold-create" role="main">
+    <h1>Cube</h1>
 
-    var camera, scene, renderer,
-            loader, mesh;
+    <fieldset class="form">
+        <div class="data-fields">
+            <div class="fieldcontain required">
+                <label for="width">
+                    Width
+                    <span class="required-indicator">*</span>
+                </label>
+                <g:textField name="width" value=""/>
+            </div>
+        </div>
 
-    init();
-    animate();
+        <div class="canvas">
+            <div id="cubeResult" style="height: 200px"></div>
+        </div>
+    </fieldset>
+    <fieldset class="buttons">
+        <input type="button" class="save" value="Create Cube" id="createCube">
+    </fieldset>
 
-    function init() {
+    <h1>Cylinder</h1>
 
-        var container = document.getElementById('container');
+    <fieldset class="form">
+        <div class="data-fields">
 
-        camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 2000);
-        camera.position.y = -6;
-        camera.position.z = 100;
+            <div class="fieldcontain required">
+                <label for="radius">
+                    Radius
+                    <span class="required-indicator">*</span>
+                </label>
+                <g:textField name="radius" value=""/>
+            </div>
 
-        scene = new THREE.Scene();
+            <div class="fieldcontain required">
+                <label for="height">
+                    Height
+                    <span class="required-indicator">*</span>
+                </label>
+                <g:textField name="height" value=""/>
+            </div>
+        </div>
 
-        loader = new THREE.JSONLoader();
-        loader.load('data/three.js/examples/obj/WaltHeadLo.js', function (geometry) {
+        <div class="canvas">
+            <div id="cylinderResult" style="height: 200px"></div>
+        </div>
+    </fieldset>
+    <fieldset class="buttons">
+        <input type="button" class="save" value="Create Cylinder" id="createCylinder">
+    </fieldset>
 
-            mesh = new THREE.Mesh(geometry, new THREE.MeshNormalMaterial({ overdraw:true }));
-            scene.add(mesh);
+    %{-- <h1>Sphere</h1>
 
-        });
+    <fieldset class="form">
+        <div class="fieldcontain required">
+            <label for="x">
+                x
+                <span class="required-indicator">*</span>
+            </label>
+            <g:textField name="x" value=""/>
+        </div>
 
-        renderer = new THREE.CanvasRenderer();
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        container.appendChild(renderer.domElement);
+        <div class="canvas">
+            <canvas id="sphere"></canvas>
+        </div>
+    </fieldset>
+    <fieldset class="buttons">
+        <input type="button" class="save" value="Create Sphere">
+    </fieldset>--}%
+</div>
+<script type="text/javascript">
 
-    }
+    $(document).ready(function () {
+        $("#createCube").click(function () {
+            var width = parseInt($("#width").val())
+            if (isNaN(width)) {
+                alert("Please enter valid number")
+            } else {
+                createCube(width);
+                animateCube();
+            }
 
-    //
+        })
+        $("#createCylinder").click(function () {
+            var radius = parseInt($("#radius").val())
+            var height = parseInt($("#height").val())
+            if (isNaN(radius) || isNaN(height)) {
+                alert("Please enter valid number")
+            } else {
+                createCylinder(radius, height);
+                animateCylinder();
+            }
 
-    function animate() {
-
-        requestAnimationFrame(animate);
-        render();
-
-    }
-
-    function render() {
-
-        var time = new Date().getTime() * 0.0005;
-/*
-        if (mesh) {
-
-            mesh.rotation.x -= 0.005;
-            mesh.rotation.y -= 0.01;
-
-        }*/
-
-        renderer.render(scene, camera);
-
-    }
+        })
+    })
 
 </script>
-
+</body>
 </body>
 </html>

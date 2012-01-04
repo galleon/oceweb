@@ -27,18 +27,10 @@ class UtilController {
         def f
         def f1 = new FileWriter("difference.obj")
         def f2 = new FileWriter("part2.txt")
-        println "Size ${ome.faces.size()}"
         ome.faces.each {
             f = new OCCMeshExtractor.FaceData(it, false)
             f.load()
             def n = 0
-            println "========================================="
-            println "---vertices-----" + f.vertices
-            println "---poly-----" + f.polys
-            println "---Nodes-----" + f.nodes
-            println "---No of lines-----" + f.nbrOfLines
-            println "---No of polys-----" + f.nbrOfPolys
-            println "---No of vertices-----" + f.nbrOfVertices
             f.nodes.each {
                 if (n % 3 == 0) f1.write("v")
                 f1.write(" ${it}")
@@ -64,7 +56,6 @@ class UtilController {
         }
         f2.close()
         f2 = new File("part2.txt")
-        println "File " + f2.text.replace("f ", "").replace(" ", ",")
         f2.eachLine {line ->
             f1.append("${line}\n")
         }
