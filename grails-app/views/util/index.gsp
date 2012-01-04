@@ -13,9 +13,9 @@
 <script src="${resource(dir: 'data/three.js/build', file: 'Three.js')}"></script>
 <script src="${resource(dir: 'data/three.js/examples/js', file: 'ImprovedNoise.js')}"></script>
 <script src="${resource(dir: 'data/three.js/examples/js', file: 'RequestAnimationFrame.js')}"></script>
-<script src="${resource(dir: 'data/three.js/examples/js', file: 'Stats.js')}"></script>
 <script src="${resource(dir: 'js', file: 'cube.js')}"></script>
 <script src="${resource(dir: 'js', file: 'cylinder.js')}"></script>
+<script src="${resource(dir: 'js', file: 'sphere.js')}"></script>
 
 <body>
 <div id="create" class="content scaffold-create" role="main">
@@ -70,24 +70,26 @@
         <input type="button" class="save" value="Create Cylinder" id="createCylinder">
     </fieldset>
 
-    %{-- <h1>Sphere</h1>
+    <h1>Sphere</h1>
 
     <fieldset class="form">
-        <div class="fieldcontain required">
-            <label for="x">
-                x
-                <span class="required-indicator">*</span>
-            </label>
-            <g:textField name="x" value=""/>
+        <div class="data-fields">
+            <div class="fieldcontain required">
+                <label for="radius">
+                    Radius
+                    <span class="required-indicator">*</span>
+                </label>
+                <g:textField name="radius" value="500"/>
+            </div>
         </div>
 
         <div class="canvas">
-            <canvas id="sphere"></canvas>
+            <div id="sphereResult" style="height: 200px"></div>
         </div>
     </fieldset>
     <fieldset class="buttons">
-        <input type="button" class="save" value="Create Sphere">
-    </fieldset>--}%
+        <input type="button" class="save" value="Create Sphere" id="createSphere">
+    </fieldset>
 </div>
 <script type="text/javascript">
 
@@ -110,6 +112,16 @@
             } else {
                 createCylinder(radius, height);
                 animateCylinder();
+            }
+
+        })
+        $("#createSphere").click(function () {
+            var radius = parseInt($("#radius").val())
+            if (isNaN(radius)) {
+                alert("Please enter valid number")
+            } else {
+                createSphere(radius);
+                animateSphere();
             }
 
         })

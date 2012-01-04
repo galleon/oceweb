@@ -2,7 +2,7 @@ var container;
 var containerWidth, containerHeight;
 var camera, scene, renderer;
 
-var cylinder, plane;
+var sphere, plane;
 
 var targetRotation = 0;
 var targetRotationOnMouseDown = 0;
@@ -14,9 +14,9 @@ var mouseYOnMouseDown = 0;
 
 var windowHalfX, windowHalfY;
 
-function createCylinder(radius, height) {
+function createSphere(radius) {
 
-    container = $("#cylinderResult");
+    container = $("#sphereResult");
     containerWidth = $(container).width();
     containerHeight = $(container).height();
     windowHalfX = containerWidth;
@@ -27,10 +27,10 @@ function createCylinder(radius, height) {
     camera.position.z = 1000;
     scene.add(camera);
 
-    cylinder = new THREE.CylinderGeometry(radius, radius, height, 30, true);
+    sphere = new THREE.SphereGeometry(radius, 30, 30, true);
     var material = new THREE.MeshBasicMaterial({ color:Math.random() * 0xffffff, wireframe:false });
 
-    mesh = new THREE.Mesh(cylinder, material);
+    mesh = new THREE.Mesh(sphere, material);
     scene.add(mesh);
 
     //Plane
@@ -109,12 +109,12 @@ function onDocumentTouchMove(event) {
 
 //
 
-function animateCylinder() {
-    requestAnimationFrame(animateCylinder);
-    renderCylinder();
+function animateSphere() {
+    requestAnimationFrame(animateSphere);
+    renderSphere();
 }
 
-function renderCylinder() {
+function renderSphere() {
     mesh.rotation.y += 0.01;
     mesh.rotation.x += 0.01;
     renderer.render(scene, camera);
