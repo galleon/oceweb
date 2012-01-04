@@ -19,7 +19,7 @@
 
 <body>
 <div id="create" class="content scaffold-create" role="main">
-    <h1>Cube</h1>
+    <h1>Cube (Drag to spin the cube)</h1>
 
     <fieldset class="form">
         <div class="data-fields">
@@ -28,7 +28,7 @@
                     Width
                     <span class="required-indicator">*</span>
                 </label>
-                <g:textField name="width" value=""/>
+                <g:textField name="width" value="300"/>
             </div>
         </div>
 
@@ -46,11 +46,11 @@
         <div class="data-fields">
 
             <div class="fieldcontain required">
-                <label for="radius">
+                <label for="topRadius">
                     Radius
                     <span class="required-indicator">*</span>
                 </label>
-                <g:textField name="radius" value=""/>
+                <g:textField name="topRadius" value="300"/>
             </div>
 
             <div class="fieldcontain required">
@@ -58,7 +58,7 @@
                     Height
                     <span class="required-indicator">*</span>
                 </label>
-                <g:textField name="height" value=""/>
+                <g:textField name="height" value="800"/>
             </div>
         </div>
 
@@ -103,7 +103,7 @@
 
         })
         $("#createCylinder").click(function () {
-            var radius = parseInt($("#radius").val())
+            var radius = parseInt($("#topRadius").val())
             var height = parseInt($("#height").val())
             if (isNaN(radius) || isNaN(height)) {
                 alert("Please enter valid number")
