@@ -118,8 +118,7 @@ function animateCylinder() {
 }
 
 function renderCylinder() {
-    mesh.rotation.y += 0.01;
-    mesh.rotation.x += 0.01;
+    mesh.rotation.y += ( targetRotation - mesh.rotation.y ) * 0.05;
     renderer.render(scene, camera);
 
 

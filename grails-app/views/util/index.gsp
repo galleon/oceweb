@@ -50,7 +50,7 @@
 
     </fieldset>
 
-    <h1>Cube (Drag to spin the cube)</h1>
+    <h1>Cube (Drag to spin)</h1>
 
     <fieldset class="form">
         <div class="data-fields">
@@ -71,7 +71,7 @@
         <input type="button" class="save" value="Create Cube" id="createCube">
     </fieldset>
 
-    <h1>Cylinder</h1>
+    <h1>Cylinder (Drag to spin)</h1>
 
     <fieldset class="form">
         <div class="data-fields">
