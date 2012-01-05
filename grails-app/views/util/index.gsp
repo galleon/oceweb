@@ -10,9 +10,9 @@
 
 <body>
 <jq:resources/>
-<script src="${resource(dir: 'data/three.js/build', file: 'Three.js')}"></script>
-<script src="${resource(dir: 'data/three.js/examples/js', file: 'ImprovedNoise.js')}"></script>
-<script src="${resource(dir: 'data/three.js/examples/js', file: 'RequestAnimationFrame.js')}"></script>
+<script src="${resource(dir: 'js/three', file: 'Three.js')}"></script>
+<script src="${resource(dir: 'js/three', file: 'ImprovedNoise.js')}"></script>
+<script src="${resource(dir: 'js/three', file: 'RequestAnimationFrame.js')}"></script>
 <script src="${resource(dir: 'js', file: '3dViewer.js')}"></script>
 <script src="${resource(dir: 'js', file: 'cube.js')}"></script>
 <script src="${resource(dir: 'js', file: 'cylinder.js')}"></script>
