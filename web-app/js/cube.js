@@ -2,7 +2,7 @@ var container;
 var containerWidth, containerHeight;
 var camera, scene, renderer;
 
-var cube, plane;
+var cube;
 
 var targetRotation = 0;
 var targetRotationOnMouseDown = 0;
@@ -15,7 +15,7 @@ var mouseYOnMouseDown = 0;
 var windowHalfX, windowHalfY;
 
 function createCube(width) {
-
+    var position = getPosition();
     container = $("#cubeResult");
     containerWidth = $(container).width();
     containerHeight = $(container).height();
@@ -37,16 +37,11 @@ function createCube(width) {
     }
 
     cube = new THREE.Mesh(new THREE.CubeGeometry(width, width, width, 1, 1, 1, materials), new THREE.MeshFaceMaterial());
-    cube.position.y = 150;
+    cube.position.x = position.x;
+    cube.position.y = position.y;
+    cube.position.z = position.z;
     cube.overdraw = true;
     scene.add(cube);
-
-    // Plane
-
-    plane = new THREE.Mesh(new THREE.PlaneGeometry(width, width), new THREE.MeshBasicMaterial({ color:0xe0e0e0 }));
-    plane.rotation.x = -90 * ( Math.PI / 180 );
-    plane.overdraw = true;
-    scene.add(plane);
 
     renderer = new THREE.CanvasRenderer();
     renderer.setSize(containerWidth, containerHeight);
@@ -124,7 +119,7 @@ function animateCube() {
 }
 
 function renderCube() {
-    plane.rotation.z = cube.rotation.y += ( targetRotation - cube.rotation.y ) * 0.05;
+    cube.rotation.y += ( targetRotation - cube.rotation.y ) * 0.05;
     renderer.render(scene, camera);
 
 }

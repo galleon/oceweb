@@ -15,7 +15,7 @@ var mouseYOnMouseDown = 0;
 var windowHalfX, windowHalfY;
 
 function createCylinder(radius, height) {
-
+    var position = getPosition();
     container = $("#cylinderResult");
     containerWidth = $(container).width();
     containerHeight = $(container).height();
@@ -31,6 +31,9 @@ function createCylinder(radius, height) {
     var material = new THREE.MeshBasicMaterial({ color:Math.random() * 0xffffff, wireframe:false });
 
     mesh = new THREE.Mesh(cylinder, material);
+    mesh.position.x = position.x;
+    mesh.position.y = position.y;
+    mesh.position.z = position.z;
     scene.add(mesh);
 
     //Plane

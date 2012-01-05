@@ -13,12 +13,43 @@
 <script src="${resource(dir: 'data/three.js/build', file: 'Three.js')}"></script>
 <script src="${resource(dir: 'data/three.js/examples/js', file: 'ImprovedNoise.js')}"></script>
 <script src="${resource(dir: 'data/three.js/examples/js', file: 'RequestAnimationFrame.js')}"></script>
+<script src="${resource(dir: 'js', file: '3dViewer.js')}"></script>
 <script src="${resource(dir: 'js', file: 'cube.js')}"></script>
 <script src="${resource(dir: 'js', file: 'cylinder.js')}"></script>
 <script src="${resource(dir: 'js', file: 'sphere.js')}"></script>
 
 <body>
 <div id="create" class="content scaffold-create" role="main">
+    <h1>Position</h1>
+    <fieldset class="form">
+        <div class="data-fields">
+            <div class="fieldcontain required">
+                <label for="x">
+                    X
+                    <span class="required-indicator">*</span>
+                </label>
+                <g:textField name="x" value="100"/>
+            </div>
+
+            <div class="fieldcontain required">
+                <label for="y">
+                    Y
+                    <span class="required-indicator">*</span>
+                </label>
+                <g:textField name="y" value="100"/>
+            </div>
+
+            <div class="fieldcontain required">
+                <label for="z">
+                    Z
+                    <span class="required-indicator">*</span>
+                </label>
+                <g:textField name="z" value="0"/>
+            </div>
+        </div>
+
+    </fieldset>
+
     <h1>Cube (Drag to spin the cube)</h1>
 
     <fieldset class="form">
@@ -92,7 +123,6 @@
     </fieldset>
 </div>
 <script type="text/javascript">
-
     $(document).ready(function () {
         $("#createCube").click(function () {
             var width = parseInt($("#width").val())
@@ -126,7 +156,6 @@
 
         })
     })
-
 </script>
 </body>
 </body>
