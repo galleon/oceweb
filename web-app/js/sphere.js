@@ -2,7 +2,7 @@ var container;
 var containerWidth, containerHeight;
 var camera, scene, renderer;
 
-var sphere, plane;
+var sphere;
 
 var targetRotation = 0;
 var targetRotationOnMouseDown = 0;
@@ -35,12 +35,6 @@ function createSphere(radius) {
     mesh.position.y = position.y;
     mesh.position.z = position.z;
     scene.add(mesh);
-
-    //Plane
-    plane = new THREE.Mesh(new THREE.PlaneGeometry(radius, radius), new THREE.MeshBasicMaterial({ color:0xe0e0e0 }));
-    plane.rotation.x = -90 * ( Math.PI / 180 );
-    plane.overdraw = true;
-    scene.add(plane);
 
     renderer = new THREE.CanvasRenderer();
     renderer.setSize(containerWidth, containerHeight);

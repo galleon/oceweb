@@ -6,3 +6,7 @@ threedViewer.ipr
 threedViewer.iws
 target/
 ThreedViewer-grailsPlugins.iml
+difference.obj
+box.brep
+box.off
+.idea/
