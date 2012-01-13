@@ -19,6 +19,14 @@
 
 <body>
 <div id="grailsLogo" role="banner"><g:link uri="/"><img src="${resource(dir: 'images', file: 'grails_logo.png')}" alt="Grails"/></g:link></div>
+
+<div class="nav" role="navigation">
+    <ul>
+        <li><g:link class="create" controller="util" action="index">Three.js</g:link></li>
+        <li><g:link class="create" controller="util" action="philo">Philo.js</g:link></li>
+        <li><g:link class="create" controller="util" action="scene">Scene.js</g:link></li>
+    </ul>
+</div>
 <g:layoutBody/>
 <div class="footer" role="contentinfo"></div>
 

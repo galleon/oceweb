@@ -13,7 +13,7 @@
 <body>
 <body>
 <div id="content">
-    <canvas id="theCanvas" width="1030" height="700">
+    <canvas id="theCanvas" width="900" height="700">
 
     </canvas>
 </div>
