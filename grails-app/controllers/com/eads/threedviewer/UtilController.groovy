@@ -40,5 +40,6 @@ class UtilController {
     }
 
     def philo = {}
+    def scene={}
 
 }
