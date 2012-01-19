@@ -182,20 +182,6 @@ var factor = 0;
 var time = 0;
 
 scene.start({
-    idleFunc: function() {
-        geometry.set("positions", {
-            positions: [
-                +factor,  +factor,  +factor, -factor, +factor, +factor, -factor, -factor, +factor, +factor,-factor,  +factor, // v0-v3-v4-v right
-                +factor,  +factor,  +factor, +factor, -factor, +factor, +factor, -factor, -factor, +factor, +factor, -factor, // v0-v3-v4-v right
-                +factor,  +factor,  +factor, +factor, +factor, -factor, -factor, +factor, -factor, -factor, +factor, +factor, // v0-v 5* factor-v6-v1 top
-                -factor,  +factor,  +factor, -factor, +factor, -factor, -factor, -factor, -factor, -factor, -factor, +factor, // v1-v6-v7-v2 left
-                -factor,  -factor,  -factor, +factor, -factor, -factor, +factor, -factor, +factor, -factor, -factor, +factor, // v7-v4-v3-v2 bottom
-                +factor,  -factor,  -factor, -factor, -factor, -factor, -factor, +factor, -factor, +factor, +factor, -factor  // v4-v7-v6-v  back
-            ]
-        });
-        factor = 3 + Math.sin(time);
-        time += 0.01;
-    }
 });
 
 

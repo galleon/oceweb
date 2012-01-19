@@ -11,7 +11,6 @@
 </head>
 
 <body>
-<body>
 <div id="content">
     <canvas id="theCanvas" width="900" height="700">
 
