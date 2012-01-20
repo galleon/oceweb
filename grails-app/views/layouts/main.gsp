@@ -22,8 +22,9 @@
 
 <div class="nav" role="navigation">
     <ul>
-        <li><g:link class="create" controller="util" action="index">Index (Three.js)</g:link></li>
-        <li><g:link class="create" controller="util" action="three">Three.js</g:link></li>
+        <li><g:link class="create" controller="util" action="index">Three.js</g:link></li>
+        <li><g:link class="create" controller="util" action="human">Human (Three.js)</g:link></li>
+        <li><g:link class="create" controller="util" action="box">Box (Three.js)</g:link></li>
         <li><g:link class="create" controller="util" action="philo">Philo.js</g:link></li>
         <li><g:link class="create" controller="util" action="scene">Scene.js</g:link></li>
     </ul>

@@ -12,9 +12,7 @@
 
 <body>
 <div id="content">
-    <canvas id="theCanvas" width="900" height="700">
-
-    </canvas>
+    <canvas id="theCanvas" width="900" height="700"></canvas>
 </div>
 <script src="${resource(dir: 'js/scene', file: 'mutable-geometry.js')}"></script>
 </body>

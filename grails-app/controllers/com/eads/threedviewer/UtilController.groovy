@@ -12,7 +12,11 @@ class UtilController {
 
     }
 
-    def three() {
+    def human(){
+
+    }
+
+    def box() {
         double[] p2 = [5, 5, 5]
         double[] p1 = [-5, -5, -5]
 
