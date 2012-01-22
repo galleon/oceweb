@@ -36,58 +36,41 @@
 
             camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 2000);
             camera.position.y = -6;
-            camera.position.z = 100;
+            camera.position.z = 1000;
 
             scene = new THREE.Scene();
-            var data = {
-                "metadata":{ "formatVersion":3, "generatedBy":"tog" },
-                "scale":10.000,
-                "materials":[],
-                "vertices":[-1000.0, -1000.0, 1000.0, -1000.0, 1000.0, 1000.0, 1000.0, 1000.0, 1000.0, 1000.0, -1000.0, 1000.0],
-                "morphTargets":[],
-                "normals":[],
-                "colors":[],
-                "uvs":[
-                    []
-                ],
-                "faces":[0, 2, 1, 0, 0, 2, 0, 3],
-                "edges":[]
-            }
 
-            loader = new THREE.JSONLoader();
-            loader.createModel(data, function (geometry) {
-                mesh = new THREE.Mesh(geometry, new THREE.MeshNormalMaterial({ overdraw:true }));
-                scene.add(mesh);
+            var url = "${createLink(controller: 'util',action:'fetchBox')}";
+            $.getJSON(url, function (data) {
+                loader = new THREE.JSONLoader();
+                loader.createModel(data, function (geometry) {
+                    mesh = new THREE.Mesh(geometry, new THREE.MeshNormalMaterial({ overdraw:true }));
+                    scene.add(mesh);
+                })
+
+                renderer = new THREE.CanvasRenderer();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                $(container).html(renderer.domElement);
             })
-
-            renderer = new THREE.CanvasRenderer();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            $(container).html(renderer.domElement);
 
         }
 
         //
 
         function animate() {
-
             requestAnimationFrame(animate);
             render();
-
         }
 
         function render() {
-
             var time = new Date().getTime() * 0.0005;
 
             if (mesh) {
-
                 mesh.rotation.x -= 0.005;
                 mesh.rotation.y -= 0.01;
-
             }
 
             renderer.render(scene, camera);
-
         }
 
     </script>

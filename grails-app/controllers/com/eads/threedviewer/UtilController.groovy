@@ -22,18 +22,8 @@ class UtilController {
         double[] p1 = [-5, -5, -5]
 
         BRepPrimAPI_MakeBox box = new BRepPrimAPI_MakeBox(p1, p2)
-        BRepTools.write(box.shape(), "box.brep")
-        TopoDS_Shape shape = BRepTools.read("box.brep", new BRep_Builder())
-        def ome = new OCCMeshExtractor(shape)
-        ome.vertices.each {
-            def v = new OCCMeshExtractor.VertexData(it)
-            v.load()
-        }
-        ome.edges.each {
-            def e = new OCCMeshExtractor.EdgeData(it)
-            e.load()
-        }
-        def noffset = 1
+        def ome = new OCCMeshExtractor(box.shape())
+        def noffset = 0
         def f
         List vertices = []
         List faces = []
@@ -49,9 +39,10 @@ class UtilController {
             def npts
             f.polys.each {
                 if (p == 0) {
+                    faces << 0
                     npts = it
                 } else {
-                    faces.add(it + noffset)
+                    faces << it + noffset
                     if (p == npts) {
                         p = -1
                     }
@@ -60,12 +51,52 @@ class UtilController {
             }
             noffset += n / 3
         }
-//        println "vertices ${vertices}"
-//        println "faces ${faces}"
     }
 
     def philo = {}
     def scene = {}
+
+    def fetchBox = {
+        Map data = ['metadata': ['formatVersion': 3, 'generatedBy': 'tog'], 'scale': 100.000000, 'materials': [], 'morphTargets': [], 'normals': [], 'colors': [], 'uvs': [[]], 'edges': []]
+
+        double[] p2 = [-1000, -1000, -1000]
+        double[] p1 = [ 1000,  1000,  1000]
+
+        BRepPrimAPI_MakeBox box = new BRepPrimAPI_MakeBox(p1, p2)
+        def ome = new OCCMeshExtractor(box.shape())
+
+        def noffset = 0
+        def f
+        List vertices = []
+        List faces = []
+        ome.faces.each {
+            f = new OCCMeshExtractor.FaceData(it, false)
+            f.load()
+            def n = 0
+            f.nodes.each {
+                vertices << it
+                n++
+            }
+            def p = 0
+            def npts
+            f.polys.each {
+                if (p == 0) {
+                    faces << 0
+                    npts = it
+                } else {
+                    faces << it + noffset
+                    if (p == npts) {
+                        p = -1
+                    }
+                }
+                p++
+            }
+            noffset += n / 3
+        }
+        data['faces'] = faces;
+        data['vertices'] = vertices;
+        render data as JSON
+    }
 
     def fetchData = {
         Map data = ['metadata': ['formatVersion': 3, 'generatedBy': 'Blender 2.58 Exporter'], 'scale': 100.000000, 'materials': [], 'morphTargets': [], 'normals': [], 'colors': [],
