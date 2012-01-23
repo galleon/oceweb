@@ -63,8 +63,6 @@
         }
 
         function render() {
-            var time = new Date().getTime() * 0.0005;
-
             if (mesh) {
                 mesh.rotation.x -= 0.005;
                 mesh.rotation.y -= 0.01;
