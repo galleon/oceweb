@@ -15,6 +15,8 @@
         $(".showFace").click(function () {
             var url = $(this).attr('rel');
             showShape(url, 'content');
+            $(".active-face").removeClass('active-face');
+            $(this).addClass('active-face');
             return false;
         })
     })

@@ -634,3 +634,4 @@ a.skip {
 }
 #status span{width: 48%; float: right; text-align: center;}
 #status label{width: 48%; float: left; text-align: left;}
+.active-face{background-color: #ABBF78!important;}
