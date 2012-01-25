@@ -15,7 +15,7 @@
         $(".showFace").click(function () {
             var url = $(this).attr('rel');
             showShape(url, 'content');
+            return false;
         })
-        return false;
     })
 </script>
