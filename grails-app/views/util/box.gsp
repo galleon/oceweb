@@ -17,64 +17,44 @@
 <script src="${resource(dir: 'js', file: 'cube.js')}"></script>
 <script src="${resource(dir: 'js', file: 'cylinder.js')}"></script>
 <script src="${resource(dir: 'js', file: 'sphere.js')}"></script>
+<script src="${resource(dir: 'js', file: 'shape.js')}"></script>
 
 <body>
-<div id="create" class="content scaffold-create" role="main">
-    <div id="content">
+<div>
+    <g:form action="save" name="explodeForm">
+        <fieldset class="form">
+            <div id="data" style="width: 29%;float: left;">
 
-    </div>
-    <script type="text/javascript">
+            </div>
 
-        var camera, scene, renderer, loader, mesh;
+            <div id="content" style="width: 70%;float: right;">
 
-        init();
-        animate();
+            </div>
 
-        function init() {
+        </fieldset>
+        <fieldset class="buttons">
+            <g:submitButton name="create" class="save" value="Explode"/>
+        </fieldset>
+    </g:form>
 
-            var container = $('#content');
-
-            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 2000);
-            camera.position.y = -6;
-            camera.position.z = 1000;
-
-            scene = new THREE.Scene();
-
-            var url = "${createLink(controller: 'util',action:'fetchBox')}";
-            $.getJSON(url, function (data) {
-                loader = new THREE.JSONLoader();
-                loader.createModel(data, function (geometry) {
-                    mesh = new THREE.Mesh(geometry, new THREE.MeshNormalMaterial({ overdraw:true }));
-                    scene.add(mesh);
-                })
-
-                renderer = new THREE.CanvasRenderer();
-                renderer.setSize(window.innerWidth, window.innerHeight);
-                $(container).html(renderer.domElement);
-            })
-
-        }
-
-        //
-
-        function animate() {
-            requestAnimationFrame(animate);
-            render();
-        }
-
-        function render() {
-
-            if (mesh) {
-                mesh.rotation.x -= 0.005;
-                mesh.rotation.y -= 0.01;
-            }
-            if(renderer){
-                renderer.render(scene, camera);
-            }
-        }
-
-    </script>
 </div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var url = "${createLink(controller: 'util',action:'explode')}";
+        $("#explodeForm").submit(function () {
+            $.get(url, function (data) {
+                $("#data").html(data)
+            })
+            return false;
+        })
+    });
+
+    var boxUrl = "${createLink(controller: 'util',action:'fetchBox')}";
+    var camera, scene, renderer, loader, mesh, containerWidth;
+
+    showShape(boxUrl, 'content');
+    animate();
+</script>
 </body>
 </body>
 </html>

@@ -1,30 +1,25 @@
 package com.eads.threedviewer
 
 import grails.converters.JSON
-import occmeshextractor.OCCMeshExtractor
-import org.jcae.opencascade.jni.BRepPrimAPI_MakeBox
-import org.jcae.mesh.cad.CADShapeFactory
-import org.jcae.mesh.amibe.ds.MMesh1D
-import org.jcae.mesh.cad.CADShape
 import java.nio.channels.FileChannel
+import occmeshextractor.OCCMeshExtractor
+import org.jcae.mesh.amibe.algos1d.Compat1D2D
 import org.jcae.mesh.amibe.algos1d.UniformLength
 import org.jcae.mesh.amibe.algos1d.UniformLengthDeflection
-import org.jcae.mesh.amibe.algos1d.Compat1D2D
-import org.jcae.mesh.xmldata.MMesh1DWriter
-import org.jcae.mesh.amibe.traits.MeshTraitsBuilder
+import org.jcae.mesh.amibe.ds.MMesh1D
 import org.jcae.mesh.amibe.ds.MeshParameters
-import org.jcae.mesh.amibe.patch.Mesh2D
-import org.jcae.mesh.amibe.algos2d.Initial
 import org.jcae.mesh.amibe.patch.InvalidFaceException
-import org.jcae.mesh.amibe.algos2d.BasicMesh
-import org.jcae.opencascade.jni.BRepTools
-import org.jcae.mesh.amibe.algos2d.SmoothNodes2D
-import org.jcae.mesh.amibe.algos2d.ConstraintNormal3D
-import org.jcae.mesh.amibe.algos2d.CheckDelaunay
-import org.jcae.mesh.xmldata.MeshWriter
-import org.jcae.mesh.xmldata.MeshToMMesh3DConvert
-import org.jcae.mesh.cad.CADShapeEnum
+import org.jcae.mesh.amibe.patch.Mesh2D
+import org.jcae.mesh.amibe.traits.MeshTraitsBuilder
 import org.jcae.mesh.cad.CADExplorer
+import org.jcae.mesh.cad.CADShape
+import org.jcae.mesh.cad.CADShapeEnum
+import org.jcae.mesh.cad.CADShapeFactory
+import org.jcae.mesh.xmldata.MMesh1DWriter
+import org.jcae.mesh.xmldata.MeshToMMesh3DConvert
+import org.jcae.mesh.xmldata.MeshWriter
+import org.jcae.mesh.amibe.algos2d.*
+import org.jcae.opencascade.jni.*
 
 class UtilController {
 
@@ -37,83 +32,14 @@ class UtilController {
     }
 
     def box() {
-        double[] p2 = [5, 5, 5]
-        double[] p1 = [-5, -5, -5]
-
-        BRepPrimAPI_MakeBox box = new BRepPrimAPI_MakeBox(p1, p2)
-        def ome = new OCCMeshExtractor(box.shape())
-        def noffset = 0
-        def f
-        List vertices = []
-        List faces = []
-        ome.faces.each {
-            f = new OCCMeshExtractor.FaceData(it, false)
-            f.load()
-            def n = 0
-            f.nodes.each {
-                vertices << it
-                n++
-            }
-            def p = 0
-            def npts
-            f.polys.each {
-                if (p == 0) {
-                    faces << 0
-                    npts = it
-                } else {
-                    faces << it + noffset
-                    if (p == npts) {
-                        p = -1
-                    }
-                }
-                p++
-            }
-            noffset += n / 3
-        }
     }
 
     def philo = {}
     def scene = {}
 
     def fetchBox = {
-        Map data = ['metadata': ['formatVersion': 3, 'generatedBy': 'tog'], 'scale': 10, 'materials': [], 'morphTargets': [], 'normals': [], 'colors': [], 'uvs': [[]], 'edges': []]
-
-        double[] p2 = [-1000, -1000, -1000]
-        double[] p1 = [1000, 1000, 1000]
-
-        BRepPrimAPI_MakeBox box = new BRepPrimAPI_MakeBox(p1, p2)
-        def ome = new OCCMeshExtractor(box.shape())
-
-        def noffset = 0
-        def f
-        List vertices = []
-        List faces = []
-        ome.faces.each {
-            f = new OCCMeshExtractor.FaceData(it, false)
-            f.load()
-            def n = 0
-            f.nodes.each {
-                vertices << it
-                n++
-            }
-            def p = 0
-            def npts
-            f.polys.each {
-                if (p == 0) {
-                    faces << 0
-                    npts = it
-                } else {
-                    faces << it + noffset
-                    if (p == npts) {
-                        p = -1
-                    }
-                }
-                p++
-            }
-            noffset += n / 3
-        }
-        data['faces'] = faces;
-        data['vertices'] = vertices;
+        BRepPrimAPI_MakeBox box = getBox()
+        Map data = generateData(box.shape())
         render data as JSON
     }
 
@@ -130,6 +56,26 @@ class UtilController {
         data['faces'] = faces.tokenize(', ').findAll {it}.collect {it.toInteger()}
         data['vertices'] = vertices.tokenize(', ').findAll {it}.collect {it.toInteger()}
         render data as JSON
+    }
+
+    def explode = {
+        TopoDS_Shape shape = getBox().shape();
+        TopExp_Explorer explorer = new TopExp_Explorer();
+        List<Shape> shapes = []
+        int index = 1
+        for (explorer.init(shape, TopAbs_ShapeEnum.FACE); explorer.more(); explorer.next()) {
+            TopoDS_Shape s = explorer.current();
+            shapes.add(new Shape(id: "Face_${index}", name: "Face ${index}", shape: s));
+            index++
+        }
+        session.shapes = shapes
+        render(template: 'shapesInfo', model: [shapes: shapes])
+    }
+
+    def showShape(String id) {
+        List<Shape> shapes = session.shapes
+        TopoDS_Shape shape = shapes.find {it.id == id}?.shape
+        render generateData(shape) as JSON
     }
 
     def mesh = {
@@ -252,5 +198,49 @@ class UtilController {
             m2dto3d.afterProcessingAllShapes()
         }
 
+    }
+
+    private BRepPrimAPI_MakeBox getBox() {
+        double[] p2 = [1000, 1000, 1000]
+        double[] p1 = [-1000, -1000, -1000]
+
+        BRepPrimAPI_MakeBox box = new BRepPrimAPI_MakeBox(p1, p2)
+        return box
+    }
+
+    Map generateData(TopoDS_Shape shape) {
+        Map data = ['metadata': ['formatVersion': 3, 'generatedBy': 'tog'], 'scale': 10, 'materials': [], 'morphTargets': [], 'normals': [], 'colors': [], 'uvs': [[]], 'edges': []]
+        OCCMeshExtractor ome = new OCCMeshExtractor(shape)
+        int noffset = 0
+        OCCMeshExtractor.FaceData f
+        List vertices = []
+        List faces = []
+        ome.faces.each {
+            f = new OCCMeshExtractor.FaceData(it, false)
+            f.load()
+            int n = 0
+            f.nodes.each {
+                vertices << it
+                n++
+            }
+            int p = 0
+            def npts
+            f.polys.each {
+                if (p == 0) {
+                    faces << 0
+                    npts = it
+                } else {
+                    faces << it + noffset
+                    if (p == npts) {
+                        p = -1
+                    }
+                }
+                p++
+            }
+            noffset += n / 3
+        }
+        data['faces'] = faces;
+        data['vertices'] = vertices;
+        return data
     }
 }
