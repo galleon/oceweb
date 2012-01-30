@@ -9,7 +9,7 @@ class HomeController {
 
     def index = {
         if (User.loggedInUser) {
-            forward(controller: 'util')
+            forward(controller: 'project')
         } else {
             [user: new UserLoginCO()]
         }
@@ -28,7 +28,7 @@ class HomeController {
         if (userLoginCO.hasErrors()) {
             render(view: 'index', model: [user: userLoginCO])
         } else {
-            redirect(controller: 'util')
+            redirect(controller: 'project')
         }
     }
 

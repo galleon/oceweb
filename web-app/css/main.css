@@ -73,7 +73,7 @@ h1 {
     color: #48802c;
     font-weight: normal;
     font-size: 1.25em;
-    margin: 0.8em 0 0.3em 0;
+    margin: 0 0 0.3em 0;
 }
 
 ul {
@@ -157,7 +157,7 @@ img {
 .nav a {
     color: #666666;
     display: block;
-    padding: 0.25em 0.7em;
+    padding: 0.2em 0.2em;
     text-decoration: none;
     -moz-border-radius: 0.3em;
     -webkit-border-radius: 0.3em;
@@ -601,7 +601,6 @@ a.skip {
 #status {
     background-color: #eee;
     border: .2em solid #fff;
-    margin: 2em 2em 1em;
     padding: 1em;
     width: 12em;
     float: left;
@@ -611,7 +610,7 @@ a.skip {
     -moz-border-radius: 0.6em;
     -webkit-border-radius: 0.6em;
     border-radius: 0.6em;
-    margin-top: 190px;
+    margin-top: 10px;
 }
 
 .ie6 #status {

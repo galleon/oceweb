@@ -7,7 +7,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title><g:layoutTitle title="3D Viewer" default="Grails"/></title>
+    <title>3-D Viewer | <g:layoutTitle default="3-D Viewer"/></title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="${resource(dir: 'images', file: 'favicon.ico')}" type="image/x-icon">
     <link rel="apple-touch-icon" href="${resource(dir: 'images', file: 'apple-touch-icon.png')}">
@@ -28,14 +28,26 @@
 <body>
 <div class="nav" role="navigation">
     <ul>
+        <li><h1>3-D Viewer</h1></li>
         <td:ifLoggedIn>
-            <li style="float: right;"><g:link controller="home" action="logout">Logout</g:link></li>
-            <li style="float: right;margin-top: 4px;" class="username">Welcome <td:loggedInUserName/></li>
+            <li style="float: right;"><g:link controller="home" action="logout">Logout</g:link> </li>
+            <li style="float: right;margin-top: 4px;" class="username">Welcome <td:loggedInUserName/> |</li>
+            <li style="float: right;">
+                <a href="#" id="createSphere">
+                    <img src="${resource(dir: 'images', file: 'sphere.png')}">
+                </a>
+            </li>
+            <li style="float: right;">
+                <a href="#" id="createCube">
+                    <img src="${resource(dir: 'images', file: 'cube.png')}">
+                </a>
+            </li>
+            <li style="float: right;">
+                <a href="#" id="createCylinder">
+                    <img src="${resource(dir: 'images', file: 'cylinder.png')}">
+                </a>
+            </li>
         </td:ifLoggedIn>
-        <td:ifNotLoggedIn>
-            <li>3-D Viewer</li>
-        </td:ifNotLoggedIn>
-
     </ul>
 </div>
 <g:layoutBody/>
