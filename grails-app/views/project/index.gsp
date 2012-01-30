@@ -40,6 +40,19 @@
         </a>
     </fieldset>
 </div>
+
+<div id="cubeInfo" style="display: none">
+    <g:render template="cubeInfo"/>
+</div>
+
+<div id="sphereInfo" style="display: none">
+    <g:render template="sphereInfo"/>
+</div>
+
+<div id="cylinderInfo" style="display: none">
+    <g:render template="cylinderInfo"/>
+</div>
+
 <script type="text/javascript">
     $(document).ready(function () {
         $(".showFace").click(function () {
@@ -48,6 +61,8 @@
             $(this).addClass('active-face');
             return false;
         })
+        $('.nyroModal').nyroModal({filter:{title:''}});
+        $('.nyroModalTitle').html('')
     })
 </script>
 </body>

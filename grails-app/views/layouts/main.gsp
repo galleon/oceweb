@@ -14,7 +14,10 @@
     <link rel="apple-touch-icon" sizes="114x114" href="${resource(dir: 'images', file: 'apple-touch-icon-retina.png')}">
     <link rel="stylesheet" href="${resource(dir: 'css', file: 'main.css')}" type="text/css">
     <link rel="stylesheet" href="${resource(dir: 'css', file: 'mobile.css')}" type="text/css">
+    <link rel="stylesheet" href="${resource(dir: 'css', file: 'nyroModal.css')}" type="text/css">
     <jq:resources/>
+    <script src="${resource(dir: 'js', file: 'jquery.nyroModal.custom.js')}"></script>
+    <script src="${resource(dir: 'js', file: 'jquery.nyroModal-ie6.js')}"></script>
     <script src="${resource(dir: 'js/three', file: 'Three.js')}"></script>
     <script src="${resource(dir: 'js/three', file: 'ImprovedNoise.js')}"></script>
     <script src="${resource(dir: 'js/three', file: 'RequestAnimationFrame.js')}"></script>
@@ -30,20 +33,20 @@
     <ul>
         <li><h1>3-D Viewer</h1></li>
         <td:ifLoggedIn>
-            <li style="float: right;"><g:link controller="home" action="logout">Logout</g:link> </li>
+            <li style="float: right;"><g:link controller="home" action="logout">Logout</g:link></li>
             <li style="float: right;margin-top: 4px;" class="username">Welcome <td:loggedInUserName/> |</li>
             <li style="float: right;">
-                <a href="#" id="createSphere">
+                <a href="#sphereInfo" class="nyroModal" id="createSphere" title="Create sphere">
                     <img src="${resource(dir: 'images', file: 'sphere.png')}">
                 </a>
             </li>
             <li style="float: right;">
-                <a href="#" id="createCube">
+                <a href="#cubeInfo" class="nyroModal" id="createCube" title="Create cube">
                     <img src="${resource(dir: 'images', file: 'cube.png')}">
                 </a>
             </li>
             <li style="float: right;">
-                <a href="#" id="createCylinder">
+                <a href="#cylinderInfo" class="nyroModal" id="createCylinder" title="Create cylinder">
                     <img src="${resource(dir: 'images', file: 'cylinder.png')}">
                 </a>
             </li>
