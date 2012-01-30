@@ -169,7 +169,7 @@ img {
 }
 
 .nav a:focus, .nav a:hover {
-    background-color: #999999;
+    background-color: #ABBF78;
     color: #ffffff;
     outline: none;
     text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.8);
