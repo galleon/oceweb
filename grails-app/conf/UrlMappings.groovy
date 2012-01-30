@@ -8,7 +8,7 @@ class UrlMappings {
         }
 
         "/" {
-            controller = "util"
+            controller = "home"
             action = "index"
         }
         "500"(view: '/error')

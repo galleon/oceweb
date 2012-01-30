@@ -1,27 +1,32 @@
-@artifact.package@import groovy.transform.EqualsAndHashCode
+package com.eads.threedviewer
+
+import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
 
 @ToString(includeNames = true, includeFields = true, excludes = 'dateCreated,lastUpdated,metaClass')
 @EqualsAndHashCode
 
-class @artifact.name@ {
+class Project {
 /* Dependency Injections (e.g. Services) */
 
 /* Fields */
-Date dateCreated
-Date lastUpdated
+    String name
+    Date dateCreated
+    Date lastUpdated
 
 /* Transients */
 
 /* Relations */
+    static belongsTo = [createdBy: User]
 
 /* Constraints */
-static constraints = {
-}
+    static constraints = {
+        name(unique: 'createdBy')
+    }
 
 /* Mappings */
-static mapping = {
-}
+    static mapping = {
+    }
 
 /* Hooks */
 

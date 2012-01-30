@@ -164,6 +164,16 @@ img {
     border-radius: 0.3em;
 }
 
+.username {
+    color: #666666;
+    display: block;
+    padding: 0.25em 0.7em;
+    text-decoration: none;
+    -moz-border-radius: 0.3em;
+    -webkit-border-radius: 0.3em;
+    border-radius: 0.3em;
+}
+
 .nav a:active, .nav a:visited {
     color: #666666;
 }

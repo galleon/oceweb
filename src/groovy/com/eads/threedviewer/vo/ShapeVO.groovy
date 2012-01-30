@@ -1,8 +1,8 @@
-package com.eads.threedviewer
+package com.eads.threedviewer.vo
 
 import org.jcae.opencascade.jni.TopoDS_Shape
 
-class Shape {
+class ShapeVO {
     String id
     String name
     TopoDS_Shape shape

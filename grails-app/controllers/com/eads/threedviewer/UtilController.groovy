@@ -20,6 +20,7 @@ import org.jcae.mesh.xmldata.MeshToMMesh3DConvert
 import org.jcae.mesh.xmldata.MeshWriter
 import org.jcae.mesh.amibe.algos2d.*
 import org.jcae.opencascade.jni.*
+import com.eads.threedviewer.vo.ShapeVO
 
 class UtilController {
 
@@ -61,11 +62,11 @@ class UtilController {
     def explode = {
         TopoDS_Shape shape = getBox().shape();
         TopExp_Explorer explorer = new TopExp_Explorer();
-        List<Shape> shapes = []
+        List<ShapeVO> shapes = []
         int index = 1
         for (explorer.init(shape, TopAbs_ShapeEnum.FACE); explorer.more(); explorer.next()) {
             TopoDS_Shape s = explorer.current();
-            shapes.add(new Shape(id: "Face_${index}", name: "Face ${index}", shape: s));
+            shapes.add(new ShapeVO(id: "Face_${index}", name: "Face ${index}", shape: s));
             index++
         }
         session.shapes = shapes
@@ -73,7 +74,7 @@ class UtilController {
     }
 
     def showShape(String id) {
-        List<Shape> shapes = session.shapes
+        List<ShapeVO> shapes = session.shapes
         TopoDS_Shape shape = shapes.find {it.id == id}?.shape
         render generateData(shape) as JSON
     }
