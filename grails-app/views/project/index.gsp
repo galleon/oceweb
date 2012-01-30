@@ -32,6 +32,9 @@
 
     </fieldset>
     <fieldset class="buttons">
+        <a href="#" id="info" style="float: right;">
+            <img src="${resource(dir: 'images', file: 'info.png')}" alt="info">
+        </a>
         <a href="#" id="projects" style="float: right;">
             <img src="${resource(dir: 'images', file: 'folder.png')}" alt="projects">
         </a>
