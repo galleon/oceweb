@@ -12,10 +12,10 @@ class CADObjectController {
     }
 
     def createCylinder(CylinderCO co) {
-        render co.data.data as JSON
+        render co.data as JSON
     }
 
     def createSphere(SphereCO co) {
-        render co.data.data as JSON
+        render co.data as JSON
     }
 }

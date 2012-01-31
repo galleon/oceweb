@@ -23,9 +23,8 @@ abstract class ShapeCO {
     abstract TopoDS_Shape getShape()
 
     Map getData() {
-        log.info "Into get Data method"
         Map data = ['metadata': ['formatVersion': 3, 'generatedBy': 'tog'], 'scale': 10, 'materials': [], 'morphTargets': [], 'normals': [], 'colors': [], 'uvs': [[]], 'edges': []]
-        OCCMeshExtractor ome = new OCCMeshExtractor(shape)
+        OCCMeshExtractor ome = new   OCCMeshExtractor(shape)
         int noffset = 0
         OCCMeshExtractor.FaceData f
         List vertices = []

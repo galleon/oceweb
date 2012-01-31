@@ -39,8 +39,7 @@ class UtilController {
     def scene = {}
 
     def fetchBox = {
-        BRepPrimAPI_MakeBox box = getBox()
-        Map data = generateData(box.shape())
+        Map data = generateData(getSphere().shape())
         render data as JSON
     }
 
@@ -207,6 +206,13 @@ class UtilController {
 
         BRepPrimAPI_MakeBox box = new BRepPrimAPI_MakeBox(p1, p2)
         return box
+    }
+
+    private BRepPrimAPI_MakeSphere getSphere() {
+        double[] axes = [0, 0, 0]
+
+        BRepPrimAPI_MakeSphere sphere = new BRepPrimAPI_MakeSphere(axes, 1000)
+        return sphere
     }
 
     Map generateData(TopoDS_Shape shape) {
