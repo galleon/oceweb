@@ -12,7 +12,6 @@ $(document).ready(function () {
     $(".shapeForm").submit(function () {
         showShape($(this).attr('action'), 'content', $(this).serialize());
         animate();
-        $.nmTop().close();
         return false
     })
 
@@ -51,6 +50,7 @@ function showShape(url, containerId, data) {
         $(container).bind('mousedown', onDocumentMouseDown);
         $(container).bind('touchstart', onDocumentTouchStart);
         $(container).bind('touchmove', onDocumentTouchMove);
+        $.nmTop().close();
     })
 
 }
