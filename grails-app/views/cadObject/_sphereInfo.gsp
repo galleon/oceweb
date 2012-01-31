@@ -8,7 +8,7 @@
                     Radius
                     <span class="required-indicator">*</span>
                 </label>
-                <g:textField name="radius" value=""/>
+                <g:textField name="radius" value="" required="true"/>
             </div>
         </div>
     </fieldset>

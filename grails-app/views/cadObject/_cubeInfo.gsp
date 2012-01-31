@@ -7,7 +7,7 @@
                     Length
                     <span class="required-indicator">*</span>
                 </label>
-                <g:textField name="length" value=""/>
+                <g:textField name="length" value="" required="true"/>
             </div>
         </div>
     </fieldset>

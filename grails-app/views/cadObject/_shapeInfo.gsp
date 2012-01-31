@@ -3,7 +3,7 @@
         Name
         <span class="required-indicator">*</span>
     </label>
-    <g:textField name="name" value=""/>
+    <g:textField name="name" value=""  required="true"/>
 </div>
 
 <div class="fieldcontain required">
@@ -11,7 +11,7 @@
         X
         <span class="required-indicator">*</span>
     </label>
-    <g:textField name="x" value=""/>
+    <g:textField name="x" value=""  required="true"/>
 </div>
 
 <div class="fieldcontain required">
@@ -19,7 +19,7 @@
         Y
         <span class="required-indicator">*</span>
     </label>
-    <g:textField name="y" value=""/>
+    <g:textField name="y" value=""  required="true"/>
 </div>
 
 <div class="fieldcontain required">
@@ -27,5 +27,5 @@
         Z
         <span class="required-indicator">*</span>
     </label>
-    <g:textField name="z" value=""/>
+    <g:textField name="z" value=""  required="true"/>
 </div>
