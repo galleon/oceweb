@@ -26,7 +26,7 @@
 
         </div>
 
-        <div id="content" style="width: 70%;float: right;">
+        <div id="content" style="width: 70%;float: right;height: 400px;">
 
         </div>
 

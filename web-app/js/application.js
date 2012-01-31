@@ -18,16 +18,25 @@ $(document).ready(function () {
 
 })
 
-var camera, mesh, renderer;
-function showShape(url, containerId, data) {
-    var container = $('#' + containerId);
-    var containerWidth = $(container).width();
-    camera = new THREE.PerspectiveCamera(60, containerWidth / window.innerHeight, 1, 2000);
-//    camera.position.x = data.x ? data.x : -6;
-    camera.position.y = -6;
-    camera.position.z = 1000;
+var camera, mesh, renderer, containerWidth, containerHeight, scene, container;
+var targetRotation = 0;
+var targetRotationOnMouseDown = 0;
 
+var mouseX = 0;
+var mouseXOnMouseDown = 0;
+var windowHalfX, windowHalfY;
+function showShape(url, containerId, data) {
+    container = $('#' + containerId);
+    containerWidth = $(container).width();
+    containerHeight = $(container).height();
+    windowHalfX = containerWidth;
+    windowHalfY = containerHeight;
+    camera = new THREE.PerspectiveCamera(70, containerWidth / containerHeight, 1, 1000);
+    camera.position.y = 150;
+    camera.position.z = 500;
     scene = new THREE.Scene();
+
+    scene.add(camera);
 
     $.getJSON(url, data, function (response) {
         var loader = new THREE.JSONLoader();
@@ -37,10 +46,68 @@ function showShape(url, containerId, data) {
         })
 
         renderer = new THREE.CanvasRenderer();
-        renderer.setSize(containerWidth, window.innerHeight);
+        renderer.setSize(containerWidth, containerHeight);
         $(container).html(renderer.domElement);
+        $(container).bind('mousedown', onDocumentMouseDown);
+        $(container).bind('touchstart', onDocumentTouchStart);
+        $(container).bind('touchmove', onDocumentTouchMove);
     })
 
+}
+function onDocumentMouseDown(event) {
+
+    event.preventDefault();
+
+    $(container).bind('mousemove', onDocumentMouseMove);
+    $(container).bind('mouseup', onDocumentMouseUp);
+    $(container).bind('mouseout', onDocumentMouseOut);
+
+    mouseXOnMouseDown = event.clientX - windowHalfX;
+    targetRotationOnMouseDown = targetRotation;
+}
+
+function onDocumentMouseMove(event) {
+
+    mouseX = event.clientX - windowHalfX;
+    targetRotation = targetRotationOnMouseDown + ( mouseX - mouseXOnMouseDown ) * 0.02;
+}
+
+function onDocumentMouseUp(event) {
+
+    $(container).unbind('mousemove', onDocumentMouseMove);
+    $(container).unbind('mouseup', onDocumentMouseUp);
+    $(container).unbind('mouseout', onDocumentMouseOut);
+}
+
+function onDocumentMouseOut(event) {
+
+    $(container).unbind('mousemove', onDocumentMouseMove);
+    $(container).unbind('mouseup', onDocumentMouseUp);
+    $(container).unbind('mouseout', onDocumentMouseOut);
+}
+
+function onDocumentTouchStart(event) {
+
+    if (event.touches.length == 1) {
+
+        event.preventDefault();
+
+        mouseXOnMouseDown = event.touches[ 0 ].pageX - windowHalfX;
+        targetRotationOnMouseDown = targetRotation;
+
+    }
+}
+
+function onDocumentTouchMove(event) {
+
+    if (event.touches.length == 1) {
+
+        event.preventDefault();
+
+        mouseX = event.touches[ 0 ].pageX - windowHalfX;
+        targetRotation = targetRotationOnMouseDown + ( mouseX - mouseXOnMouseDown ) * 0.05;
+
+    }
 }
 
 //
@@ -51,14 +118,13 @@ function animate() {
 }
 
 function render() {
-
     if (mesh) {
-        mesh.rotation.x -= 0.005;
-        mesh.rotation.y -= 0.01;
+        mesh.rotation.y += ( targetRotation - mesh.rotation.y ) * 0.05;
     }
     if (renderer) {
         renderer.render(scene, camera);
     }
+
 }
 
 function getPosition() {

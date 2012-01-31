@@ -43,7 +43,7 @@
     var boxUrl = "${createLink(controller: 'util',action:'fetchBox')}";
     var camera, scene, renderer, loader, mesh, containerWidth;
 
-    showShape(boxUrl, 'content');
+    showShape(boxUrl, 'content', {});
     animate();
 </script>
 </body>
