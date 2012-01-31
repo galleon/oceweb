@@ -44,7 +44,7 @@ body {
     box-shadow: 0 0 0.3em #255b17;
 }
 
-#grailsLogo {
+#logo {
     background-color: #abbf78;
 }
 
@@ -86,7 +86,7 @@ img {
 
 /* GENERAL */
 
-#grailsLogo a {
+#logo a {
     display: inline-block;
     margin: 1em;
 }
@@ -644,3 +644,35 @@ a.skip {
 #status span{width: 48%; float: right; text-align: center;}
 #status label{width: 48%; float: left; text-align: left;}
 .active-face{background-color: #ABBF78!important;}
+.nav {
+    background-color: #efefef;
+    padding: 0.5em 0.75em;
+    -moz-box-shadow: 0 0 3px 1px #aaaaaa;
+    -webkit-box-shadow: 0 0 3px 1px #aaaaaa;
+    box-shadow: 0 0 3px 1px #aaaaaa;
+    zoom: 1;
+}
+
+.headerNav ul {
+    overflow: hidden;
+    padding-left: 0;
+    zoom: 1;
+}
+
+.headerNav li {
+    display: block;
+    float: left;
+    list-style-type: none;
+    margin-right: 0.5em;
+    padding: 0;
+}
+
+.headerNav a {
+    color: #666666;
+    display: block;
+    padding: 0.2em 0.2em;
+    text-decoration: none;
+    -moz-border-radius: 0.3em;
+    -webkit-border-radius: 0.3em;
+    border-radius: 0.3em;
+}

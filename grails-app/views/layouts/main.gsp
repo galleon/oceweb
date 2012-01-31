@@ -29,28 +29,33 @@
 </head>
 
 <body>
+<div id="logo" role="banner">
+    <div class="headerNav">
+        <ul>
+            <li><g:link uri="/"><img src="${resource(dir: 'images', file: 'threed.png')}" alt="3-D Viewer"/></g:link></li>
+        </ul>
+
+    </div>
+
+</div>
+
 <div class="nav" role="navigation">
     <ul>
-        <li><h1>3-D Viewer</h1></li>
-        <td:ifLoggedIn>
-            <li style="float: right;"><g:link controller="home" action="logout">Logout</g:link></li>
-            <li style="float: right;margin-top: 4px;" class="username">Welcome <td:loggedInUserName/> |</li>
-            <li style="float: right;">
-                <a href="#sphereInfo" class="nyroModal" id="createSphere" title="Create sphere">
-                    <img src="${resource(dir: 'images', file: 'sphere.png')}">
-                </a>
-            </li>
-            <li style="float: right;">
-                <a href="#cubeInfo" class="nyroModal" id="createCube" title="Create cube">
-                    <img src="${resource(dir: 'images', file: 'cube.png')}">
-                </a>
-            </li>
-            <li style="float: right;">
-                <a href="#cylinderInfo" class="nyroModal" id="createCylinder" title="Create cylinder">
-                    <img src="${resource(dir: 'images', file: 'cylinder.png')}">
-                </a>
-            </li>
-        </td:ifLoggedIn>
+        <li style="float: right;">
+            <a href="#sphereInfo" class="nyroModal" id="createSphere" title="Create sphere">
+                <img src="${resource(dir: 'images', file: 'sphere.png')}">
+            </a>
+        </li>
+        <li style="float: right;">
+            <a href="#cubeInfo" class="nyroModal" id="createCube" title="Create cube">
+                <img src="${resource(dir: 'images', file: 'cube.png')}">
+            </a>
+        </li>
+        <li style="float: right;">
+            <a href="#cylinderInfo" class="nyroModal" id="createCylinder" title="Create cylinder">
+                <img src="${resource(dir: 'images', file: 'cylinder.png')}">
+            </a>
+        </li>
     </ul>
 </div>
 <g:layoutBody/>

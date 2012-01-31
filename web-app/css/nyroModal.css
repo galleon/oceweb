@@ -12,12 +12,13 @@
 	position: absolute;
 }
 .nyroModalCloseButton {
+    z-index: 200;
 	top: -13px;
 	right: -13px;
-	width: 12px;
-	height: 12px;
+	width: 16px;
+	height: 16px;
 	text-indent: -9999em;
-	background: url(../images/close.png);
+	background: url(../images/icons/cross.png);
 }
 .nyroModalTitle {
 	top: -26px;

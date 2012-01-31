@@ -17,11 +17,10 @@ class Project {
 /* Transients */
 
 /* Relations */
-    static belongsTo = [createdBy: User]
 
 /* Constraints */
     static constraints = {
-        name(unique: 'createdBy')
+        name(blank: false)
     }
 
 /* Mappings */
