@@ -42,15 +42,15 @@
 </div>
 
 <div id="cubeInfo" style="display: none">
-    <g:render template="cubeInfo"/>
+    <g:render template="/cadObject/cubeInfo"/>
 </div>
 
 <div id="sphereInfo" style="display: none">
-    <g:render template="sphereInfo"/>
+    <g:render template="/cadObject/sphereInfo"/>
 </div>
 
 <div id="cylinderInfo" style="display: none">
-    <g:render template="cylinderInfo"/>
+    <g:render template="/cadObject/cylinderInfo"/>
 </div>
 
 <script type="text/javascript">

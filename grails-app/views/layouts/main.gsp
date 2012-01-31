@@ -16,12 +16,12 @@
     <link rel="stylesheet" href="${resource(dir: 'css', file: 'mobile.css')}" type="text/css">
     <link rel="stylesheet" href="${resource(dir: 'css', file: 'nyroModal.css')}" type="text/css">
     <jq:resources/>
+    <script src="${resource(dir: 'js', file: 'application.js')}"></script>
     <script src="${resource(dir: 'js', file: 'jquery.nyroModal.custom.js')}"></script>
     <script src="${resource(dir: 'js', file: 'jquery.nyroModal-ie6.js')}"></script>
     <script src="${resource(dir: 'js/three', file: 'Three.js')}"></script>
     <script src="${resource(dir: 'js/three', file: 'ImprovedNoise.js')}"></script>
     <script src="${resource(dir: 'js/three', file: 'RequestAnimationFrame.js')}"></script>
-    <script src="${resource(dir: 'js', file: '3dViewer.js')}"></script>
     <script src="${resource(dir: 'js', file: 'cube.js')}"></script>
     <script src="${resource(dir: 'js', file: 'cylinder.js')}"></script>
     <script src="${resource(dir: 'js', file: 'sphere.js')}"></script>
@@ -33,6 +33,7 @@
     <div class="headerNav">
         <ul>
             <li><g:link uri="/"><img src="${resource(dir: 'images', file: 'threed.png')}" alt="3-D Viewer"/></g:link></li>
+            <li style="padding-top: 52px;font-size: 30px; color: #fff">3-D Viewer</li>
         </ul>
 
     </div>
