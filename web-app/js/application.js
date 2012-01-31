@@ -10,7 +10,9 @@ if (typeof jQuery !== 'undefined') {
 }
 $(document).ready(function () {
     $(".shapeForm").submit(function () {
-        showShape($(this).attr('action'), 'content', $(this).serialize())
+        showShape($(this).attr('action'), 'content', $(this).serialize());
+        animate();
+        $.nmTop().close();
         return false
     })
 
