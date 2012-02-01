@@ -11,23 +11,62 @@
 <body>
 <div>
     <fieldset class="form">
-        <div id="data" style="width: 29%;float: left;">
-            <div id="status" role="complementary">
+        <div class="block small left">
+            <div class="block_head">
+                <div class="bheadl"></div>
+
+                <div class="bheadr"></div>
+
+                <h2>Projects</h2>
+            </div>
+
+            <div class="block_content" id="projects">
                 <ul>
-                    <g:each in="${projects}" var="project">
-                        <li>
-                            <span style="float: left;">
-                                <a href="#" class="showFace">${project.name}</a>
-                            </span>
-                        </li>
+                    <g:each in="${projects}" var="project" status="index">
+                        <li id="${"phtml_" + (index + 1)}"><a href="#">${project.name}</a></li>
                     </g:each>
                 </ul>
             </div>
 
+            <div class="bendl"></div>
+
+            <div class="bendr"></div>
         </div>
 
-        <div id="content" style="width: 70%;float: right;height: 400px;">
+        <div class="block small right">
+            <div class="block_head">
+                <div class="bheadl"></div>
 
+                <div class="bheadr"></div>
+
+                <ul>
+                    <li style="float: right;">
+                        <a href="#sphereInfo" class="nyroModal" id="createSphere" title="Create sphere">
+                            <img src="${resource(dir: 'images', file: 'sphere.png')}">
+                        </a>
+                    </li>
+                    <li style="float: right;">
+                        <a href="#cubeInfo" class="nyroModal" id="createCube" title="Create cube">
+                            <img src="${resource(dir: 'images', file: 'cube.png')}">
+                        </a>
+                    </li>
+                    <li style="float: right;">
+                        <a href="#cylinderInfo" class="nyroModal" id="createCylinder" title="Create cylinder">
+                            <img src="${resource(dir: 'images', file: 'cylinder.png')}">
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="block_content">
+                <div id="content" style="height: 400px;">
+
+                </div>
+            </div>
+
+            <div class="bendl"></div>
+
+            <div class="bendr"></div>
         </div>
 
     </fieldset>
@@ -35,8 +74,8 @@
         <a href="#" id="info" style="float: right;">
             <img src="${resource(dir: 'images', file: 'info.png')}" alt="info">
         </a>
-        <a href="#" id="projects" style="float: right;">
-            <img src="${resource(dir: 'images', file: 'folder.png')}" alt="projects">
+        <a href="#" style="float: right;">
+            <img src="${resource(dir: 'images', file: 'folder-big.png')}" alt="projects">
         </a>
     </fieldset>
 </div>
@@ -62,7 +101,11 @@
             return false;
         })
         $('.nyroModal').nyroModal({filter:{title:''}});
-        $('.nyroModalTitle').html('')
+        $('.nyroModalTitle').html('');
+        $("#projects").jstree({"plugins":["themes", "html_data", "ui", "crrm", "hotkeys"], "themes":{"theme":"apple",
+            "icons":true,
+            "url":"${resource(dir:'css', file: 'style.css')}"
+        }})
     })
 </script>
 </body>

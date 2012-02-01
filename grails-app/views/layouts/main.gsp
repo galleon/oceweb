@@ -13,9 +13,13 @@
     <link rel="apple-touch-icon" href="${resource(dir: 'images', file: 'apple-touch-icon.png')}">
     <link rel="apple-touch-icon" sizes="114x114" href="${resource(dir: 'images', file: 'apple-touch-icon-retina.png')}">
     <link rel="stylesheet" href="${resource(dir: 'css', file: 'main.css')}" type="text/css">
+    <link rel="stylesheet" href="${resource(dir: 'css', file: 'style.css')}" type="text/css">
     <link rel="stylesheet" href="${resource(dir: 'css', file: 'mobile.css')}" type="text/css">
     <link rel="stylesheet" href="${resource(dir: 'css', file: 'nyroModal.css')}" type="text/css">
     <jq:resources/>
+    <script src="${resource(dir: 'js', file: 'jquery.cookie.js')}"></script>
+    <script src="${resource(dir: 'js', file: 'jquery.hotkeys.js')}"></script>
+    <script src="${resource(dir: 'js', file: 'jquery.jstree.js')}"></script>
     <script src="${resource(dir: 'js', file: 'jquery.nyroModal.custom.js')}"></script>
     <script src="${resource(dir: 'js', file: 'jquery.nyroModal-ie6.js')}"></script>
     <script src="${resource(dir: 'js', file: 'application.js')}"></script>
@@ -40,25 +44,6 @@
 
 </div>
 
-<div class="nav" role="navigation">
-    <ul>
-        <li style="float: right;">
-            <a href="#sphereInfo" class="nyroModal" id="createSphere" title="Create sphere">
-                <img src="${resource(dir: 'images', file: 'sphere.png')}">
-            </a>
-        </li>
-        <li style="float: right;">
-            <a href="#cubeInfo" class="nyroModal" id="createCube" title="Create cube">
-                <img src="${resource(dir: 'images', file: 'cube.png')}">
-            </a>
-        </li>
-        <li style="float: right;">
-            <a href="#cylinderInfo" class="nyroModal" id="createCylinder" title="Create cylinder">
-                <img src="${resource(dir: 'images', file: 'cylinder.png')}">
-            </a>
-        </li>
-    </ul>
-</div>
 <g:layoutBody/>
 <div class="footer" role="contentinfo"></div>
 

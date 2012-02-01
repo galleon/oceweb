@@ -213,7 +213,7 @@ img {
 
 fieldset,
 .property-list {
-    margin: 0.6em 1.25em 0 1.25em;
+    margin: 0.6em 0.7em 0 0.7em;
     padding: 0.3em 0em 1.25em;
     position: relative;
     zoom: 1;
@@ -675,4 +675,113 @@ a.skip {
     -moz-border-radius: 0.3em;
     -webkit-border-radius: 0.3em;
     border-radius: 0.3em;
+}
+.block.small.left {
+    clear: none;
+    float: left;
+    width: 23%;
+}
+.block.small {
+    background: url("../images/bnd.gif") repeat-x scroll center bottom #FFFFFF;
+    padding-bottom: 0;
+}
+.block {
+    background: url("../images/bnd.gif") repeat-x scroll center bottom #FFFFFF;
+    clear: both;
+    margin-bottom: 25px;
+    padding-bottom: 5px;
+}
+.block.small .block_content {
+    background: none repeat scroll 0 0 #FFFFFF;
+    border-left: 1px solid #CCCCCC;
+    border-right: 1px solid #CCCCCC;
+}
+.block .block_content {
+    background: none repeat scroll 0 0 #FFFFFF;
+    border-left: 1px solid #CCCCCC;
+    border-right: 1px solid #CCCCCC;
+    overflow: hidden;
+    padding: 10px 20px 0;
+}
+.block .bendl {
+    background: url("../images/bendl.gif") no-repeat scroll left bottom transparent;
+    float: left;
+    height: 5px;
+    width: 5px;
+}
+.block .bendr {
+    background: url("../images/bendr.gif") no-repeat scroll left bottom transparent;
+    float: right;
+    height: 5px;
+    width: 5px;
+}
+.block .block_head .bheadl {
+    background: url("../images/bheadl.gif") no-repeat scroll left top transparent;
+    float: left;
+    height: 54px;
+    width: 20px;
+}
+.block .block_head .bheadr {
+    background: url("../images/bheadr.gif") no-repeat scroll right top transparent;
+    float: right;
+    height: 54px;
+    width: 20px;
+}
+.block.small .block_head {
+    background: url("../images/bhead.gif") repeat-x scroll 0 0 transparent;
+}
+.block .block_head {
+    background: url("../images/bhead.gif") repeat-x scroll 0 0 transparent;
+    height: 37px;
+    line-height: 37px;
+    overflow: hidden;
+}
+.block .block_head h2 {
+    color: #555555;
+    float: left;
+    font-family: "Titillium999","Trebuchet MS",Arial,sans-serif;
+    font-size: 18px;
+    font-weight: bolder;
+    text-shadow: 1px 1px 0 #FFFFFF;
+    text-transform: uppercase;
+}
+.block .block_head {
+    line-height: 37px;
+}
+.block.small.right {
+    clear: none;
+    float: right;
+    width: 75%;
+}
+.block.small {
+    background: url("../images/bnd.gif") repeat-x scroll center bottom #FFFFFF;
+    padding-bottom: 0;
+}
+.block .block_head ul {
+    float: right;
+    font-size: 11px;
+    font-weight: bold;
+    text-shadow: 1px 1px 0 #FFFFFF;
+    text-transform: uppercase;
+}
+.block .block_head ul li.nobg {
+    background: none repeat scroll 0 0 transparent;
+}
+.block .block_head ul li {
+    background: url("../images/phs.gif") no-repeat scroll 7px center transparent;
+    display: inline;
+    padding: 3px 0 3px 20px;
+}
+ul li {
+    list-style: none outside none;
+}
+.block .block_head ul li a {
+    color: #666666;
+    outline: medium none;
+    text-decoration: none;
+}
+a {
+    color: #008EE8;
+    outline: medium none;
+    text-decoration: none;
 }
