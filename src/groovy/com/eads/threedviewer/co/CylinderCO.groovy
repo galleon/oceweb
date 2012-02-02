@@ -4,6 +4,7 @@ import groovy.transform.ToString
 import org.codehaus.groovy.grails.validation.Validateable
 import org.jcae.opencascade.jni.TopoDS_Shape
 import org.jcae.opencascade.jni.BRepPrimAPI_MakeCylinder
+import com.eads.threedviewer.CADObject
 
 @Validateable
 @ToString(includeNames = true, includeFields = true, excludes = 'metaClass,errors', includeSuper = true)

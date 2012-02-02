@@ -1,9 +1,10 @@
+<g:hiddenField name="project.id" value="${project.id}"/>
 <div class="fieldcontain required">
     <label for="name">
         Name
         <span class="required-indicator">*</span>
     </label>
-    <g:textField name="name" value=""  required="true"/>
+    <g:textField name="name" value="" required="true"/>
 </div>
 
 <div class="fieldcontain required">
@@ -11,7 +12,7 @@
         X
         <span class="required-indicator">*</span>
     </label>
-    <g:textField name="x" value=""  required="true"/>
+    <g:textField name="x" value="" required="true"/>
 </div>
 
 <div class="fieldcontain required">
@@ -19,7 +20,7 @@
         Y
         <span class="required-indicator">*</span>
     </label>
-    <g:textField name="y" value=""  required="true"/>
+    <g:textField name="y" value="" required="true"/>
 </div>
 
 <div class="fieldcontain required">
@@ -27,5 +28,5 @@
         Z
         <span class="required-indicator">*</span>
     </label>
-    <g:textField name="z" value=""  required="true"/>
+    <g:textField name="z" value="" required="true"/>
 </div>

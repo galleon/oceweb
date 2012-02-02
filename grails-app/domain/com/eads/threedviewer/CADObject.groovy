@@ -22,7 +22,8 @@ class CADObject {
 
 /* Constraints */
     static constraints = {
-        name(blank: false)
+        name(blank: false, unique: 'project')
+        content(maxSize: 120000)
     }
 
 /* Mappings */
@@ -36,8 +37,9 @@ class CADObject {
 /* Transient Methods */
 
     File getFile() {
-        File file = File.createTempFile(project.name, ".brep")
+        File file = File.createTempFile("${project.name}_${name}", ".brep")
         file.bytes = content
+        log.info "File created ${file.path}"
         return file
     }
 

@@ -11,26 +11,8 @@
 <body>
 <div>
     <fieldset class="form">
-        <div class="block small left">
-            <div class="block_head">
-                <div class="bheadl"></div>
-
-                <div class="bheadr"></div>
-
-                <h2>Projects</h2>
-            </div>
-
-            <div class="block_content" id="projects">
-                <ul>
-                    <g:each in="${projects}" var="project" status="index">
-                        <li id="${"phtml_" + (index + 1)}"><a href="#">${project.name}</a></li>
-                    </g:each>
-                </ul>
-            </div>
-
-            <div class="bendl"></div>
-
-            <div class="bendr"></div>
+        <div id="projectTree">
+            <g:render template="cadObjects" model="[projects: projects, project: project]"/>
         </div>
 
         <div class="block small right">
@@ -38,24 +20,27 @@
                 <div class="bheadl"></div>
 
                 <div class="bheadr"></div>
+                <g:if test="${project}">
+                    <g:hiddenField name="projectId" value="${project.id}"/>
+                    <ul>
+                        <li style="float: right;">
+                            <a href="#sphereInfo" class="nyroModal" id="createSphere" title="Create sphere">
+                                <img src="${resource(dir: 'images', file: 'sphere.png')}">
+                            </a>
+                        </li>
+                        <li style="float: right;">
+                            <a href="#cubeInfo" class="nyroModal" id="createCube" title="Create cube">
+                                <img src="${resource(dir: 'images', file: 'cube.png')}">
+                            </a>
+                        </li>
+                        <li style="float: right;">
+                            <a href="#cylinderInfo" class="nyroModal" id="createCylinder" title="Create cylinder">
+                                <img src="${resource(dir: 'images', file: 'cylinder.png')}">
+                            </a>
+                        </li>
+                    </ul>
+                </g:if>
 
-                <ul>
-                    <li style="float: right;">
-                        <a href="#sphereInfo" class="nyroModal" id="createSphere" title="Create sphere">
-                            <img src="${resource(dir: 'images', file: 'sphere.png')}">
-                        </a>
-                    </li>
-                    <li style="float: right;">
-                        <a href="#cubeInfo" class="nyroModal" id="createCube" title="Create cube">
-                            <img src="${resource(dir: 'images', file: 'cube.png')}">
-                        </a>
-                    </li>
-                    <li style="float: right;">
-                        <a href="#cylinderInfo" class="nyroModal" id="createCylinder" title="Create cylinder">
-                            <img src="${resource(dir: 'images', file: 'cylinder.png')}">
-                        </a>
-                    </li>
-                </ul>
             </div>
 
             <div class="block_content">
@@ -102,10 +87,6 @@
         })
         $('.nyroModal').nyroModal({filter:{title:''}});
         $('.nyroModalTitle').html('');
-        $("#projects").jstree({"plugins":["themes", "html_data", "ui", "crrm", "hotkeys"], "themes":{"theme":"apple",
-            "icons":true,
-            "url":"${resource(dir:'css', file: 'style.css')}"
-        }})
     })
 </script>
 </body>

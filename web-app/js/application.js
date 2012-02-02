@@ -1,16 +1,47 @@
-if (typeof jQuery !== 'undefined') {
-    (function ($) {
-        $('#spinner').ajaxStart(
-            function () {
-                $(this).fadeIn();
-            }).ajaxStop(function () {
-                $(this).fadeOut();
-            });
-    })(jQuery);
-}
+var httpData = $.httpData || function (xhr, type, s) { // lifted from jq1.4.4
+    var ct = xhr.getResponseHeader("content-type") || "",
+        xml = type === "xml" || !type && ct.indexOf("xml") >= 0,
+        data = xml ? xhr.responseXML : xhr.responseText;
+
+    if (xml && data.documentElement.nodeName === "parsererror") {
+        $.error("parsererror");
+    }
+
+    if (s && s.dataFilter) {
+        data = s.dataFilter(data, type);
+    }
+
+    if (typeof data === "string") {
+        if (type === "json" || !type && ct.indexOf("json") >= 0) {
+            data = $.parseJSON(data);
+        } else if (type === "script" || !type && ct.indexOf("javascript") >= 0) {
+            $.globalEval(data);
+        }
+    }
+    return data;
+};
+
+jQuery("#spinner").ajaxStart(function () {
+    jQuery(this).show();
+});
+jQuery("#spinner").ajaxStop(function () {
+    jQuery(this).hide();
+});
+jQuery.ajaxSetup({cache:false});
+jQuery("#ajax_spinner").ajaxComplete(function (event, xhr, options) {
+    var data = httpData(xhr, options.dataType, options);
+    var inputFieldIndex = -1;
+    try {
+        inputFieldIndex = data.indexOf("Session TimedOut url");
+    } catch (err) {
+    }
+    if (inputFieldIndex > -1) {
+        window.location.href = data.substring(data.indexOf("=") + 1, data.length);
+    }
+});
 $(document).ready(function () {
     $(".shapeForm").submit(function () {
-        showShape($(this).attr('action'), 'content', $(this).serialize());
+        showShape($(this).attr('action'), 'content', $(this).serialize(), {closePopup:true, reloadProjectTree:true});
         animate();
         return false
     })
@@ -24,7 +55,7 @@ var targetRotationOnMouseDown = 0;
 var mouseX = 0;
 var mouseXOnMouseDown = 0;
 var windowHalfX, windowHalfY;
-function showShape(url, containerId, data) {
+function showShape(url, containerId, data, options) {
     container = $('#' + containerId);
     containerWidth = $(container).width();
     containerHeight = $(container).height();
@@ -50,7 +81,12 @@ function showShape(url, containerId, data) {
         $(container).bind('mousedown', onDocumentMouseDown);
         $(container).bind('touchstart', onDocumentTouchStart);
         $(container).bind('touchmove', onDocumentTouchMove);
-        $.nmTop().close();
+        if (options.closePopup) {
+            $.nmTop().close();
+        }
+        if (options.reloadProjectTree) {
+            reloadProjectTree();
+        }
     })
 
 }
@@ -148,4 +184,22 @@ function getPosition() {
         position.z = z;
     }
     return position;
+}
+
+function reloadProjectTree() {
+    var url = createLink('project', 'listCadObjects')
+    var projectId = $("#projectId").val();
+    url = url + "/" + projectId;
+    $.get(url, function (response) {
+        if (response.error) {
+            alert(response.error)
+        } else {
+            $("#projectTree").html(response);
+        }
+    })
+}
+
+function createLink(controller, action) {
+    var link = window.location.pathname + controller + "/" + action;
+    return link
 }
