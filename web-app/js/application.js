@@ -72,25 +72,30 @@ function showShape(url, containerId, data, options) {
     scene.add(camera);
 
     $.getJSON(url, data, function (response) {
-        targetRotation = 0;
-        var loader = new THREE.JSONLoader();
-        loader.createModel(response, function (geometry) {
-            mesh = new THREE.Mesh(geometry, new THREE.MeshNormalMaterial({ overdraw:true }));
-            scene.add(mesh);
-        })
+        if (response.error) {
+            alert(response.error)
+        } else {
+            targetRotation = 0;
+            var loader = new THREE.JSONLoader();
+            loader.createModel(response, function (geometry) {
+                mesh = new THREE.Mesh(geometry, new THREE.MeshNormalMaterial({ overdraw:true }));
+                scene.add(mesh);
+            })
 
-        renderer = new THREE.CanvasRenderer();
-        renderer.setSize(containerWidth, containerHeight);
-        $(container).html(renderer.domElement);
-        $(container).bind('mousedown', onDocumentMouseDown);
-        $(container).bind('touchstart', onDocumentTouchStart);
-        $(container).bind('touchmove', onDocumentTouchMove);
-        if (options.closePopup) {
-            $.nmTop().close();
+            renderer = new THREE.CanvasRenderer();
+            renderer.setSize(containerWidth, containerHeight);
+            $(container).html(renderer.domElement);
+            $(container).bind('mousedown', onDocumentMouseDown);
+            $(container).bind('touchstart', onDocumentTouchStart);
+            $(container).bind('touchmove', onDocumentTouchMove);
+            if (options.closePopup) {
+                $.nmTop().close();
+            }
+            if (options.reloadProjectTree) {
+                reloadProjectTree();
+            }
         }
-        if (options.reloadProjectTree) {
-            reloadProjectTree();
-        }
+
     });
     animate();
 }

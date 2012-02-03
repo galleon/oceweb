@@ -10,9 +10,12 @@
 
 <body>
 <div>
+    <g:hasErrors bean="${co}">
+        <g:renderErrors bean="${co}"/>
+    </g:hasErrors>
     <fieldset class="form">
         <div id="projectTree">
-            <g:render template="cadObjects" model="[projects: projects, project: project]"/>
+            <g:render template="/project/cadObjects" model="[projects: projects, project: project]"/>
         </div>
 
         <div class="block small right">
@@ -88,6 +91,7 @@
 
 
 <script type="text/javascript">
+    var shapeId = '${shapeId}';
     $(document).ready(function () {
         $(".showFace").click(function () {
             var url = $(this).attr('rel');
@@ -97,6 +101,11 @@
         })
         $('.nyroModal').nyroModal({filter:{title:''}});
         $('.nyroModalTitle').html('');
+        if (shapeId) {
+            var url = createLink('CADObject', 'show');
+            url = url + '/' + shapeId;
+            showShape(url, 'content', {}, {});
+        }
     })
 </script>
 </body>
