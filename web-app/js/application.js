@@ -42,7 +42,6 @@ jQuery("#ajax_spinner").ajaxComplete(function (event, xhr, options) {
 $(document).ready(function () {
     $(".shapeForm").submit(function () {
         showShape($(this).attr('action'), 'content', $(this).serialize(), {closePopup:true, reloadProjectTree:true});
-        animate();
         return false
     })
     $("#selectProject").change(function () {
@@ -64,8 +63,9 @@ function showShape(url, containerId, data, options) {
     containerHeight = $(container).height();
     windowHalfX = containerWidth;
     windowHalfY = containerHeight;
-    camera = new THREE.PerspectiveCamera(70, containerWidth / containerHeight, 1, 1000);
-    camera.position.y = 150;
+    camera = new THREE.PerspectiveCamera(50, containerWidth / containerHeight, 1, 1000);
+    camera.position.x = 0;
+    camera.position.y = 0;
     camera.position.z = 500;
     scene = new THREE.Scene();
 
@@ -91,8 +91,8 @@ function showShape(url, containerId, data, options) {
         if (options.reloadProjectTree) {
             reloadProjectTree();
         }
-    })
-
+    });
+    animate();
 }
 function onDocumentMouseDown(event) {
 
@@ -204,6 +204,11 @@ function reloadProjectTree() {
 }
 
 function createLink(controller, action) {
-    var link = window.location.pathname + controller + "/" + action;
+    var link = '/';
+    var path = window.location.pathname
+    if (path.indexOf('threedViewer') == 1) {
+        link = '/threedViewer' + link;
+    }
+    link = link + controller + '/' + action;
     return link
 }

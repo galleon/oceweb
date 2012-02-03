@@ -7,7 +7,7 @@ class BootStrap {
     def init = { servletContext ->
         MetaClassHelper.enrichClasses()
 
-        bootStrapService.bootstrapData()
+//        bootStrapService.bootstrapData()
     }
     def destroy = {
 

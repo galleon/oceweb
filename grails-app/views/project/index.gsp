@@ -24,6 +24,11 @@
                     <g:hiddenField name="projectId" value="${project.id}"/>
                     <ul>
                         <li style="float: right;">
+                            <a href="#importShapeInfo" class="nyroModal" id="importShape" title="Import Shape">
+                                <img src="${resource(dir: 'images', file: 'folder-big.png')}">
+                            </a>
+                        </li>
+                        <li style="float: right;">
                             <a href="#sphereInfo" class="nyroModal" id="createSphere" title="Create sphere">
                                 <img src="${resource(dir: 'images', file: 'sphere.png')}">
                             </a>
@@ -39,6 +44,22 @@
                             </a>
                         </li>
                     </ul>
+
+                    <div id="cubeInfo" style="display: none">
+                        <g:render template="/cadObject/cubeInfo"/>
+                    </div>
+
+                    <div id="sphereInfo" style="display: none">
+                        <g:render template="/cadObject/sphereInfo"/>
+                    </div>
+
+                    <div id="cylinderInfo" style="display: none">
+                        <g:render template="/cadObject/cylinderInfo"/>
+                    </div>
+
+                    <div id="importShapeInfo" style="display: none">
+                        <g:render template="/cadObject/importShape"/>
+                    </div>
                 </g:if>
 
             </div>
@@ -65,17 +86,6 @@
     </fieldset>
 </div>
 
-<div id="cubeInfo" style="display: none">
-    <g:render template="/cadObject/cubeInfo"/>
-</div>
-
-<div id="sphereInfo" style="display: none">
-    <g:render template="/cadObject/sphereInfo"/>
-</div>
-
-<div id="cylinderInfo" style="display: none">
-    <g:render template="/cadObject/cylinderInfo"/>
-</div>
 
 <script type="text/javascript">
     $(document).ready(function () {

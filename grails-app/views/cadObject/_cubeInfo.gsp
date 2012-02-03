@@ -2,6 +2,7 @@
     <fieldset class="form">
         <div class="data-fields">
             <g:render template="/cadObject/shapeInfo"/>
+            <g:render template="/cadObject/axisInfo"/>
             <div class="fieldcontain required">
                 <label for="length">
                     Length
@@ -13,5 +14,6 @@
     </fieldset>
     <fieldset class="buttons">
         <g:actionSubmit value="Create" action="createCube" class="save"/>
+        <input type="button" value="Cancel" id="cancel" class="save nyroModalClose"/>
     </fieldset>
 </g:form>

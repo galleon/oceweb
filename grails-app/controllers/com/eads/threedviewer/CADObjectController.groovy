@@ -10,6 +10,7 @@ import org.jcae.opencascade.jni.TopoDS_Shape
 import org.jcae.opencascade.jni.BRepTools
 import org.jcae.opencascade.jni.BRep_Builder
 import com.eads.threedviewer.util.ShapeUtil
+import com.eads.threedviewer.co.FileShapeCO
 
 class CADObjectController {
 
@@ -27,13 +28,21 @@ class CADObjectController {
         sendResponse(co)
     }
 
+    def createShapeFromFile(FileShapeCO co) {
+        sendResponse(co)
+    }
+
     Closure sendResponse = {ShapeCO co ->
         Map result
         try {
-            projectService.addCADObject(co)
-            result = co.data
+            CADObject cadObject = projectService.addCADObject(co)
+            if (cadObject) {
+                result = co.data
+            } else {
+                result = ['error': message(code: "error.occured.while.serving.your.request")]
+            }
         } catch (ValidationException ve) {
-            result = ['error': ve.message]
+            result = ['error': message(code: "error.occured.while.serving.your.request")]
         }
         render result as JSON
     }
@@ -42,9 +51,7 @@ class CADObjectController {
         Map result
         CADObject cadObject = id ? CADObject.get(id) : null
         if (cadObject) {
-            File file = cadObject.file
-            TopoDS_Shape shape = BRepTools.read(file.path, new BRep_Builder())
-            result = ShapeUtil.getData(shape)
+            result = ShapeUtil.getData(cadObject.file)
         } else {
             result = ['error': "Object not found for id ${id}"]
         }

@@ -28,14 +28,19 @@ abstract class ShapeCO {
     abstract TopoDS_Shape getShape()
 
     CADObject getCADObject() {
-        CADObject cadObject = new CADObject(name: name, project: project)
+        CADObject cadObject = new CADObject(name: name, project: project, x: x, y: y, z: z, content: content)
+        return cadObject
+    }
+
+    byte[] getContent() {
+        byte[] bytes
         BRepTools.write(shape, "temp.brep")
         File file = new File("temp.brep")
         if (file.exists()) {
-            cadObject.content = file.bytes
+            bytes = file.bytes
             file.delete()
         }
-        return cadObject
+        return bytes
     }
 
     Map getData() {

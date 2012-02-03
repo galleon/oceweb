@@ -2,6 +2,7 @@ package com.eads.threedviewer
 
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
+import com.eads.threedviewer.util.ShapeUtil
 
 @ToString(includeNames = true, includeFields = true, excludes = 'dateCreated,lastUpdated,metaClass,content')
 @EqualsAndHashCode
@@ -10,6 +11,9 @@ class CADObject {
 
 /* Fields */
     String name
+    double x
+    double y
+    double z
     byte[] content
     Date dateCreated
     Date lastUpdated
@@ -37,10 +41,7 @@ class CADObject {
 /* Transient Methods */
 
     File getFile() {
-        File file = File.createTempFile("${project.name}_${name}_", ".brep")
-        file.bytes = content
-        log.info "File created ${file.path}"
-        return file
+        return ShapeUtil.createBrepFile(content, "${project.name}_${name}_")
     }
 
 /* Methods */
