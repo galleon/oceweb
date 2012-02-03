@@ -45,6 +45,9 @@ $(document).ready(function () {
         animate();
         return false
     })
+    $("#selectProject").change(function () {
+        $("#changeProject").submit();
+    });
 
 })
 
@@ -69,6 +72,7 @@ function showShape(url, containerId, data, options) {
     scene.add(camera);
 
     $.getJSON(url, data, function (response) {
+        targetRotation = 0;
         var loader = new THREE.JSONLoader();
         loader.createModel(response, function (geometry) {
             mesh = new THREE.Mesh(geometry, new THREE.MeshNormalMaterial({ overdraw:true }));

@@ -3,8 +3,10 @@
         <div class="bheadl"></div>
 
         <div class="bheadr"></div>
-
-        <h2>Projects</h2>
+        <g:form action="index" controller="project" name="changeProject">
+            <g:select name="name" from="${projects}" optionKey="name" optionValue="name" style="width: 80%;" noSelection="['': 'Choose Project']" value="${project?.name}"
+                      id='selectProject'/>
+        </g:form>
     </div>
 
     <div class="block_content">

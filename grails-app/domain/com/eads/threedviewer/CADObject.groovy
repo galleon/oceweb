@@ -37,7 +37,7 @@ class CADObject {
 /* Transient Methods */
 
     File getFile() {
-        File file = File.createTempFile("${project.name}_${name}", ".brep")
+        File file = File.createTempFile("${project.name}_${name}_", ".brep")
         file.bytes = content
         log.info "File created ${file.path}"
         return file

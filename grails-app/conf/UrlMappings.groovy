@@ -6,6 +6,10 @@ class UrlMappings {
                 // apply constraints here
             }
         }
+        "/$name" {
+            controller = "project"
+            action = "index"
+        }
 
         "/" {
             controller = "project"
