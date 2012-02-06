@@ -217,3 +217,89 @@ function createLink(controller, action) {
     link = link + controller + '/' + action;
     return link
 }
+
+function enableJsTree() {
+    $("#project").jstree({"plugins":["themes", "html_data", "ui", "crrm", "hotkeys", "contextmenu"], "themes":{"theme":"apple",
+        "icons":true}, contextmenu:{items:defaultMenu}, "core":{ "initially_open":[ "phtml_1" ] }}).bind("select_node.jstree",
+        function (event, data) {
+            showShape(data.rslt.obj.children().filter('a').attr('href'), 'content', {}, {})
+        }).bind("rename_node.jstree", function (event, data) {
+            var id = data.rslt.obj.children().filter('a').attr('id');
+            var name = data.rslt.name;
+            updateName(id, name)
+        })
+}
+
+function defaultMenu(node) {
+    var items = {
+        toggleVisibility:{
+            label:"Toggle visibility",
+            "action":toggleCanvasVisibility,
+            "_class":"class",
+            "separator_before":false,
+            "separator_after":true
+        },
+        deleteNode:{
+            label:"Delete",
+            "action":deleteObject,
+            "_class":"class",
+            "separator_before":false,
+            "separator_after":true
+        },
+        edit:{
+            label:"Edit",
+            "_class":"class",
+            "action":function (obj) {
+                this.rename(obj);
+            },
+            "separator_before":false,
+            "separator_after":true
+        },
+        explode:{
+            label:"Explode",
+            "_class":"class",
+            "separator_before":false,
+            "separator_after":true
+        },
+        mesh:{
+            label:"Mesh",
+            "_class":"class",
+            "separator_before":false
+        }
+    };
+    var selectedId = $(node).attr('id');
+    if (selectedId == "phtml_1") {
+        items = {}
+    }
+    return items;
+}
+
+function toggleCanvasVisibility(node) {
+    var display = $('canvas').css('display');
+    if (display == 'inline') {
+        $('canvas').hide();
+    } else {
+        $('canvas').show();
+    }
+}
+
+function deleteObject(node) {
+    var url = createLink('CADObject', 'delete');
+    var id = $(node).children().filter('a').attr('id');
+    url = url + "/" + id;
+    $.post(url, function (response) {
+        if (response.success) {
+            $(node).remove();
+            alert(response.success)
+        } else {
+            alert(response.error)
+        }
+    });
+}
+
+function updateName(id, name) {
+    var url = createLink('CADObject', 'updateName');
+    url = url + "/" + id + "?name=" + name;
+    $.post(url);
+}
+

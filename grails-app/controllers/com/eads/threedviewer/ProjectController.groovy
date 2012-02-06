@@ -11,5 +11,4 @@ class ProjectController {
         Project project = id ? Project.read(id) : null
         render(template: 'cadObjects', model: [project: project, projects: Project.list()])
     }
-
 }

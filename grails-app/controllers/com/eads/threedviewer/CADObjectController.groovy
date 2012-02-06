@@ -68,4 +68,24 @@ class CADObjectController {
         render result as JSON
 
     }
+
+    def delete(Long id) {
+        Map result
+        CADObject cadObject = id ? CADObject.get(id) : null
+        try {
+            cadObject.delete()
+            result = ['success': 'Deleted Successfully']
+        } catch (ValidationException ve) {
+            result = ['error': message(code: "error.occured.while.serving.your.request")]
+        }
+        render result as JSON
+    }
+
+    def updateName(Long id, String name) {
+        CADObject cadObject = id ? CADObject.get(id) : null
+        if (cadObject) {
+            cadObject.name = name
+        }
+        render "success"
+    }
 }
