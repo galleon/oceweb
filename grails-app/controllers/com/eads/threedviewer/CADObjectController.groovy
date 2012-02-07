@@ -62,15 +62,16 @@ class CADObjectController {
 
     }
 
-    def delete(Long id) {
-        Map result
-        CADObject cadObject = id ? CADObject.get(id) : null
+    def delete() {
+        Map result = ['success': 'Deleted Successfully']
+        List<Long> ids = params.list('ids')
+        List<CADObject> cadObjects = ids ? CADObject.getAll(ids) : []
         try {
-            cadObject.delete()
-            result = ['success': 'Deleted Successfully']
-        } catch (ValidationException ve) {
+            cadObjects*.delete()
+        } catch (RuntimeException rte) {
             result = ['error': message(code: "error.occured.while.serving.your.request")]
         }
+
         render result as JSON
     }
 

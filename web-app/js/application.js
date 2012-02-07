@@ -219,10 +219,13 @@ function createLink(controller, action) {
 }
 
 function enableJsTree() {
-    $("#project").jstree({"plugins":["themes", "html_data", "ui", "crrm", "hotkeys", "contextmenu"], "themes":{"theme":"apple",
+    $("#project").jstree({rules:{ multiple:"shift" }, "plugins":["themes", "html_data", "ui", "crrm", "hotkeys", "contextmenu"], "themes":{"theme":"apple",
         "icons":true}, contextmenu:{items:defaultMenu}, "core":{ "initially_open":[ "phtml_1" ] }}).bind("select_node.jstree",
         function (event, data) {
-            showShape(data.rslt.obj.children().filter('a').attr('href'), 'content', {}, {})
+            if ($('#project').jstree('get_selected').size() == 1) {
+                showShape(data.rslt.obj.children().filter('a').attr('href'), 'content', {}, {})
+            }
+
         }).bind("rename_node.jstree", function (event, data) {
             var id = data.rslt.obj.children().filter('a').attr('id');
             var name = data.rslt.name;
@@ -271,6 +274,16 @@ function defaultMenu(node) {
     if (selectedId == "phtml_1") {
         items = {}
     }
+    if ($('#project').jstree('get_selected').size() == 2) {
+        items = {
+            toggleVisibility:items.toggleVisibility,
+            deleteNode:items.deleteNode,
+            booleanOperation:{
+                label:"Boolean operation"
+            }
+        };
+
+    }
     return items;
 }
 
@@ -285,11 +298,14 @@ function toggleCanvasVisibility(node) {
 
 function deleteObject(node) {
     var url = createLink('CADObject', 'delete');
-    var id = $(node).children().filter('a').attr('id');
-    url = url + "/" + id;
+    var ids = [];
+    $.each($('#project').jstree('get_selected').children().filter('a'), function () {
+        ids.push("ids=" + $(this).attr('id'));
+    });
+    url = url + "?" + ids.join("&");
     $.post(url, function (response) {
         if (response.success) {
-            $(node).remove();
+            $('#project').jstree('get_selected').remove();
             alert(response.success)
         } else {
             alert(response.error)
