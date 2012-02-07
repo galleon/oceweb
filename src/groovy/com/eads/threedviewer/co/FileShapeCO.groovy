@@ -1,11 +1,10 @@
 package com.eads.threedviewer.co
 
+import com.eads.threedviewer.util.ShapeUtil
 import groovy.transform.ToString
 import org.codehaus.groovy.grails.validation.Validateable
-import org.jcae.opencascade.jni.BRepPrimAPI_MakeBox
 import org.jcae.opencascade.jni.TopoDS_Shape
 import org.springframework.web.multipart.MultipartFile
-import com.eads.threedviewer.util.ShapeUtil
 
 @Validateable
 @ToString(includeNames = true, includeFields = true, excludes = 'metaClass,errors', includeSuper = true)

@@ -1,5 +1,6 @@
 package com.eads.threedviewer
 
+import com.eads.threedviewer.vo.ShapeVO
 import grails.converters.JSON
 import java.nio.channels.FileChannel
 import occmeshextractor.OCCMeshExtractor
@@ -20,7 +21,6 @@ import org.jcae.mesh.xmldata.MeshToMMesh3DConvert
 import org.jcae.mesh.xmldata.MeshWriter
 import org.jcae.mesh.amibe.algos2d.*
 import org.jcae.opencascade.jni.*
-import com.eads.threedviewer.vo.ShapeVO
 
 class UtilController {
 

@@ -1,16 +1,9 @@
 package com.eads.threedviewer
 
-import com.eads.threedviewer.co.CubeCO
-import com.eads.threedviewer.co.CylinderCO
-import com.eads.threedviewer.co.SphereCO
-import grails.converters.JSON
-import com.eads.threedviewer.co.ShapeCO
-import grails.validation.ValidationException
-import org.jcae.opencascade.jni.TopoDS_Shape
-import org.jcae.opencascade.jni.BRepTools
-import org.jcae.opencascade.jni.BRep_Builder
 import com.eads.threedviewer.util.ShapeUtil
-import com.eads.threedviewer.co.FileShapeCO
+import grails.converters.JSON
+import grails.validation.ValidationException
+import com.eads.threedviewer.co.*
 
 class CADObjectController {
 

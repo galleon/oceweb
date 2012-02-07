@@ -1,13 +1,12 @@
 package com.eads.threedviewer.co
 
-import org.codehaus.groovy.grails.validation.Validateable
-import groovy.transform.ToString
-import org.jcae.opencascade.jni.TopoDS_Shape
-import occmeshextractor.OCCMeshExtractor
 import com.eads.threedviewer.CADObject
-import org.jcae.opencascade.jni.BRepTools
 import com.eads.threedviewer.Project
 import com.eads.threedviewer.util.ShapeUtil
+import groovy.transform.ToString
+import org.codehaus.groovy.grails.validation.Validateable
+import org.jcae.opencascade.jni.BRepTools
+import org.jcae.opencascade.jni.TopoDS_Shape
 
 @Validateable
 @ToString(includeNames = true, includeFields = true, excludes = 'metaClass,errors')

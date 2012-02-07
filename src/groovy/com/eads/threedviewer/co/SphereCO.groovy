@@ -2,8 +2,8 @@ package com.eads.threedviewer.co
 
 import groovy.transform.ToString
 import org.codehaus.groovy.grails.validation.Validateable
-import org.jcae.opencascade.jni.TopoDS_Shape
 import org.jcae.opencascade.jni.BRepPrimAPI_MakeSphere
+import org.jcae.opencascade.jni.TopoDS_Shape
 
 @Validateable
 @ToString(includeNames = true, includeFields = true, excludes = 'metaClass,errors', includeSuper = true)

@@ -1,10 +1,10 @@
 package com.eads.threedviewer.util
 
+import groovy.util.logging.Log
 import occmeshextractor.OCCMeshExtractor
-import org.jcae.opencascade.jni.TopoDS_Shape
 import org.jcae.opencascade.jni.BRepTools
 import org.jcae.opencascade.jni.BRep_Builder
-import groovy.util.logging.Log
+import org.jcae.opencascade.jni.TopoDS_Shape
 
 @Log
 class ShapeUtil {
