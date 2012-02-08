@@ -5,7 +5,12 @@
     <meta name="layout" content="main"/>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-
+    <script type="text/javascript">
+        $(function () {
+            stats = new Stats();
+            $("#frameArea").append(stats.domElement);
+        })
+    </script>
 </head>
 
 <body>
@@ -79,18 +84,18 @@
         </div>
 
     </fieldset>
+
     <fieldset class="buttons">
-        <a href="#" id="info" style="float: right;">
-            <img src="${resource(dir: 'images', file: 'info.png')}" alt="info">
-        </a>
+        <div id="frameArea" style="float: left;"></div>
         <a href="#" style="float: right;">
             <img src="${resource(dir: 'images', file: 'folder-big.png')}" alt="projects">
         </a>
     </fieldset>
 </div>
- <a href="#explode" class="nyroModal" style="display: none" id="explodeLink">Dummy</a>
+<a href="#explode" class="nyroModal" style="display: none" id="explodeLink">Dummy</a>
+
 <div id="explode" style="display: none">
-<g:render template="/util/explode"  />
+    <g:render template="/util/explode"/>
 </div>
 
 

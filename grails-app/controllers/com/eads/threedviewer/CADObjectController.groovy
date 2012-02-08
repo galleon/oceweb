@@ -64,9 +64,9 @@ class CADObjectController {
     }
 
     def explode(Long id) {
-        shapeService.saveSubCadObjects(id)
-        CADObject cadObject = CADObject.get(id)
-        redirect(controller: 'project', action: 'index',params: [name: cadObject.project.name])
+        CADObject cadObject = id ? CADObject.get(id) : null
+        shapeService.saveSubCadObjects(cadObject)
+        redirect(controller: 'project', action: 'index', params: [name: cadObject?.project?.name])
     }
 
 

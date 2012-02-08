@@ -7,12 +7,6 @@ import org.jcae.opencascade.jni.TopoDS_Shape
 
 class ShapeService {
 
-    List<CADObject> saveSubCadObjects(Long id) {
-        CADObject cadObject = id ? CADObject.get(id) : null
-        return saveSubCadObjects(cadObject)
-
-    }
-
     List<CADObject> saveSubCadObjects(CADObject cadObject) {
         List<CADObject> cadObjects = []
         if (cadObject) {

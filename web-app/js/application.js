@@ -39,6 +39,7 @@ jQuery("#ajax_spinner").ajaxComplete(function (event, xhr, options) {
         window.location.href = data.substring(data.indexOf("=") + 1, data.length);
     }
 });
+
 $(document).ready(function () {
     $(".shapeForm").submit(function () {
         showShape($(this).attr('action'), 'content', $(this).serialize(), {closePopup:true, reloadProjectTree:true});
@@ -47,9 +48,9 @@ $(document).ready(function () {
     $("#selectProject").change(function () {
         $("#changeProject").submit();
     });
-
 })
 
+var stats
 var camera, mesh, renderer, containerWidth, containerHeight, scene, container;
 var targetRotation = 0;
 var targetRotationY = 0;
@@ -61,6 +62,7 @@ var mouseY = 0;
 var mouseXOnMouseDown = 0;
 var mouseYOnMouseDown = 0;
 var windowHalfX, windowHalfY;
+
 function showShape(url, containerId, data, options) {
     container = $('#' + containerId);
     containerWidth = $(container).width();
@@ -89,7 +91,8 @@ function showShape(url, containerId, data, options) {
             renderer = new THREE.CanvasRenderer();
             renderer.setSize(containerWidth, containerHeight);
             $(container).html(renderer.domElement);
-            $(container).bind( 'mousedown', onDocumentMouseDown);
+            $(container).bind('mousedown', onDocumentMouseDown);
+            $(container).mousewheel(zoom);
             if (options.closePopup) {
                 $.nmTop().close();
             }
@@ -101,31 +104,38 @@ function showShape(url, containerId, data, options) {
     });
     animate();
 }
+
+function zoom(event, delta, deltaX, deltaY) {
+    event.preventDefault();
+    if (delta != 0) {
+        camera.translateZ(delta * 10)
+    }
+}
 function onDocumentMouseDown(event) {
     event.preventDefault();
-    $(container).bind( 'mousemove', onDocumentMouseMove);
-    $(container).bind( 'mouseup', onDocumentMouseUp);
-    $(container).bind( 'mouseout', onDocumentMouseOut );
+    $(container).bind('mousemove', onDocumentMouseMove);
+    $(container).bind('mouseup', onDocumentMouseUp);
+    $(container).bind('mouseout', onDocumentMouseOut);
     mouseXOnMouseDown = event.clientX - windowHalfX;
     mouseYOnMouseDown = event.clientY - windowHalfY;
     targetRotationOnMouseDown = targetRotation;
 }
 
-function onDocumentMouseMove( event ) {
+function onDocumentMouseMove(event) {
     mouseX = event.clientX - windowHalfX;
     mouseY = event.clientY - windowHalfY;
     targetRotation = targetRotationOnMouseDown + ( mouseX - mouseXOnMouseDown ) * 0.01;
     targetRotationY = targetRotationYOnMouseDown + ( mouseY - mouseYOnMouseDown ) * 0.01;
 }
-function onDocumentMouseUp( event ) {
-    $(container).bind( 'mousemove', onDocumentMouseMove);
-    $(container).bind( 'mouseup', onDocumentMouseUp );
-    $(container).bind( 'mouseout', onDocumentMouseOut);
+function onDocumentMouseUp(event) {
+    $(container).unbind('mousemove', onDocumentMouseMove);
+    $(container).unbind('mouseup', onDocumentMouseUp);
+    $(container).unbind('mouseout', onDocumentMouseOut);
 }
-function onDocumentMouseOut( event ) {
-    $(container).bind( 'mousemove', onDocumentMouseMove);
-    $(container).bind( 'mouseup', onDocumentMouseUp );
-    $(container).bind( 'mouseout', onDocumentMouseOut);
+function onDocumentMouseOut(event) {
+    $(container).unbind('mousemove', onDocumentMouseMove);
+    $(container).unbind('mouseup', onDocumentMouseUp);
+    $(container).unbind('mouseout', onDocumentMouseOut);
 }
 
 //
@@ -133,40 +143,18 @@ function onDocumentMouseOut( event ) {
 function animate() {
     requestAnimationFrame(animate);
     render();
+    stats.update();
 }
 
 function render() {
-    if(mesh){
-        mesh.rotation.y += ( targetRotation - mesh.rotation.y )*0.1;
-        mesh.rotation.x += ( targetRotationY - mesh.rotation.x )*0.1;
+    if (mesh) {
+        mesh.rotation.y += ( targetRotation - mesh.rotation.y ) * 0.1;
+        mesh.rotation.x += ( targetRotationY - mesh.rotation.x ) * 0.1;
     }
-    if(renderer) {
+    if (renderer) {
         renderer.render(scene, camera);
     }
 
-}
-
-function getPosition() {
-    var position = {};
-    var x = $("#x").val();
-    if (isNaN(x)) {
-        position.x = 100;
-    } else {
-        position.x = x;
-    }
-    var y = $("#y").val();
-    if (isNaN(y)) {
-        position.y = 100;
-    } else {
-        position.y = y;
-    }
-    var z = $("#z").val();
-    if (isNaN(z)) {
-        position.z = 0;
-    } else {
-        position.z = z;
-    }
-    return position;
 }
 
 function reloadProjectTree() {
@@ -236,9 +224,9 @@ function defaultMenu(node) {
             label:"Explode",
             "_class":"class",
             "action":function (obj) {
-              var id = $(obj).children().filter('a').attr('id');
-              $("#cadObjectId").val(id);
-              $("#explodeLink").click();
+                var id = $(obj).children().filter('a').attr('id');
+                $("#cadObjectId").val(id);
+                $("#explodeLink").click();
 
             },
             "separator_before":false,
