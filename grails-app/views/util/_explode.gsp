@@ -1,14 +1,16 @@
 <%@ page import="org.jcae.mesh.cad.CADShapeEnum" %>
 <g:form action="explode" controller="CADObject" name="explodeForm" class="shapeForm">
     <g:hiddenField name="id" id="cadObjectId" value=""/>
-    <fieldset class="form">
+    <fieldset class="form" style="width: 420px;">
         <h3>Explode Form</h3>   <br/>
         <div class="data-fields">
-
-        <label for="CADShape">
-            CADShape
-        </label>
-            <g:select style="float: right;" from="${CADShapeEnum.FACE}" name="CADShape"  required="true"/>
+            <div class="fieldcontain required">
+                <label for="CADShape">
+                    Shape
+                    <span class="required-indicator">*</span>
+                </label>
+                <g:select style="float: right;" from="${CADShapeEnum.FACE}" name="CADShape"  required="true"/>
+            </div>
 
         </div>
     </fieldset>
