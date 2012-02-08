@@ -126,14 +126,14 @@ function onDocumentMouseMove(event) {
     targetRotationY = targetRotationYOnMouseDown + ( mouseY - mouseYOnMouseDown ) * 0.01;
 }
 function onDocumentMouseUp(event) {
-    $(container).bind('mousemove', onDocumentMouseMove);
-    $(container).bind('mouseup', onDocumentMouseUp);
-    $(container).bind('mouseout', onDocumentMouseOut);
+    $(container).unbind('mousemove', onDocumentMouseMove);
+    $(container).unbind('mouseup', onDocumentMouseUp);
+    $(container).unbind('mouseout', onDocumentMouseOut);
 }
 function onDocumentMouseOut(event) {
-    $(container).bind('mousemove', onDocumentMouseMove);
-    $(container).bind('mouseup', onDocumentMouseUp);
-    $(container).bind('mouseout', onDocumentMouseOut);
+    $(container).unbind('mousemove', onDocumentMouseMove);
+    $(container).unbind('mouseup', onDocumentMouseUp);
+    $(container).unbind('mouseout', onDocumentMouseOut);
 }
 
 //
