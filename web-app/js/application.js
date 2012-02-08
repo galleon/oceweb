@@ -52,11 +52,14 @@ $(document).ready(function () {
 
 var camera, mesh, renderer, containerWidth, containerHeight, scene, container;
 var targetRotation = 0;
+var targetRotationY = 0;
 var targetRotationOnMouseDown = 0;
+var targetRotationYOnMouseDown = 0;
 
 var mouseX = 0;
 var mouseY = 0;
 var mouseXOnMouseDown = 0;
+var mouseYOnMouseDown = 0;
 var windowHalfX, windowHalfY;
 function showShape(url, containerId, data, options) {
     container = $('#' + containerId);
@@ -87,8 +90,6 @@ function showShape(url, containerId, data, options) {
             renderer.setSize(containerWidth, containerHeight);
             $(container).html(renderer.domElement);
             $(container).bind('mousedown', onDocumentMouseDown);
-            $(container).bind('touchstart', onDocumentTouchStart);
-            $(container).bind('touchmove', onDocumentTouchMove);
             $(container).mousewheel(zoom);
             if (options.closePopup) {
                 $.nmTop().close();
@@ -108,59 +109,31 @@ function zoom(event, delta, deltaX, deltaY) {
         camera.translateZ(delta * 2)
     }
 }
-
 function onDocumentMouseDown(event) {
-
     event.preventDefault();
-
     $(container).bind('mousemove', onDocumentMouseMove);
     $(container).bind('mouseup', onDocumentMouseUp);
     $(container).bind('mouseout', onDocumentMouseOut);
-
     mouseXOnMouseDown = event.clientX - windowHalfX;
+    mouseYOnMouseDown = event.clientY - windowHalfY;
     targetRotationOnMouseDown = targetRotation;
 }
 
 function onDocumentMouseMove(event) {
-    mouseX = ( event.clientX - windowHalfX );
-    mouseY = ( event.clientY - windowHalfY );
-    targetRotation = targetRotationOnMouseDown + ( mouseX - mouseXOnMouseDown ) * 0.02;
+    mouseX = event.clientX - windowHalfX;
+    mouseY = event.clientY - windowHalfY;
+    targetRotation = targetRotationOnMouseDown + ( mouseX - mouseXOnMouseDown ) * 0.01;
+    targetRotationY = targetRotationYOnMouseDown + ( mouseY - mouseYOnMouseDown ) * 0.01;
 }
-
 function onDocumentMouseUp(event) {
-    $(container).unbind('mousemove', onDocumentMouseMove);
-    $(container).unbind('mouseup', onDocumentMouseUp);
-    $(container).unbind('mouseout', onDocumentMouseOut);
+    $(container).bind('mousemove', onDocumentMouseMove);
+    $(container).bind('mouseup', onDocumentMouseUp);
+    $(container).bind('mouseout', onDocumentMouseOut);
 }
-
 function onDocumentMouseOut(event) {
-    $(container).unbind('mousemove', onDocumentMouseMove);
-    $(container).unbind('mouseup', onDocumentMouseUp);
-    $(container).unbind('mouseout', onDocumentMouseOut);
-}
-
-function onDocumentTouchStart(event) {
-
-    if (event.touches.length == 1) {
-
-        event.preventDefault();
-
-        mouseXOnMouseDown = event.touches[ 0 ].pageX - windowHalfX;
-        targetRotationOnMouseDown = targetRotation;
-
-    }
-}
-
-function onDocumentTouchMove(event) {
-
-    if (event.touches.length == 1) {
-
-        event.preventDefault();
-
-        mouseX = event.touches[ 0 ].pageX - windowHalfX;
-        targetRotation = targetRotationOnMouseDown + ( mouseX - mouseXOnMouseDown ) * 0.05;
-
-    }
+    $(container).bind('mousemove', onDocumentMouseMove);
+    $(container).bind('mouseup', onDocumentMouseUp);
+    $(container).bind('mouseout', onDocumentMouseOut);
 }
 
 //
@@ -172,7 +145,8 @@ function animate() {
 
 function render() {
     if (mesh) {
-        mesh.rotation.y += ( targetRotation - mesh.rotation.y ) * 0.05;
+        mesh.rotation.y += ( targetRotation - mesh.rotation.y ) * 0.1;
+        mesh.rotation.x += ( targetRotationY - mesh.rotation.x ) * 0.1;
     }
     if (renderer) {
         renderer.render(scene, camera);
