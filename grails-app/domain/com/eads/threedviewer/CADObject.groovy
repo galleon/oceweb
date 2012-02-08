@@ -14,12 +14,13 @@ class CADObject {
     double x
     double y
     double z
+    CADObject parent
     byte[] content
     Date dateCreated
     Date lastUpdated
 
 /* Transients */
-    static transients = ['file']
+    static transients = ['file', 'subCadObjects']
 
 /* Relations */
     static belongsTo = [project: Project]
@@ -28,6 +29,11 @@ class CADObject {
     static constraints = {
         name(blank: false, unique: 'project')
         content(maxSize: 120000)
+        x(nullable: true)
+        y(nullable: true)
+        z(nullable: true)
+        content(nullable: true)
+        parent(nullable: true)
     }
 
 /* Mappings */
@@ -42,6 +48,10 @@ class CADObject {
 
     File getFile() {
         return ShapeUtil.createBrepFile(content, "${project.name}_${name}_")
+    }
+
+    List<CADObject> getSubCadObjects() {
+        return CADObject.findAllByParent(this)
     }
 
 /* Methods */

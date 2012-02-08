@@ -15,7 +15,7 @@ class Project {
     Date lastUpdated
 
 /* Transients */
-
+    static transients = ['parentCadObjects']
 /* Relations */
     static hasMany = [cadObjects: CADObject]
 /* Constraints */
@@ -32,7 +32,9 @@ class Project {
 /* Named queries */
 
 /* Transient Methods */
-
+ List<CADObject> getParentCadObjects(){
+    return CADObject.findAllByProjectAndParentIsNull(this)
+ }
 /* Methods */
 
 /* Static Methods */

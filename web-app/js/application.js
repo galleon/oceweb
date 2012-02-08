@@ -261,6 +261,12 @@ function defaultMenu(node) {
         explode:{
             label:"Explode",
             "_class":"class",
+            "action":function (obj) {
+              var id = $(obj).children().filter('a').attr('id');
+              $("#cadObjectId").val(id);
+              $("#explodeLink").click();
+
+            },
             "separator_before":false,
             "separator_after":true
         },

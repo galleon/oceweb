@@ -68,4 +68,10 @@ class ShapeUtil {
         return BRepTools.read(filePath, new BRep_Builder())
     }
 
+    public static File getFile(TopoDS_Shape shape, String prefix){
+        File file = File.createTempFile(prefix, ".brep")
+        BRepTools.write(shape, file.path)
+        return file
+    }
+
 }

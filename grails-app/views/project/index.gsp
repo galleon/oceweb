@@ -88,6 +88,10 @@
         </a>
     </fieldset>
 </div>
+ <a href="#explode" class="nyroModal" style="display: none" id="explodeLink">Dummy</a>
+<div id="explode" style="display: none">
+<g:render template="/util/explode"  />
+</div>
 
 
 <script type="text/javascript">

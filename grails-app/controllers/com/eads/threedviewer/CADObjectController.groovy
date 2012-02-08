@@ -4,6 +4,10 @@ import com.eads.threedviewer.util.ShapeUtil
 import grails.converters.JSON
 import grails.validation.ValidationException
 import com.eads.threedviewer.co.*
+import com.eads.threedviewer.vo.ShapeVO
+import org.jcae.opencascade.jni.TopoDS_Shape
+import org.jcae.opencascade.jni.TopExp_Explorer
+import org.jcae.opencascade.jni.TopAbs_ShapeEnum
 
 class CADObjectController {
 
@@ -61,6 +65,24 @@ class CADObjectController {
         render result as JSON
 
     }
+
+    def explode(Long id) {
+        Map result
+        CADObject cadObject = id ? CADObject.get(id) : null
+        if (cadObject) {
+            TopoDS_Shape shape = ShapeUtil.getShape(cadObject.content)
+            TopExp_Explorer explorer = new TopExp_Explorer();
+            int index = 1
+            for (explorer.init(shape, TopAbs_ShapeEnum.FACE); explorer.more(); explorer.next()) {
+                TopoDS_Shape currentShape = explorer.current();
+                CADObject subCadObject = new CADObject(name: "${cadObject.name}_${index}", project: cadObject.project, content: ShapeUtil.getFile(currentShape,
+                        cadObject.name).bytes, parent: cadObject)
+                subCadObject.save()
+                index++
+            }
+        }
+    }
+
 
     def delete() {
         Map result = ['success': 'Deleted Successfully']

@@ -1,14 +1,14 @@
 .classpath
 .project
 .settings/
-ThreedViewer.iml
 threedViewer.ipr
 threedViewer.iws
 target/
-ThreedViewer-grailsPlugins.iml
 difference.obj
 box.brep
 box.off
 .idea/
 test.brep
 3dviewer.ipr
+*.iml
+
