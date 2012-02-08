@@ -272,6 +272,13 @@ function defaultMenu(node) {
         };
 
     }
+    if ($('#project').jstree('get_selected').size() == 3) {
+        items = {
+            toggleVisibility:items.toggleVisibility,
+            deleteNode:items.deleteNode
+        };
+
+    }
     return items;
 }
 
