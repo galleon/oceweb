@@ -108,7 +108,7 @@ function showShape(url, containerId, data, options) {
 function zoom(event, delta, deltaX, deltaY) {
     event.preventDefault();
     if (delta != 0) {
-        camera.translateZ(delta * 10)
+        camera.translateZ(-(delta * 10))
     }
 }
 function onDocumentMouseDown(event) {
@@ -249,6 +249,13 @@ function defaultMenu(node) {
             booleanOperation:{
                 label:"Boolean operation"
             }
+        };
+
+    }
+    if ($('#project').jstree('get_selected').size() == 3) {
+        items = {
+            toggleVisibility:items.toggleVisibility,
+            deleteNode:items.deleteNode
         };
 
     }
