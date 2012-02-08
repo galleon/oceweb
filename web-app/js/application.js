@@ -55,6 +55,7 @@ var targetRotation = 0;
 var targetRotationOnMouseDown = 0;
 
 var mouseX = 0;
+var mouseY = 0;
 var mouseXOnMouseDown = 0;
 var windowHalfX, windowHalfY;
 function showShape(url, containerId, data, options) {
@@ -88,6 +89,7 @@ function showShape(url, containerId, data, options) {
             $(container).bind('mousedown', onDocumentMouseDown);
             $(container).bind('touchstart', onDocumentTouchStart);
             $(container).bind('touchmove', onDocumentTouchMove);
+            $(container).mousewheel(zoom);
             if (options.closePopup) {
                 $.nmTop().close();
             }
@@ -99,6 +101,14 @@ function showShape(url, containerId, data, options) {
     });
     animate();
 }
+
+function zoom(event, delta, deltaX, deltaY) {
+    event.preventDefault();
+    if (delta != 0) {
+        camera.translateZ(delta * 2)
+    }
+}
+
 function onDocumentMouseDown(event) {
 
     event.preventDefault();
@@ -112,20 +122,18 @@ function onDocumentMouseDown(event) {
 }
 
 function onDocumentMouseMove(event) {
-
-    mouseX = event.clientX - windowHalfX;
+    mouseX = ( event.clientX - windowHalfX );
+    mouseY = ( event.clientY - windowHalfY );
     targetRotation = targetRotationOnMouseDown + ( mouseX - mouseXOnMouseDown ) * 0.02;
 }
 
 function onDocumentMouseUp(event) {
-
     $(container).unbind('mousemove', onDocumentMouseMove);
     $(container).unbind('mouseup', onDocumentMouseUp);
     $(container).unbind('mouseout', onDocumentMouseOut);
 }
 
 function onDocumentMouseOut(event) {
-
     $(container).unbind('mousemove', onDocumentMouseMove);
     $(container).unbind('mouseup', onDocumentMouseUp);
     $(container).unbind('mouseout', onDocumentMouseOut);
@@ -262,9 +270,9 @@ function defaultMenu(node) {
             label:"Explode",
             "_class":"class",
             "action":function (obj) {
-              var id = $(obj).children().filter('a').attr('id');
-              $("#cadObjectId").val(id);
-              $("#explodeLink").click();
+                var id = $(obj).children().filter('a').attr('id');
+                $("#cadObjectId").val(id);
+                $("#explodeLink").click();
 
             },
             "separator_before":false,

@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="${resource(dir: 'css', file: 'mobile.css')}" type="text/css">
     <link rel="stylesheet" href="${resource(dir: 'css', file: 'nyroModal.css')}" type="text/css">
     <jq:resources/>
+    <script src="${resource(dir: 'js', file: 'jquery.mousewheel.js')}"></script>
     <script src="${resource(dir: 'js', file: 'jquery.cookie.js')}"></script>
     <script src="${resource(dir: 'js', file: 'jquery.hotkeys.js')}"></script>
     <script src="${resource(dir: 'js', file: 'jquery.jstree.js')}"></script>
@@ -26,9 +27,6 @@
     <script src="${resource(dir: 'js/three', file: 'Three.js')}"></script>
     <script src="${resource(dir: 'js/three', file: 'ImprovedNoise.js')}"></script>
     <script src="${resource(dir: 'js/three', file: 'RequestAnimationFrame.js')}"></script>
-    <script src="${resource(dir: 'js', file: 'cube.js')}"></script>
-    <script src="${resource(dir: 'js', file: 'cylinder.js')}"></script>
-    <script src="${resource(dir: 'js', file: 'sphere.js')}"></script>
     <g:layoutHead/>
 </head>
 

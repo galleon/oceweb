@@ -75,8 +75,7 @@ class CADObjectController {
             int index = 1
             for (explorer.init(shape, TopAbs_ShapeEnum.FACE); explorer.more(); explorer.next()) {
                 TopoDS_Shape currentShape = explorer.current();
-                CADObject subCadObject = new CADObject(name: "${cadObject.name}_${index}", project: cadObject.project, content: ShapeUtil.getFile(currentShape,
-                        cadObject.name).bytes, parent: cadObject)
+                CADObject subCadObject = new CADObject(name: "${cadObject.name}_${index}", project: cadObject.project, content: ShapeUtil.getFile(currentShape, cadObject.name).bytes, parent: cadObject)
                 subCadObject.save()
                 index++
             }
