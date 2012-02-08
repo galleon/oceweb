@@ -106,7 +106,7 @@ function showShape(url, containerId, data, options) {
 function zoom(event, delta, deltaX, deltaY) {
     event.preventDefault();
     if (delta != 0) {
-        camera.translateZ(delta * 10)
+        camera.translateZ(-(delta * 10))
     }
 }
 function onDocumentMouseDown(event) {
