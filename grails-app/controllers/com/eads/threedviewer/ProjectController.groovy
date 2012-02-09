@@ -4,7 +4,7 @@ class ProjectController {
 
     def index(String name) {
         List<Project> projects = Project.list()
-        [projects: projects, project: name ? Project.findOrSaveWhere([name: name]) : (projects ? projects.first() : null)]
+        [projects: projects, project: name ? Project.findOrSaveWhere([name: name]) : (projects ? projects.first() : null),shapeId:params.shapeId]
     }
 
     def listCadObjects(Long id) {
