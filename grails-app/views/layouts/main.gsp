@@ -23,6 +23,7 @@
     <script src="${resource(dir: 'js', file: 'jquery.jstree.js')}"></script>
     <script src="${resource(dir: 'js', file: 'jquery.nyroModal.custom.js')}"></script>
     <script src="${resource(dir: 'js', file: 'jquery.nyroModal-ie6.js')}"></script>
+    <script src="${resource(dir: 'js', file: 'Stats.js')}"></script>
     <script src="${resource(dir: 'js', file: 'application.js')}"></script>
     <script src="${resource(dir: 'js/three', file: 'Three.js')}"></script>
     <script src="${resource(dir: 'js/three', file: 'ImprovedNoise.js')}"></script>

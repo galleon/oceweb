@@ -1,5 +1,5 @@
 <%@ page import="org.jcae.mesh.cad.CADShapeEnum" %>
-<g:form action="explode" controller="CADObject" name="explodeForm" class="shapeForm">
+<g:form action="explode" controller="CADObject" name="explodeForm">
     <g:hiddenField name="id" id="cadObjectId" value=""/>
     <fieldset class="form" style="width: 420px;">
         <h3>Explode Form</h3>   <br/>
