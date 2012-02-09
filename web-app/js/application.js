@@ -226,6 +226,7 @@ function defaultMenu(node) {
             "action":function (obj) {
                 var id = $(obj).children().filter('a').attr('id');
                 $("#cadObjectId").val(id);
+                console.debug($("#cadObjectId").val())
                 $("#explodeLink").click();
 
             },
