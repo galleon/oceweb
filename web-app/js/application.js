@@ -62,18 +62,28 @@ var mouseYOnMouseDown = 0;
 var windowHalfX, windowHalfY;
 
 function showShape(url) {
-    console.debug(allObjects);
+    var object = allObjects[url];
+    if (object) {
+        object.visible = true;
+        mesh = object;
+        console.debug(mesh.visible);
+        addToScene();
+    } else {
+        showShapeFromRemote(url);
+    }
+    animate();
+}
+
+function showShapeFromRemote(url) {
     $.getJSON(url, {cache:true}, function (response) {
         if (response.error) {
             alert(response.error)
         } else {
             setMesh(response);
-            scene.add(mesh);
-            $(container).bind('mousedown', onDocumentMouseDown);
-            $(container).mousewheel(zoom);
+            allObjects[url] = mesh;
+            addToScene();
         }
     });
-    animate();
 }
 
 function setMesh(response) {
@@ -83,6 +93,13 @@ function setMesh(response) {
         mesh = new THREE.Mesh(geometry, new THREE.MeshNormalMaterial({ overdraw:true }));
     })
 
+}
+
+function addToScene() {
+    mesh.visible = true;
+    scene.add(mesh);
+    $(container).bind('mousedown', onDocumentMouseDown);
+    $(container).mousewheel(zoom);
 }
 
 function initialiseCanvas(containerId) {
@@ -154,19 +171,6 @@ function render() {
 
 }
 
-function reloadProjectTree() {
-    var url = createLink('project', 'listCadObjects');
-    var projectId = $("#projectId").val();
-    url = url + "/" + projectId;
-    $.get(url, function (response) {
-        if (response.error) {
-            alert(response.error)
-        } else {
-            $("#projectTree").html(response);
-        }
-    })
-}
-
 function createLink(controller, action) {
     var link = '/';
     var path = window.location.pathname;
@@ -196,7 +200,7 @@ function defaultMenu(node) {
     var items = {
         toggleVisibility:{
             label:"Toggle visibility",
-            "action":toggleCanvasVisibility,
+            "action":toggleVisibility,
             "_class":"class",
             "separator_before":false,
             "separator_after":true
@@ -223,7 +227,6 @@ function defaultMenu(node) {
             "action":function (obj) {
                 var id = $(obj).children().filter('a').attr('id');
                 $("#cadObjectId").val(id);
-                console.debug($("#cadObjectId").val())
                 $("#explodeLink").click();
 
             },
@@ -261,12 +264,17 @@ function defaultMenu(node) {
     return items;
 }
 
-function toggleCanvasVisibility(node) {
-    var display = $('canvas').css('display');
-    if (display == 'inline') {
-        $('canvas').hide();
+function toggleVisibility(node) {
+    var url = $(node).children().filter('a').attr('href');
+    var object = allObjects[url];
+    if (object) {
+        if(object.visible){
+          object.visible = false;
+        }else{
+            object.visible = true;
+        }
     } else {
-        $('canvas').show();
+        showShape(url);
     }
 }
 
