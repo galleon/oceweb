@@ -48,22 +48,26 @@ class ShapeService {
     }
 
     CADObject createBooleanObject(BooleanOperationCO co){
-        CADObject cadObject1 = CADObject.get(co.object1)
-        CADObject cadObject2 = CADObject.get(co.object2)
+        CADObject cadObject1 = co.CADObject1
         TopoDS_Shape shape1 = cadObject1.shape
-        TopoDS_Shape shape2 = cadObject2.shape
-        def object
-        if(co.operation == Operation.FUSE.toString()){
-            object = new BRepAlgoAPI_Fuse(shape1, shape2);
-        }
-        else if(co.operation == Operation.COMMON.toString()){
-            object = new BRepAlgoAPI_Common(shape1, shape2);
-        }
-        else if(co.operation == Operation.CUT.toString()){
-            object = new BRepAlgoAPI_Cut(shape1, shape2)
-        }
+        TopoDS_Shape shape2 = co.CADObject2.shape
+        BRepAlgoAPI_BooleanOperation object = getOperationInstance(co, shape1, shape2)
         File contentForObject = ShapeUtil.getFile(object.shape(), co.operation)
         CADObject cadObject = new CADObject(name: co.name, content: contentForObject.bytes, project: cadObject1.project)
         return cadObject.save(flush: true)
+    }
+
+    private BRepAlgoAPI_BooleanOperation getOperationInstance(BooleanOperationCO co, TopoDS_Shape shape1, TopoDS_Shape shape2) {
+        def object
+        if (co.operation == Operation.FUSE.toString()) {
+            object = new BRepAlgoAPI_Fuse(shape1, shape2);
+        }
+        else if (co.operation == Operation.COMMON.toString()) {
+            object = new BRepAlgoAPI_Common(shape1, shape2);
+        }
+        else if (co.operation == Operation.CUT.toString()) {
+            object = new BRepAlgoAPI_Cut(shape1, shape2)
+        }
+        return object
     }
 }
