@@ -1,3 +1,4 @@
+var allObjects = {};
 var httpData = $.httpData || function (xhr, type, s) { // lifted from jq1.4.4
     var ct = xhr.getResponseHeader("content-type") || "",
         xml = type === "xml" || !type && ct.indexOf("xml") >= 0,
@@ -60,33 +61,28 @@ var mouseXOnMouseDown = 0;
 var mouseYOnMouseDown = 0;
 var windowHalfX, windowHalfY;
 
-function showShape(url, data) {
-    $.getJSON(url, data, function (response) {
+function showShape(url) {
+    console.debug(allObjects);
+    $.getJSON(url, {cache:true}, function (response) {
         if (response.error) {
             alert(response.error)
         } else {
-            addShape(response)
+            setMesh(response);
+            scene.add(mesh);
+            $(container).bind('mousedown', onDocumentMouseDown);
+            $(container).mousewheel(zoom);
         }
     });
     animate();
 }
 
-function addShape(response) {
+function setMesh(response) {
     targetRotation = 0;
     var loader = new THREE.JSONLoader();
     loader.createModel(response, function (geometry) {
         mesh = new THREE.Mesh(geometry, new THREE.MeshNormalMaterial({ overdraw:true }));
-        scene.add(mesh);
     })
 
-    $(container).bind('mousedown', onDocumentMouseDown);
-    $(container).mousewheel(zoom);
-    if (options.closePopup) {
-        $.nmTop().close();
-    }
-    if (options.reloadProjectTree) {
-        reloadProjectTree();
-    }
 }
 
 function initialiseCanvas(containerId) {
@@ -159,7 +155,7 @@ function render() {
 }
 
 function reloadProjectTree() {
-    var url = createLink('project', 'listCadObjects')
+    var url = createLink('project', 'listCadObjects');
     var projectId = $("#projectId").val();
     url = url + "/" + projectId;
     $.get(url, function (response) {
@@ -173,7 +169,7 @@ function reloadProjectTree() {
 
 function createLink(controller, action) {
     var link = '/';
-    var path = window.location.pathname
+    var path = window.location.pathname;
     if (path.indexOf('threedViewer') == 1) {
         link = '/threedViewer' + link;
     }
@@ -186,7 +182,7 @@ function enableJsTree() {
         "icons":true}, contextmenu:{items:defaultMenu}, "core":{ "initially_open":[ "phtml_1" ] }}).bind("select_node.jstree",
         function (event, data) {
             if ($('#project').jstree('get_selected').size() == 1) {
-                showShape(data.rslt.obj.children().filter('a').attr('href'), {}, {})
+                showShape(data.rslt.obj.children().filter('a').attr('href'))
             }
 
         }).bind("rename_node.jstree", function (event, data) {
@@ -307,4 +303,3 @@ function operation(obj) {
         $("#obj_" + count).text(text);
     })
 }
-
