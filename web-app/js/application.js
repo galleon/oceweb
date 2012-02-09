@@ -1,3 +1,4 @@
+var allObjects = {};
 var httpData = $.httpData || function (xhr, type, s) { // lifted from jq1.4.4
     var ct = xhr.getResponseHeader("content-type") || "",
         xml = type === "xml" || !type && ct.indexOf("xml") >= 0,
@@ -48,7 +49,7 @@ $(document).ready(function () {
     initialiseCanvas('content');
 })
 
-var stats, camera, mesh, renderer, containerWidth, containerHeight, scene, container;
+var stats, camera, mesh, renderer, containerWidth, containerHeight, scene, container, projector;
 var targetRotation = 0;
 var targetRotationY = 0;
 var targetRotationOnMouseDown = 0;
@@ -60,33 +61,44 @@ var mouseXOnMouseDown = 0;
 var mouseYOnMouseDown = 0;
 var windowHalfX, windowHalfY;
 
-function showShape(url, data) {
-    $.getJSON(url, data, function (response) {
-        if (response.error) {
-            alert(response.error)
-        } else {
-            addShape(response)
-        }
-    });
+function showShape(url) {
+    var object = allObjects[url];
+    if (object) {
+        object.visible = true;
+        mesh = object;
+        addToScene();
+    } else {
+        showShapeFromRemote(url);
+    }
     animate();
 }
 
-function addShape(response) {
+function showShapeFromRemote(url) {
+    $.getJSON(url, {cache:true}, function (response) {
+        if (response.error) {
+            alert(response.error)
+        } else {
+            setMesh(response);
+            allObjects[url] = mesh;
+            addToScene();
+        }
+    });
+}
+
+function setMesh(response) {
     targetRotation = 0;
     var loader = new THREE.JSONLoader();
     loader.createModel(response, function (geometry) {
         mesh = new THREE.Mesh(geometry, new THREE.MeshNormalMaterial({ overdraw:true }));
-        scene.add(mesh);
     })
 
+}
+
+function addToScene() {
+    mesh.visible = true;
+    scene.add(mesh);
     $(container).bind('mousedown', onDocumentMouseDown);
     $(container).mousewheel(zoom);
-    if (options.closePopup) {
-        $.nmTop().close();
-    }
-    if (options.reloadProjectTree) {
-        reloadProjectTree();
-    }
 }
 
 function initialiseCanvas(containerId) {
@@ -99,6 +111,7 @@ function initialiseCanvas(containerId) {
     camera.position.x = 0;
     camera.position.y = 0;
     camera.position.z = 500;
+    projector = new THREE.Projector();
     renderer = new THREE.CanvasRenderer();
     renderer.setSize(containerWidth, containerHeight);
     $(container).html(renderer.domElement);
@@ -114,6 +127,13 @@ function zoom(event, delta, deltaX, deltaY) {
 }
 function onDocumentMouseDown(event) {
     event.preventDefault();
+
+    var vector = new THREE.Vector3(( event.clientX / containerWidth ) * 2 - 1, -( event.clientY / containerHeight ) * 2 + 1, 0.5);
+    projector.unprojectVector(vector, camera);
+    var ray = new THREE.Ray(camera.position, vector.subSelf(camera.position).normalize());
+
+    var intersects = ray.intersectScene(scene);
+    mesh = findObjectById(intersects[ 0 ].object.id);
     $(container).bind('mousemove', onDocumentMouseMove);
     $(container).bind('mouseup', onDocumentMouseUp);
     $(container).bind('mouseout', onDocumentMouseOut);
@@ -158,22 +178,9 @@ function render() {
 
 }
 
-function reloadProjectTree() {
-    var url = createLink('project', 'listCadObjects')
-    var projectId = $("#projectId").val();
-    url = url + "/" + projectId;
-    $.get(url, function (response) {
-        if (response.error) {
-            alert(response.error)
-        } else {
-            $("#projectTree").html(response);
-        }
-    })
-}
-
 function createLink(controller, action) {
     var link = '/';
-    var path = window.location.pathname
+    var path = window.location.pathname;
     if (path.indexOf('threedViewer') == 1) {
         link = '/threedViewer' + link;
     }
@@ -186,7 +193,7 @@ function enableJsTree() {
         "icons":true}, contextmenu:{items:defaultMenu}, "core":{ "initially_open":[ "phtml_1" ] }}).bind("select_node.jstree",
         function (event, data) {
             if ($('#project').jstree('get_selected').size() == 1) {
-                showShape(data.rslt.obj.children().filter('a').attr('href'), {}, {})
+                showShape(data.rslt.obj.children().filter('a').attr('href'))
             }
 
         }).bind("rename_node.jstree", function (event, data) {
@@ -200,7 +207,7 @@ function defaultMenu(node) {
     var items = {
         toggleVisibility:{
             label:"Toggle visibility",
-            "action":toggleCanvasVisibility,
+            "action":toggleVisibility,
             "_class":"class",
             "separator_before":false,
             "separator_after":true
@@ -227,7 +234,6 @@ function defaultMenu(node) {
             "action":function (obj) {
                 var id = $(obj).children().filter('a').attr('id');
                 $("#cadObjectId").val(id);
-                console.debug($("#cadObjectId").val())
                 $("#explodeLink").click();
 
             },
@@ -265,12 +271,17 @@ function defaultMenu(node) {
     return items;
 }
 
-function toggleCanvasVisibility(node) {
-    var display = $('canvas').css('display');
-    if (display == 'inline') {
-        $('canvas').hide();
+function toggleVisibility(node) {
+    var url = $(node).children().filter('a').attr('href');
+    var object = allObjects[url];
+    if (object) {
+        if (object.visible) {
+            object.visible = false;
+        } else {
+            object.visible = true;
+        }
     } else {
-        $('canvas').show();
+        showShape(url);
     }
 }
 
@@ -309,3 +320,17 @@ function operation(obj) {
     })
 }
 
+function findObjectById(id) {
+    var object;
+    for (var currentObject in allObjects) {
+        if (allObjects[currentObject].id == id) {
+            object = allObjects[currentObject]
+        }
+    }
+    return object
+}
+function debugStatement(msg) {
+    if (typeof(console) != 'undefined') {
+        console.debug(msg);
+    }
+}

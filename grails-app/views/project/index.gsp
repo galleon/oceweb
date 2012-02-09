@@ -55,7 +55,7 @@
         if (shapeId) {
             var url = createLink('CADObject', 'show');
             url = url + '/' + shapeId;
-            showShape(url, {}, {});
+            showShape(url);
         }
     })
 </script>
