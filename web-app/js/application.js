@@ -49,7 +49,7 @@ $(document).ready(function () {
     initialiseCanvas('content');
 })
 
-var stats, camera, mesh, renderer, containerWidth, containerHeight, scene, container;
+var stats, camera, mesh, renderer, containerWidth, containerHeight, scene, container, projector;
 var targetRotation = 0;
 var targetRotationY = 0;
 var targetRotationOnMouseDown = 0;
@@ -66,7 +66,6 @@ function showShape(url) {
     if (object) {
         object.visible = true;
         mesh = object;
-        console.debug(mesh.visible);
         addToScene();
     } else {
         showShapeFromRemote(url);
@@ -112,6 +111,7 @@ function initialiseCanvas(containerId) {
     camera.position.x = 0;
     camera.position.y = 0;
     camera.position.z = 500;
+    projector = new THREE.Projector();
     renderer = new THREE.CanvasRenderer();
     renderer.setSize(containerWidth, containerHeight);
     $(container).html(renderer.domElement);
@@ -127,6 +127,13 @@ function zoom(event, delta, deltaX, deltaY) {
 }
 function onDocumentMouseDown(event) {
     event.preventDefault();
+
+    var vector = new THREE.Vector3(( event.clientX / containerWidth ) * 2 - 1, -( event.clientY / containerHeight ) * 2 + 1, 0.5);
+    projector.unprojectVector(vector, camera);
+    var ray = new THREE.Ray(camera.position, vector.subSelf(camera.position).normalize());
+
+    var intersects = ray.intersectScene(scene);
+    mesh = findObjectById(intersects[ 0 ].object.id);
     $(container).bind('mousemove', onDocumentMouseMove);
     $(container).bind('mouseup', onDocumentMouseUp);
     $(container).bind('mouseout', onDocumentMouseOut);
@@ -268,9 +275,9 @@ function toggleVisibility(node) {
     var url = $(node).children().filter('a').attr('href');
     var object = allObjects[url];
     if (object) {
-        if(object.visible){
-          object.visible = false;
-        }else{
+        if (object.visible) {
+            object.visible = false;
+        } else {
             object.visible = true;
         }
     } else {
@@ -311,4 +318,19 @@ function operation(obj) {
         $("#object" + count).val(id);
         $("#obj_" + count).text(text);
     })
+}
+
+function findObjectById(id) {
+    var object;
+    for (var currentObject in allObjects) {
+        if (allObjects[currentObject].id == id) {
+            object = allObjects[currentObject]
+        }
+    }
+    return object
+}
+function debugStatement(msg) {
+    if (typeof(console) != 'undefined') {
+        console.debug(msg);
+    }
 }
