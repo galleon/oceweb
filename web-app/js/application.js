@@ -49,10 +49,10 @@ $(document).ready(function () {
         $("#changeProject").submit();
     });
     $("#projectTree").draggable();
+    initialiseCanvas('content');
 })
 
-var stats
-var camera, mesh, renderer, containerWidth, containerHeight, scene, container;
+var stats,camera, mesh, renderer, containerWidth, containerHeight, scene, container;
 var targetRotation = 0;
 var targetRotationY = 0;
 var targetRotationOnMouseDown = 0;
@@ -65,19 +65,6 @@ var mouseYOnMouseDown = 0;
 var windowHalfX, windowHalfY;
 
 function showShape(url, containerId, data, options) {
-    container = $('#' + containerId);
-    containerWidth = window.innerWidth;
-    containerHeight = window.innerHeight;
-    windowHalfX = containerWidth/2;
-    windowHalfY = containerHeight/2;
-    camera = new THREE.PerspectiveCamera(50, containerWidth / containerHeight, 1, 1000);
-    camera.position.x = 0;
-    camera.position.y = 0;
-    camera.position.z = 500;
-    scene = new THREE.Scene();
-
-    scene.add(camera);
-
     $.getJSON(url, data, function (response) {
         if (response.error) {
             alert(response.error)
@@ -89,10 +76,7 @@ function showShape(url, containerId, data, options) {
                 scene.add(mesh);
             })
 
-            renderer = new THREE.CanvasRenderer();
-            renderer.setSize(containerWidth, containerHeight);
-            $(container).html(renderer.domElement);
-            $(container).bind('mousedown', onDocumentMouseDown);
+           $(container).bind('mousedown', onDocumentMouseDown);
             $(container).mousewheel(zoom);
             if (options.closePopup) {
                 $.nmTop().close();
@@ -104,6 +88,23 @@ function showShape(url, containerId, data, options) {
 
     });
     animate();
+}
+
+function initialiseCanvas(containerId) {
+    container = $('#' + containerId);
+    containerWidth = window.innerWidth;
+    containerHeight = window.innerHeight;
+    windowHalfX = containerWidth / 2;
+    windowHalfY = containerHeight / 2;
+    camera = new THREE.PerspectiveCamera(50, containerWidth / containerHeight, 1, 1000);
+    camera.position.x = 0;
+    camera.position.y = 0;
+    camera.position.z = 500;
+    renderer = new THREE.CanvasRenderer();
+    renderer.setSize(containerWidth, containerHeight);
+    $(container).html(renderer.domElement);
+    scene = new THREE.Scene();
+    scene.add(camera);
 }
 
 function zoom(event, delta, deltaX, deltaY) {
