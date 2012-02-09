@@ -3,6 +3,7 @@ package com.eads.threedviewer
 import com.eads.threedviewer.util.ShapeUtil
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
+import org.jcae.opencascade.jni.TopoDS_Shape
 
 @ToString(includeNames = true, includeFields = true, excludes = 'dateCreated,lastUpdated,metaClass,content')
 @EqualsAndHashCode
@@ -20,7 +21,7 @@ class CADObject {
     Date lastUpdated
 
 /* Transients */
-    static transients = ['file', 'subCadObjects']
+    static transients = ['file', 'subCadObjects', 'shape']
 
 /* Relations */
     static belongsTo = [project: Project]
@@ -52,6 +53,10 @@ class CADObject {
 
     List<CADObject> getSubCadObjects() {
         return CADObject.findAllByParent(this)
+    }
+
+    TopoDS_Shape getShape(){
+        return ShapeUtil.getShape(this.content)
     }
 
 /* Methods */
