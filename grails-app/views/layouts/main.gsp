@@ -17,6 +17,10 @@
     <link rel="stylesheet" href="${resource(dir: 'css', file: 'mobile.css')}" type="text/css">
     <link rel="stylesheet" href="${resource(dir: 'css', file: 'nyroModal.css')}" type="text/css">
     <jq:resources/>
+    <script src="${resource(dir: 'js', file: 'jquery.ui.core.js')}"></script>
+    <script src="${resource(dir: 'js', file: 'jquery.ui.widget.js')}"></script>
+    <script src="${resource(dir: 'js', file: 'jquery.ui.mouse.js')}"></script>
+    <script src="${resource(dir: 'js', file: 'jquery.ui.draggable.js')}"></script>
     <script src="${resource(dir: 'js', file: 'jquery.mousewheel.js')}"></script>
     <script src="${resource(dir: 'js', file: 'jquery.cookie.js')}"></script>
     <script src="${resource(dir: 'js', file: 'jquery.hotkeys.js')}"></script>
@@ -36,16 +40,12 @@
     <div class="headerNav">
         <ul>
             <li><g:link uri="/"><img src="${resource(dir: 'images', file: 'threed.png')}" alt="3-D Viewer"/></g:link></li>
-            <li style="padding-top: 52px;font-size: 30px; color: #fff">3-D Viewer</li>
+            <li style="padding-top: 52px;font-size: 30px; color: #000">3-D Viewer</li>
         </ul>
 
     </div>
 
 </div>
-
 <g:layoutBody/>
-<div class="footer" role="contentinfo"></div>
-
-<div id="spinner" class="spinner" style="display:none;"><g:message code="spinner.alt" default="Loading&hellip;"/></div>
 </body>
 </html>
