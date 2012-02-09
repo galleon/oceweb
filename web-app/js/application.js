@@ -267,12 +267,13 @@ function defaultMenu(node) {
             toggleVisibility:items.toggleVisibility,
             deleteNode:items.deleteNode,
             booleanOperation:{
-                label:"Boolean operation"
+                label:"Boolean operation",
+                "action":operation
             }
         };
 
     }
-    if ($('#project').jstree('get_selected').size() == 3) {
+    if ($('#project').jstree('get_selected').size() > 2) {
         items = {
             toggleVisibility:items.toggleVisibility,
             deleteNode:items.deleteNode
@@ -312,5 +313,17 @@ function updateName(id, name) {
     var url = createLink('CADObject', 'updateName');
     url = url + "/" + id + "?name=" + name;
     $.post(url);
+}
+
+function operation(obj) {
+    var id = $(obj).children().filter('a').attr('id');
+    $("#operationLink").click();
+    $.each($('#project').jstree('get_selected').children().filter('a'), function (index, value) {
+        var count = index + 1;
+        var id = $(value).attr('id');
+        var text = $(value).text();
+        $("#object" + count).val(id);
+        $("#obj_" + count).text(text);
+    })
 }
 

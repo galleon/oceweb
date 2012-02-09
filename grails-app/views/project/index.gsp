@@ -88,9 +88,15 @@
         </a>
     </fieldset>
 </div>
- <a href="#explode" class="nyroModal" style="display: none" id="explodeLink">Dummy</a>
+<a href="#explode" class="nyroModal" style="display: none" id="explodeLink">Explode</a>
+
 <div id="explode" style="display: none">
-<g:render template="/util/explode"  />
+    <g:render template="/cadObject/explode"/>
+</div>
+<a href="#operation" class="nyroModal" style="display: none" id="operationLink">Operation</a>
+
+<div id="operation" style="display: none">
+    <g:render template="/cadObject/operation"/>
 </div>
 
 

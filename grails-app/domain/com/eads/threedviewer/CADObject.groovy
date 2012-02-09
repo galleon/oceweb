@@ -27,7 +27,7 @@ class CADObject {
 
 /* Constraints */
     static constraints = {
-        name(blank: false, unique: 'project')
+        name(blank: false)
         content(maxSize: 120000)
         x(nullable: true)
         y(nullable: true)
