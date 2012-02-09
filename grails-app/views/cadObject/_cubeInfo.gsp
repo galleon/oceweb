@@ -4,11 +4,27 @@
             <g:render template="/cadObject/shapeInfo"/>
             <g:render template="/cadObject/axisInfo"/>
             <div class="fieldcontain required">
-                <label for="length">
-                    Length
+                <label for="x1">
+                    X1
                     <span class="required-indicator">*</span>
                 </label>
-                <g:textField name="length" value="" required="true"/>
+                <g:textField name="x1" value="" required="true"/>
+            </div>
+
+            <div class="fieldcontain required">
+                <label for="y1">
+                    Y1
+                    <span class="required-indicator">*</span>
+                </label>
+                <g:textField name="y1" value="" required="true"/>
+            </div>
+
+            <div class="fieldcontain required">
+                <label for="z1">
+                    Z1
+                    <span class="required-indicator">*</span>
+                </label>
+                <g:textField name="z1" value="" required="true"/>
             </div>
         </div>
     </fieldset>
