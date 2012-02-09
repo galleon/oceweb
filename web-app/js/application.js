@@ -44,10 +44,11 @@ $(document).ready(function () {
     $(".shapeForm").submit(function () {
         showShape($(this).attr('action'), 'content', $(this).serialize(), {closePopup:true, reloadProjectTree:true});
         return false
-    })
+    });
     $("#selectProject").change(function () {
         $("#changeProject").submit();
     });
+    $("#projectTree").draggable();
 })
 
 var stats
@@ -65,10 +66,10 @@ var windowHalfX, windowHalfY;
 
 function showShape(url, containerId, data, options) {
     container = $('#' + containerId);
-    containerWidth = $(container).width();
-    containerHeight = $(container).height();
-    windowHalfX = containerWidth;
-    windowHalfY = containerHeight;
+    containerWidth = window.innerWidth;
+    containerHeight = window.innerHeight;
+    windowHalfX = containerWidth/2;
+    windowHalfY = containerHeight/2;
     camera = new THREE.PerspectiveCamera(50, containerWidth / containerHeight, 1, 1000);
     camera.position.x = 0;
     camera.position.y = 0;
