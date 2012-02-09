@@ -28,32 +28,21 @@ class CADObjectController {
     }
 
     def createShapeFromFile(FileShapeCO co) {
+        sendResponse(co)
+    }
+
+    Closure sendResponse = {ShapeCO co ->
         CADObject cadObject
         try {
             cadObject = projectService.addCADObject(co)
         } catch (ValidationException ve) {
-            log.error ve.message
+            flash.error = ve.message
         }
         if (cadObject) {
             render(view: '/project/index', model: [project: cadObject.project, projects: Project.list(), shapeId: cadObject.id])
         } else {
             render(view: '/project/index', model: [project: co.project, projects: Project.list(), co: co])
         }
-    }
-
-    Closure sendResponse = {ShapeCO co ->
-        Map result
-        try {
-            CADObject cadObject = projectService.addCADObject(co)
-            if (cadObject) {
-                result = co.data
-            } else {
-                result = ['error': message(code: "error.occured.while.serving.your.request")]
-            }
-        } catch (ValidationException ve) {
-            result = ['error': message(code: "error.occured.while.serving.your.request")]
-        }
-        render result as JSON
     }
 
     def show(Long id) {

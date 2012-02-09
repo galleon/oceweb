@@ -1,4 +1,4 @@
-<g:form action="createCylinder" controller="CADObject" name="cylinderForm" class="shapeForm">
+<g:form action="createCylinder" controller="CADObject" name="cylinderForm">
     <fieldset class="form">
         <div class="data-fields">
             <g:render template="/cadObject/shapeInfo"/>

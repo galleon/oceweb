@@ -41,10 +41,6 @@ jQuery("#ajax_spinner").ajaxComplete(function (event, xhr, options) {
 });
 
 $(document).ready(function () {
-    $(".shapeForm").submit(function () {
-        showShape($(this).attr('action'), 'content', $(this).serialize(), {closePopup:true, reloadProjectTree:true});
-        return false
-    });
     $("#selectProject").change(function () {
         $("#changeProject").submit();
     });
@@ -52,7 +48,7 @@ $(document).ready(function () {
     initialiseCanvas('content');
 })
 
-var stats,camera, mesh, renderer, containerWidth, containerHeight, scene, container;
+var stats, camera, mesh, renderer, containerWidth, containerHeight, scene, container;
 var targetRotation = 0;
 var targetRotationY = 0;
 var targetRotationOnMouseDown = 0;
@@ -64,30 +60,33 @@ var mouseXOnMouseDown = 0;
 var mouseYOnMouseDown = 0;
 var windowHalfX, windowHalfY;
 
-function showShape(url, containerId, data, options) {
+function showShape(url, data) {
     $.getJSON(url, data, function (response) {
         if (response.error) {
             alert(response.error)
         } else {
-            targetRotation = 0;
-            var loader = new THREE.JSONLoader();
-            loader.createModel(response, function (geometry) {
-                mesh = new THREE.Mesh(geometry, new THREE.MeshNormalMaterial({ overdraw:true }));
-                scene.add(mesh);
-            })
-
-           $(container).bind('mousedown', onDocumentMouseDown);
-            $(container).mousewheel(zoom);
-            if (options.closePopup) {
-                $.nmTop().close();
-            }
-            if (options.reloadProjectTree) {
-                reloadProjectTree();
-            }
+            addShape(response)
         }
-
     });
     animate();
+}
+
+function addShape(response) {
+    targetRotation = 0;
+    var loader = new THREE.JSONLoader();
+    loader.createModel(response, function (geometry) {
+        mesh = new THREE.Mesh(geometry, new THREE.MeshNormalMaterial({ overdraw:true }));
+        scene.add(mesh);
+    })
+
+    $(container).bind('mousedown', onDocumentMouseDown);
+    $(container).mousewheel(zoom);
+    if (options.closePopup) {
+        $.nmTop().close();
+    }
+    if (options.reloadProjectTree) {
+        reloadProjectTree();
+    }
 }
 
 function initialiseCanvas(containerId) {
@@ -187,7 +186,7 @@ function enableJsTree() {
         "icons":true}, contextmenu:{items:defaultMenu}, "core":{ "initially_open":[ "phtml_1" ] }}).bind("select_node.jstree",
         function (event, data) {
             if ($('#project').jstree('get_selected').size() == 1) {
-                showShape(data.rslt.obj.children().filter('a').attr('href'), 'content', {}, {})
+                showShape(data.rslt.obj.children().filter('a').attr('href'), {}, {})
             }
 
         }).bind("rename_node.jstree", function (event, data) {

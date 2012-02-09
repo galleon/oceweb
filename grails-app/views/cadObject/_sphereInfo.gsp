@@ -1,4 +1,4 @@
-<g:form action="createSphere" controller="CADObject" name="sphereForm" class="shapeForm">
+<g:form action="createSphere" controller="CADObject" name="sphereForm">
 
     <fieldset class="form">
         <div class="data-fields">
