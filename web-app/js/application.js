@@ -289,18 +289,25 @@ function toggleVisibility(node) {
 function deleteObject(node) {
     var url = createLink('CADObject', 'delete');
     var ids = [];
+    $.each($('#project').jstree('get_selected').children().filter('a'), function () {
+        ids.push("ids=" + $(this).attr('id'));
+    });
     $.each($(node).children().filter('a'), function () {
         ids.push("ids=" + $(this).attr('id'));
     });
-    url = url + "?" + ids.join("&");
-    $.post(url, function (response) {
-        if (response.success) {
-            $(node).remove();
-            alert(response.success)
-        } else {
-            alert(response.error)
-        }
-    });
+    if (ids.length > 0) {
+        url = url + "?" + ids.join("&");
+        $.post(url, function (response) {
+            if (response.success) {
+                $('#project').jstree('get_selected').remove();
+                $(node).remove();
+                alert(response.success)
+            } else {
+                alert(response.error)
+            }
+        });
+    }
+
 }
 
 function updateName(id, name) {

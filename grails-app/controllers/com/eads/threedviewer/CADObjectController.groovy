@@ -71,8 +71,8 @@ class CADObjectController {
 
     def delete() {
         Map result = ['success': 'Deleted Successfully']
-        List<Long> ids = params.list('ids')
-        List<CADObject> cadObjects = ids ? CADObject.getAll(ids) : []
+        Set<Long> ids = params.list('ids')
+        List<CADObject> cadObjects = ids ? CADObject.getAll(ids.toList()) : []
         try {
             cadObjects*.delete()
         } catch (RuntimeException rte) {
