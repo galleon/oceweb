@@ -49,7 +49,7 @@ class CADObjectController {
         Map result
         CADObject cadObject = id ? CADObject.get(id) : null
         if (cadObject) {
-            File file = cadObject.file
+            File file = cadObject.createFile()
             result = ShapeUtil.getData(file)
             file.delete()
         } else {
