@@ -33,15 +33,19 @@
     <g:hasErrors bean="${co}">
         <g:renderErrors bean="${co}"/>
     </g:hasErrors>
-    <fieldset class="form">
-        <div id="projectTree" style="z-index: 100">
+        <div id="projectTree">
             <g:render template="/project/cadObjects" model="[projects: projects, project: project]"/>
         </div>
+        <g:if test="${project}">
+            <div id="toolbar">
+                <g:render template="/project/toolbar" model="[project: project]"/>
+            </div>
+
+        </g:if>
 
         <div id="content">
         </div>
 
-    </fieldset>
 
 </div>
 <a href="#explode" class="nyroModal" style="display: none" id="explodeLink">Explode</a>

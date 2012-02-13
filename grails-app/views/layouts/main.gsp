@@ -36,16 +36,6 @@
 </head>
 
 <body>
-<div id="logo" role="banner">
-    <div class="headerNav">
-        <ul>
-            <li><g:link uri="/"><img src="${resource(dir: 'images', file: 'threed.png')}" alt="3-D Viewer"/></g:link></li>
-            <li style="padding-top: 52px;font-size: 30px; color: #000">3-D Viewer</li>
-        </ul>
-
-    </div>
-
-</div>
 <g:layoutBody/>
 </body>
 </html>

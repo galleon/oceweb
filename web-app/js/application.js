@@ -1,4 +1,3 @@
-var allObjects = {};
 var httpData = $.httpData || function (xhr, type, s) { // lifted from jq1.4.4
     var ct = xhr.getResponseHeader("content-type") || "",
         xml = type === "xml" || !type && ct.indexOf("xml") >= 0,
@@ -45,11 +44,12 @@ $(document).ready(function () {
     $("#selectProject").change(function () {
         $("#changeProject").submit();
     });
+    $("#toolbar").draggable();
     $("#projectTree").draggable();
     initialiseCanvas('content');
 })
 
-var stats, camera, mesh, renderer, containerWidth, containerHeight, scene, container, projector;
+var stats, camera, renderer, containerWidth, containerHeight, scene, container;
 var targetRotation = 0;
 var targetRotationY = 0;
 var targetRotationOnMouseDown = 0;
@@ -62,11 +62,9 @@ var mouseYOnMouseDown = 0;
 var windowHalfX, windowHalfY;
 
 function showShape(url) {
-    var object = allObjects[url];
+    var object = scene.getChildByName(url);
     if (object) {
         object.visible = true;
-        mesh = object;
-        addToScene();
     } else {
         showShapeFromRemote(url);
     }
@@ -78,25 +76,26 @@ function showShapeFromRemote(url) {
         if (response.error) {
             alert(response.error)
         } else {
-            setMesh(response);
-            allObjects[url] = mesh;
-            addToScene();
+            var object = createMesh(response, url);
+            addToScene(object);
         }
     });
 }
 
-function setMesh(response) {
+function createMesh(response, name) {
     targetRotation = 0;
+    var object;
     var loader = new THREE.JSONLoader();
     loader.createModel(response, function (geometry) {
-        mesh = new THREE.Mesh(geometry, new THREE.MeshNormalMaterial({ overdraw:true }));
+        object = new THREE.Mesh(geometry, new THREE.MeshNormalMaterial({ overdraw:true }));
     })
-
+    object.name = name;
+    return object
 }
 
-function addToScene() {
-    mesh.visible = true;
-    scene.add(mesh);
+function addToScene(object) {
+    object.visible = true;
+    scene.add(object);
     $(container).bind('mousedown', onDocumentMouseDown);
     $(container).mousewheel(zoom);
 }
@@ -111,7 +110,6 @@ function initialiseCanvas(containerId) {
     camera.position.x = 0;
     camera.position.y = 0;
     camera.position.z = 500;
-    projector = new THREE.Projector();
     renderer = new THREE.CanvasRenderer();
     renderer.setSize(containerWidth, containerHeight);
     $(container).html(renderer.domElement);
@@ -128,12 +126,6 @@ function zoom(event, delta, deltaX, deltaY) {
 function onDocumentMouseDown(event) {
     event.preventDefault();
 
-    var vector = new THREE.Vector3(( event.clientX / containerWidth ) * 2 - 1, -( event.clientY / containerHeight ) * 2 + 1, 0.5);
-    projector.unprojectVector(vector, camera);
-    var ray = new THREE.Ray(camera.position, vector.subSelf(camera.position).normalize());
-
-    var intersects = ray.intersectScene(scene);
-    mesh = findObjectById(intersects[ 0 ].object.id);
     $(container).bind('mousemove', onDocumentMouseMove);
     $(container).bind('mouseup', onDocumentMouseUp);
     $(container).bind('mouseout', onDocumentMouseOut);
@@ -168,10 +160,12 @@ function animate() {
 }
 
 function render() {
-    if (mesh) {
-        mesh.rotation.y += ( targetRotation - mesh.rotation.y ) * 0.1;
-        mesh.rotation.x += ( targetRotationY - mesh.rotation.x ) * 0.1;
-    }
+    $.each(scene.objects, function (index, currentObject) {
+        if (currentObject.visible) {
+            currentObject.rotation.y += ( targetRotation - currentObject.rotation.y ) * 0.1;
+            currentObject.rotation.x += ( targetRotationY - currentObject.rotation.x ) * 0.1;
+        }
+    });
     if (renderer) {
         renderer.render(scene, camera);
     }
@@ -273,7 +267,7 @@ function defaultMenu(node) {
 
 function toggleVisibility(node) {
     var url = $(node).children().filter('a').attr('href');
-    var object = allObjects[url];
+    var object = scene.getChildByName(url);
     if (object) {
         if (object.visible) {
             object.visible = false;
@@ -291,15 +285,22 @@ function deleteObject(node) {
     $.each($('#project').jstree('get_selected').children().filter('a'), function () {
         ids.push("ids=" + $(this).attr('id'));
     });
-    url = url + "?" + ids.join("&");
-    $.post(url, function (response) {
-        if (response.success) {
-            $('#project').jstree('get_selected').remove();
-            alert(response.success)
-        } else {
-            alert(response.error)
-        }
+    $.each($(node).children().filter('a'), function () {
+        ids.push("ids=" + $(this).attr('id'));
     });
+    if (ids.length > 0) {
+        url = url + "?" + ids.join("&");
+        $.post(url, function (response) {
+            if (response.success) {
+                $('#project').jstree('get_selected').remove();
+                $(node).remove();
+                alert(response.success)
+            } else {
+                alert(response.error)
+            }
+        });
+    }
+
 }
 
 function updateName(id, name) {
@@ -320,15 +321,6 @@ function operation(obj) {
     })
 }
 
-function findObjectById(id) {
-    var object;
-    for (var currentObject in allObjects) {
-        if (allObjects[currentObject].id == id) {
-            object = allObjects[currentObject]
-        }
-    }
-    return object
-}
 function debugStatement(msg) {
     if (typeof(console) != 'undefined') {
         console.debug(msg);

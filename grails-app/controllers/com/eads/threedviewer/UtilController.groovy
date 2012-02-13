@@ -367,6 +367,7 @@ class UtilController {
             m2dto3d.afterProcessingAllShapes()
         }
 */
+        file.delete()
 
     }
 
