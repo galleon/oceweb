@@ -54,7 +54,7 @@ var targetRotation = 0;
 var targetRotationY = 0;
 var targetRotationOnMouseDown = 0;
 var targetRotationYOnMouseDown = 0;
-
+var parent;
 var mouseX = 0;
 var mouseY = 0;
 var mouseXOnMouseDown = 0;
@@ -62,7 +62,7 @@ var mouseYOnMouseDown = 0;
 var windowHalfX, windowHalfY;
 
 function showShape(url) {
-    var object = scene.getChildByName(url);
+    var object = parent.getChildByName(url);
     if (object) {
         object.visible = true;
     } else {
@@ -95,7 +95,7 @@ function createMesh(response, name) {
 
 function addToScene(object) {
     object.visible = true;
-    scene.add(object);
+    parent.add(object);
     $(container).bind('mousedown', onDocumentMouseDown);
     $(container).mousewheel(zoom);
 }
@@ -113,8 +113,9 @@ function initialiseCanvas(containerId) {
     renderer = new THREE.CanvasRenderer();
     renderer.setSize(containerWidth, containerHeight);
     $(container).html(renderer.domElement);
+    parent = new THREE.Object3D();
     scene = new THREE.Scene();
-    scene.add(camera);
+    scene.add(parent)
 }
 
 function zoom(event, delta, deltaX, deltaY) {
@@ -160,12 +161,8 @@ function animate() {
 }
 
 function render() {
-    $.each(scene.objects, function (index, currentObject) {
-        if (currentObject.visible) {
-            currentObject.rotation.y += ( targetRotation - currentObject.rotation.y ) * 0.1;
-            currentObject.rotation.x += ( targetRotationY - currentObject.rotation.x ) * 0.1;
-        }
-    });
+    parent.rotation.y += ( targetRotation - parent.rotation.y ) * 0.1;
+    parent.rotation.x += ( targetRotationY - parent.rotation.x ) * 0.1;
     if (renderer) {
         renderer.render(scene, camera);
     }
@@ -267,7 +264,7 @@ function defaultMenu(node) {
 
 function toggleVisibility(node) {
     var url = $(node).children().filter('a').attr('href');
-    var object = scene.getChildByName(url);
+    var object = parent.getChildByName(url);
     if (object) {
         if (object.visible) {
             object.visible = false;
