@@ -50,7 +50,7 @@ $(document).ready(function () {
     initialiseCanvas('content');
 })
 
-var stats, camera, mesh, renderer, containerWidth, containerHeight, scene, container;
+var stats, camera, renderer, containerWidth, containerHeight, scene, container;
 var targetRotation = 0;
 var targetRotationY = 0;
 var targetRotationOnMouseDown = 0;
@@ -66,8 +66,6 @@ function showShape(url) {
     var object = allObjects[url];
     if (object) {
         object.visible = true;
-        mesh = object;
-        addToScene();
     } else {
         showShapeFromRemote(url);
     }
@@ -79,25 +77,26 @@ function showShapeFromRemote(url) {
         if (response.error) {
             alert(response.error)
         } else {
-            setMesh(response);
-            allObjects[url] = mesh;
-            addToScene();
+            var object = createMesh(response);
+            allObjects[url] = object;
+            addToScene(object);
         }
     });
 }
 
-function setMesh(response) {
+function createMesh(response) {
     targetRotation = 0;
+    var object;
     var loader = new THREE.JSONLoader();
     loader.createModel(response, function (geometry) {
-        mesh = new THREE.Mesh(geometry, new THREE.MeshNormalMaterial({ overdraw:true }));
+        object = new THREE.Mesh(geometry, new THREE.MeshNormalMaterial({ overdraw:true }));
     })
-
+    return object
 }
 
-function addToScene() {
-    mesh.visible = true;
-    scene.add(mesh);
+function addToScene(object) {
+    object.visible = true;
+    scene.add(object);
     $(container).bind('mousedown', onDocumentMouseDown);
     $(container).mousewheel(zoom);
 }
@@ -162,11 +161,12 @@ function animate() {
 }
 
 function render() {
-    for (var currentObject in allObjects) {
-        var object = allObjects[currentObject];
-        object.rotation.y += ( targetRotation - object.rotation.y ) * 0.1;
-        object.rotation.x += ( targetRotationY - object.rotation.x ) * 0.1;
-    }
+    $.each(scene.objects, function (index, currentObject) {
+        if (currentObject.visible) {
+            currentObject.rotation.y += ( targetRotation - currentObject.rotation.y ) * 0.1;
+            currentObject.rotation.x += ( targetRotationY - currentObject.rotation.x ) * 0.1;
+        }
+    })
     if (renderer) {
         renderer.render(scene, camera);
     }
