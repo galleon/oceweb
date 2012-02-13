@@ -50,7 +50,7 @@ $(document).ready(function () {
     initialiseCanvas('content');
 })
 
-var stats, camera, mesh, renderer, containerWidth, containerHeight, scene, container, projector;
+var stats, camera, mesh, renderer, containerWidth, containerHeight, scene, container;
 var targetRotation = 0;
 var targetRotationY = 0;
 var targetRotationOnMouseDown = 0;
@@ -112,7 +112,6 @@ function initialiseCanvas(containerId) {
     camera.position.x = 0;
     camera.position.y = 0;
     camera.position.z = 500;
-    projector = new THREE.Projector();
     renderer = new THREE.CanvasRenderer();
     renderer.setSize(containerWidth, containerHeight);
     $(container).html(renderer.domElement);
@@ -129,12 +128,6 @@ function zoom(event, delta, deltaX, deltaY) {
 function onDocumentMouseDown(event) {
     event.preventDefault();
 
-    var vector = new THREE.Vector3(( event.clientX / containerWidth ) * 2 - 1, -( event.clientY / containerHeight ) * 2 + 1, 0.5);
-    projector.unprojectVector(vector, camera);
-    var ray = new THREE.Ray(camera.position, vector.subSelf(camera.position).normalize());
-
-    var intersects = ray.intersectScene(scene);
-    mesh = findObjectById(intersects[ 0 ].object.id);
     $(container).bind('mousemove', onDocumentMouseMove);
     $(container).bind('mouseup', onDocumentMouseUp);
     $(container).bind('mouseout', onDocumentMouseOut);
@@ -169,9 +162,10 @@ function animate() {
 }
 
 function render() {
-    if (mesh) {
-        mesh.rotation.y += ( targetRotation - mesh.rotation.y ) * 0.1;
-        mesh.rotation.x += ( targetRotationY - mesh.rotation.x ) * 0.1;
+    for (var currentObject in allObjects) {
+        var object = allObjects[currentObject];
+        object.rotation.y += ( targetRotation - object.rotation.y ) * 0.1;
+        object.rotation.x += ( targetRotationY - object.rotation.x ) * 0.1;
     }
     if (renderer) {
         renderer.render(scene, camera);
@@ -328,15 +322,6 @@ function operation(obj) {
     })
 }
 
-function findObjectById(id) {
-    var object;
-    for (var currentObject in allObjects) {
-        if (allObjects[currentObject].id == id) {
-            object = allObjects[currentObject]
-        }
-    }
-    return object
-}
 function debugStatement(msg) {
     if (typeof(console) != 'undefined') {
         console.debug(msg);
