@@ -21,7 +21,7 @@ class CADObject {
     Date lastUpdated
 
 /* Transients */
-    static transients = ['file', 'subCadObjects', 'shape']
+    static transients = ['subCadObjects', 'shape']
 
 /* Relations */
     static belongsTo = [project: Project]
@@ -47,20 +47,19 @@ class CADObject {
 
 /* Transient Methods */
 
-    File getFile() {
-        return ShapeUtil.createBrepFile(content, "${project.name}_${name}_")
-    }
-
     List<CADObject> getSubCadObjects() {
         return CADObject.findAllByParent(this)
     }
 
-    TopoDS_Shape getShape(){
+    TopoDS_Shape getShape() {
         return ShapeUtil.getShape(this.content)
     }
 
 /* Methods */
 
+    File createFile() {
+        return ShapeUtil.createBrepFile(content, "${project.name}_${name}_")
+    }
 /* Static Methods */
 }
 
