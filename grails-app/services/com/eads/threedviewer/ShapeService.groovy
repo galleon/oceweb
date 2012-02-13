@@ -42,18 +42,26 @@ class ShapeService {
     }
 
     CADObject saveSubCadObjects(CADObject cadObject, String name, TopoDS_Shape currentShape) {
-        CADObject subCadObject = new CADObject(name: name, project: cadObject.project, content: ShapeUtil.getFile(currentShape,
-                cadObject.name).bytes, parent: cadObject)
+        File file = ShapeUtil.getFile(currentShape, cadObject.name)
+        CADObject subCadObject = new CADObject(name: name, project: cadObject.project, content: file.bytes, parent: cadObject)
+        file.delete()
         return subCadObject.save()
     }
 
-    CADObject createBooleanObject(BooleanOperationCO co){
+    CADObject createBooleanObject(BooleanOperationCO co) {
         CADObject cadObject1 = co.CADObject1
         TopoDS_Shape shape1 = cadObject1.shape
         TopoDS_Shape shape2 = co.CADObject2.shape
         BRepAlgoAPI_BooleanOperation object = getOperationInstance(co, shape1, shape2)
-        File contentForObject = ShapeUtil.getFile(object.shape(), co.operation)
-        CADObject cadObject = new CADObject(name: co.name, content: contentForObject.bytes, project: cadObject1.project)
+
+        File file = ShapeUtil.getFile(object.shape(), co.operation)
+        CADObject cadObject = saveCADObject(co.name, file.bytes, cadObject1.project)
+        file.delete()
+        return cadObject
+    }
+
+    CADObject saveCADObject(String name, byte[] content, Project project) {
+        CADObject cadObject = new CADObject(name: name, content: content, project: project)
         return cadObject.save(flush: true)
     }
 

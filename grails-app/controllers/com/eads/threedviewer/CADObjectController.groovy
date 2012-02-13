@@ -49,7 +49,9 @@ class CADObjectController {
         Map result
         CADObject cadObject = id ? CADObject.get(id) : null
         if (cadObject) {
-            result = ShapeUtil.getData(cadObject.file)
+            File file = cadObject.file
+            result = ShapeUtil.getData(file)
+            file.delete()
         } else {
             result = ['error': "Object not found for id ${id}"]
         }
@@ -62,10 +64,10 @@ class CADObjectController {
         shapeService.saveSubCadObjects(cadObject)
         redirect(controller: 'project', action: 'index', params: [name: cadObject?.project?.name])
     }
-    
-    def booleanOperation(BooleanOperationCO co){
+
+    def booleanOperation(BooleanOperationCO co) {
         CADObject cadObject = shapeService.createBooleanObject(co)
-        redirect(controller: 'project', action: 'index', params: [name: cadObject?.project?.name,shapeId: cadObject.id])
+        redirect(controller: 'project', action: 'index', params: [name: cadObject?.project?.name, shapeId: cadObject.id])
     }
 
 
