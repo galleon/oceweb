@@ -45,6 +45,7 @@ $(document).ready(function () {
     $("#selectProject").change(function () {
         $("#changeProject").submit();
     });
+    $("#toolbar").draggable();
     $("#projectTree").draggable();
     initialiseCanvas('content');
 })
