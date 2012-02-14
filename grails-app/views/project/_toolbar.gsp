@@ -24,6 +24,11 @@
                     <img src="${resource(dir: 'images', file: 'cylinder.png')}">
                 </a>
             </li>
+            <li style="float: right;padding:5px">
+                <a href="#coneInfo" class="nyroModal" id="createCone" title="Create Cone">
+                    <img src="${resource(dir: 'images', file: 'cone.jpg')}" height="32px" width="32px">
+                </a>
+            </li>
             <li style="float: left;" id="frameArea"></li>
         </ul>
 
@@ -37,6 +42,10 @@
 
         <div id="cylinderInfo" style="display: none">
             <g:render template="/cadObject/cylinderInfo"/>
+        </div>
+
+        <div id="coneInfo" style="display: none">
+            <g:render template="/cadObject/coneInfo"/>
         </div>
 
         <div id="importShapeInfo" style="display: none">
