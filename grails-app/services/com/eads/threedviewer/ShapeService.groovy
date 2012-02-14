@@ -10,10 +10,10 @@ import com.eads.threedviewer.enums.Operation
 
 class ShapeService {
 
-    List<CADObject> saveSubCadObjects(CADObject cadObject) {
+    List<CADObject> saveSubCadObjects(CADObject cadObject, TopAbs_ShapeEnum shapeType) {
         List<CADObject> cadObjects = []
         if (cadObject) {
-            explode(cadObject).eachWithIndex {TopoDS_Shape shape, int index ->
+            explode(cadObject, shapeType).eachWithIndex {TopoDS_Shape shape, int index ->
                 CADObject currentObject = saveSubCadObjects(cadObject, "${cadObject.name}_${index}", shape)
                 if (currentObject) {
                     cadObjects.add(currentObject)
@@ -24,17 +24,17 @@ class ShapeService {
         return cadObjects
     }
 
-    List<TopoDS_Shape> explode(CADObject cadObject) {
+    List<TopoDS_Shape> explode(CADObject cadObject, TopAbs_ShapeEnum shapeType) {
         TopoDS_Shape shape = ShapeUtil.getShape(cadObject.content)
-        return explode(shape, cadObject)
+        return explode(shape, shapeType)
     }
 
-    List<TopoDS_Shape> explode(TopoDS_Shape shape, CADObject cadObject) {
+    List<TopoDS_Shape> explode(TopoDS_Shape shape, TopAbs_ShapeEnum shapeType) {
         TopExp_Explorer explorer = new TopExp_Explorer();
         int index = 1
         List<TopoDS_Shape> shapes = []
 
-        for (explorer.init(shape, TopAbs_ShapeEnum.FACE); explorer.more(); explorer.next()) {
+        for (explorer.init(shape, shapeType); explorer.more(); explorer.next()) {
             shapes.add(explorer.current())
             index++
         }
