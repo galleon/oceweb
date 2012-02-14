@@ -88,6 +88,7 @@ function createMesh(response, name) {
     var loader = new THREE.JSONLoader();
     loader.createModel(response, function (geometry) {
         object = new THREE.Mesh(geometry, new THREE.MeshNormalMaterial({ overdraw:true }));
+        object.doubleSided = true;
     })
     object.name = name;
     return object
