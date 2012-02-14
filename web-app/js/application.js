@@ -89,8 +89,8 @@ function createMesh(response, name) {
     loader.createModel(response, function (geometry) {
         object = new THREE.Mesh(geometry, new THREE.MeshNormalMaterial({ overdraw:true }));
         object.doubleSided = true;
+        object.name = name;
     })
-    object.name = name;
     return object
 }
 
@@ -280,11 +280,16 @@ function toggleVisibility(node) {
 function deleteObject(node) {
     var url = createLink('CADObject', 'delete');
     var ids = [];
+    var objectIds = [];
     $.each($('#project').jstree('get_selected').children().filter('a'), function () {
-        ids.push("ids=" + $(this).attr('id'));
+        var id = $(this).attr('id');
+        ids.push("ids=" + id);
+        objectIds.push(id)
     });
     $.each($(node).children().filter('a'), function () {
-        ids.push("ids=" + $(this).attr('id'));
+        var id = $(this).attr('id');
+        ids.push("ids=" + id);
+        objectIds.push(id)
     });
     if (ids.length > 0) {
         url = url + "?" + ids.join("&");
@@ -292,6 +297,7 @@ function deleteObject(node) {
             if (response.success) {
                 $('#project').jstree('get_selected').remove();
                 $(node).remove();
+                removeObjects(objectIds)
                 alert(response.success)
             } else {
                 alert(response.error)
@@ -323,4 +329,15 @@ function debugStatement(msg) {
     if (typeof(console) != 'undefined') {
         console.debug(msg);
     }
+}
+
+function removeObjects(ids) {
+    $.each(ids, function (index, value) {
+        var url = createLink('CADObject', 'show') + "/" + value;
+        var object = parent.getChildByName(url);
+        if (object) {
+            parent.remove(object)
+        }
+    })
+
 }
