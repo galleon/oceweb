@@ -21,24 +21,6 @@ var httpData = $.httpData || function (xhr, type, s) { // lifted from jq1.4.4
     return data;
 };
 
-jQuery("#spinner").ajaxStart(function () {
-    jQuery(this).show();
-});
-jQuery("#spinner").ajaxStop(function () {
-    jQuery(this).hide();
-});
-jQuery.ajaxSetup({cache:false});
-jQuery("#ajax_spinner").ajaxComplete(function (event, xhr, options) {
-    var data = httpData(xhr, options.dataType, options);
-    var inputFieldIndex = -1;
-    try {
-        inputFieldIndex = data.indexOf("Session TimedOut url");
-    } catch (err) {
-    }
-    if (inputFieldIndex > -1) {
-        window.location.href = data.substring(data.indexOf("=") + 1, data.length);
-    }
-});
 
 $(document).ready(function () {
     $("#selectProject").change(function () {
@@ -47,6 +29,25 @@ $(document).ready(function () {
     $("#toolbar").draggable();
     $("#projectTree").draggable();
     initialiseCanvas('content');
+
+    jQuery("#spinner").ajaxStart(function () {
+        jQuery(this).show();
+    });
+    jQuery("#spinner").ajaxStop(function () {
+        jQuery(this).hide();
+    });
+    jQuery.ajaxSetup({cache:true});
+    jQuery("#spinner").ajaxComplete(function (event, xhr, options) {
+        var data = httpData(xhr, options.dataType, options);
+        var inputFieldIndex = -1;
+        try {
+            inputFieldIndex = data.indexOf("Session TimedOut url");
+        } catch (err) {
+        }
+        if (inputFieldIndex > -1) {
+            window.location.href = data.substring(data.indexOf("=") + 1, data.length);
+        }
+    });
 })
 
 var stats, camera, renderer, containerWidth, containerHeight, scene, container;
@@ -72,7 +73,7 @@ function showShape(url) {
 }
 
 function showShapeFromRemote(url) {
-    $.getJSON(url, {cache:true}, function (response) {
+    $.getJSON(url, function (response) {
         if (response.error) {
             alert(response.error)
         } else {
@@ -123,7 +124,7 @@ function initialiseCanvas(containerId) {
     scene.add(group);
 
 
-    renderer = new THREE.WebGLRenderer();
+    renderer = new THREE.CanvasRenderer();
     renderer.setSize(containerWidth, containerHeight);
     renderer.sortObjects = false;
 

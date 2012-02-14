@@ -36,6 +36,7 @@
 </head>
 
 <body>
+<div id="spinner" style="display: none;text-align: center">Please wait while you content is loading</div>
 <g:layoutBody/>
 </body>
 </html>

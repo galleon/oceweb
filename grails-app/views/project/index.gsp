@@ -33,6 +33,9 @@
     <g:hasErrors bean="${co}">
         <g:renderErrors bean="${co}"/>
     </g:hasErrors>
+    <g:if test="${flash.error}">
+        <ul class="errors" role="alert"><li>${flash.error}</li></ul>
+    </g:if>
         <div id="projectTree">
             <g:render template="/project/cadObjects" model="[projects: projects, project: project]"/>
         </div>
