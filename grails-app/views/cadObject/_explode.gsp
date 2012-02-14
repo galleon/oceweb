@@ -10,7 +10,7 @@
                     Shape
                     <span class="required-indicator">*</span>
                 </label>
-                <g:select style="float: right;" from="${[TopAbs_ShapeEnum.FACE, TopAbs_ShapeEnum.VERTEX, TopAbs_ShapeEnum.WIRE]}" name="shape" required="true"/>
+                <g:select style="float: right;" from="${[TopAbs_ShapeEnum.FACE, TopAbs_ShapeEnum.EDGE, TopAbs_ShapeEnum.VERTEX]}" name="shape" required="true"/>
             </div>
 
         </div>
