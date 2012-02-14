@@ -26,7 +26,7 @@
             </li>
             <li style="float: right;padding:5px">
                 <a href="#coneInfo" class="nyroModal" id="createCone" title="Create Cone">
-                    <img src="${resource(dir: 'images', file: 'cone.jpg')}" height="32px" width="32px">
+                    <img src="${resource(dir: 'images', file: 'cone.jpg')}">
                 </a>
             </li>
             <li style="float: left;" id="frameArea"></li>

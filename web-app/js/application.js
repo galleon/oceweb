@@ -126,7 +126,6 @@ function initialiseCanvas(containerId) {
     renderer.sortObjects = false;
 
     $(container).html(renderer.domElement);
-    console.debug("renderer.domElement : "+renderer.domElement)
 }
 
 function zoom(event, delta, deltaX, deltaY) {
