@@ -122,7 +122,7 @@ function initialiseCanvas(containerId) {
     scene.add(group);
 
 
-    renderer = new THREE.WebGLRenderer();
+    renderer = new THREE.CanvasRenderer();
     renderer.setSize(containerWidth, containerHeight);
     renderer.sortObjects = false;
 
