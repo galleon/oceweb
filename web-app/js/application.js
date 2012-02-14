@@ -92,7 +92,7 @@ function createMesh(response, name) {
         object.updateMatrix();
     })
     object.name = name;
-    console.debug("Object Name : "+object.name)
+    console.debug("Object Name : " + object.name)
     return object
 }
 
@@ -128,13 +128,13 @@ function initialiseCanvas(containerId) {
     renderer.sortObjects = false;
 
     $(container).html(renderer.domElement);
-    console.debug("renderer.domElement : "+renderer.domElement)
+    console.debug("renderer.domElement : " + renderer.domElement)
 }
 
 function zoom(event, delta, deltaX, deltaY) {
     event.preventDefault();
     if (delta != 0) {
-       camera.translateZ(-(delta * 10))
+        camera.translateZ(-(delta * 10))
     }
 }
 function onDocumentMouseDown(event) {
@@ -174,11 +174,6 @@ function animate() {
 }
 
 function render() {
-/*
-    camera.position.x += ( mouseX - camera.position.x ) * .01;
-    camera.position.y += ( - mouseY - camera.position.y ) * .01;
-    camera.lookAt(scene.position);
-*/
 
     group.rotation.y += ( targetRotation - group.rotation.y ) * 0.1;
     group.rotation.x += ( targetRotationY - group.rotation.x ) * 0.1;
@@ -254,6 +249,11 @@ function defaultMenu(node) {
         mesh:{
             label:"Mesh",
             "_class":"class",
+            "action":function (obj) {
+                var id = $(obj).children().filter('a').attr('id');
+                $("#meshForm #cadObjectId").val(id);
+                $("#meshLink").click();
+            },
             "separator_before":false
         }
     };
