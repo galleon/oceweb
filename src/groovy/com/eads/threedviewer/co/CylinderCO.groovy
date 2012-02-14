@@ -20,7 +20,7 @@ class CylinderCO extends ShapeCO {
     TopoDS_Shape getShape() {
         double[] axes = [0, 0, 0, 0, 0, 1]
 
-        BRepPrimAPI_MakeCylinder cylinder = new BRepPrimAPI_MakeCylinder(axes, radius, height, 270)
+        BRepPrimAPI_MakeCylinder cylinder = new BRepPrimAPI_MakeCylinder(axes, radius, height, 2 * Math.PI)
         return cylinder.shape()
     }
 
