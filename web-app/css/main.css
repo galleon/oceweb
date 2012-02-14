@@ -767,6 +767,6 @@ a {
     text-decoration: none;
 }
 #cancel{float: right;}
-#selectProject{width: 70%}
+#selectProject{width: 50%}
 #projectTree{z-index:1;position: absolute; top:0; left: 0;}
 #toolbar{z-index:1;position: absolute; bottom:0; right: 0}

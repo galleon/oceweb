@@ -49,9 +49,14 @@
 
 </div>
 <a href="#explode" class="nyroModal" style="display: none" id="explodeLink">Explode</a>
+<a href="#mesh" class="nyroModal" style="display: none" id="meshLink">Mesh</a>
 
 <div id="explode" style="display: none">
     <g:render template="/cadObject/explode"/>
+</div>
+
+<div id="mesh" style="display: none">
+    <g:render template="/cadObject/mesh"/>
 </div>
 <a href="#operation" class="nyroModal" style="display: none" id="operationLink">Operation</a>
 

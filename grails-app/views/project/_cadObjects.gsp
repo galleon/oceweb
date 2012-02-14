@@ -1,11 +1,18 @@
 <div class="block small left">
     <div class="block_head">
+%{--
         <div class="bheadl"></div>
 
         <div class="bheadr"></div>
+--}%
+        <g:if test="${project?.name}">
         <g:form action="index" controller="project" name="changeProject">
-            <g:select name="name" from="${projects}" optionKey="name" optionValue="name" noSelection="['': 'Choose Project']" value="${project?.name}" id='selectProject'/>
+                <g:select name="name" from="${projects}" optionKey="name" optionValue="name" noSelection="['': 'Choose Project']" value="${project?.name}"
+                      id='selectProject'/>
+            <g:hiddenField name="id" value="${project.id}"/>
+            <g:actionSubmit value="Delete" action="delete" controller="project"/>
         </g:form>
+        </g:if>
     </div>
 
     <div class="block_content">

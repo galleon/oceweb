@@ -11,4 +11,12 @@ class ProjectController {
         Project project = id ? Project.read(id) : null
         render(template: 'cadObjects', model: [project: project, projects: Project.list()])
     }
+    
+    def delete(String name, Long id){
+        Project project = id ? Project.get(id) : null
+        if (project){
+            project.delete()
+        }
+        redirect(action: 'index')
+    }
 }

@@ -19,13 +19,6 @@
                 <g:textField name="height" value="" required="true"/>
             </div>
 
-            <div class="fieldcontain required">
-                <label for="angle">
-                    Angle
-                    <span class="required-indicator">*</span>
-                </label>
-                <g:textField name="angle" value="" required="true"/>
-            </div>
         </div>
     </fieldset>
     <fieldset class="buttons">

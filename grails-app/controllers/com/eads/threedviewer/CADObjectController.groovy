@@ -4,6 +4,7 @@ import com.eads.threedviewer.util.ShapeUtil
 import grails.converters.JSON
 import grails.validation.ValidationException
 import com.eads.threedviewer.co.*
+import org.jcae.opencascade.jni.TopAbs_ShapeEnum
 
 class CADObjectController {
 
@@ -60,7 +61,8 @@ class CADObjectController {
 
     def explode(Long id) {
         CADObject cadObject = id ? CADObject.get(id) : null
-        shapeService.saveSubCadObjects(cadObject)
+        TopAbs_ShapeEnum shapeType = params.shape as TopAbs_ShapeEnum
+        shapeService.saveSubCadObjects(cadObject,shapeType)
         redirect(controller: 'project', action: 'index', params: [name: cadObject?.project?.name])
     }
 
@@ -75,6 +77,7 @@ class CADObjectController {
         Set<Long> ids = params.list('ids')
         List<CADObject> cadObjects = ids ? CADObject.getAll(ids.toList()) : []
         try {
+            CADObject.findAllByParentInList(cadObjects)*.delete()
             cadObjects*.delete()
         } catch (RuntimeException rte) {
             result = ['error': message(code: "error.occured.while.serving.your.request")]
