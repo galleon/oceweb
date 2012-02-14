@@ -110,7 +110,7 @@ function initialiseCanvas(containerId) {
     windowHalfX = containerWidth / 2;
     windowHalfY = containerHeight / 2;
 
-    camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 10000 );
+    camera = new THREE.PerspectiveCamera(50, containerWidth / containerHeight, 1, 1000);
     camera.target = new THREE.Vector3();
     camera.position.x = 0;
     camera.position.y = 0;
@@ -120,7 +120,7 @@ function initialiseCanvas(containerId) {
 
     scene = new THREE.Scene();
     scene.add(camera);
-    scene.add(group)
+    scene.add(group);
 
 
     renderer = new THREE.WebGLRenderer();
@@ -128,12 +128,13 @@ function initialiseCanvas(containerId) {
     renderer.sortObjects = false;
 
     $(container).html(renderer.domElement);
+    console.debug("renderer.domElement : "+renderer.domElement)
 }
 
 function zoom(event, delta, deltaX, deltaY) {
     event.preventDefault();
     if (delta != 0) {
-        camera.translateZ(-(delta * 10))
+       camera.translateZ(-(delta * 10))
     }
 }
 function onDocumentMouseDown(event) {
@@ -173,12 +174,15 @@ function animate() {
 }
 
 function render() {
+/*
     camera.position.x += ( mouseX - camera.position.x ) * .01;
     camera.position.y += ( - mouseY - camera.position.y ) * .01;
     camera.lookAt(scene.position);
+*/
 
     group.rotation.y += ( targetRotation - group.rotation.y ) * 0.1;
     group.rotation.x += ( targetRotationY - group.rotation.x ) * 0.1;
+
     if (renderer) {
         renderer.render(scene, camera);
     }

@@ -4,11 +4,6 @@ import com.eads.threedviewer.util.ShapeUtil
 import grails.converters.JSON
 import grails.validation.ValidationException
 import com.eads.threedviewer.co.*
-import org.jcae.opencascade.jni.TopoDS_Shape
-import org.jcae.opencascade.jni.BRepTools
-import org.jcae.opencascade.jni.*
-import com.eads.threedviewer.enums.Operation
-
 
 class CADObjectController {
 
@@ -20,6 +15,10 @@ class CADObjectController {
     }
 
     def createCylinder(CylinderCO co) {
+        sendResponse(co)
+    }
+
+    def createCone(ConeCO co) {
         sendResponse(co)
     }
 
