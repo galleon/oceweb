@@ -54,7 +54,7 @@ var targetRotation = 0;
 var targetRotationY = 0;
 var targetRotationOnMouseDown = 0;
 var targetRotationYOnMouseDown = 0;
-var parent;
+var group;
 var mouseX = 0;
 var mouseY = 0;
 var mouseXOnMouseDown = 0;
@@ -62,7 +62,7 @@ var mouseYOnMouseDown = 0;
 var windowHalfX, windowHalfY;
 
 function showShape(url) {
-    var object = parent.getChildByName(url);
+    var object = group.getChildByName(url);
     if (object) {
         object.visible = true;
     } else {
@@ -74,7 +74,7 @@ function showShape(url) {
 function showShapeFromRemote(url) {
     $.getJSON(url, {cache:true}, function (response) {
         if (response.error) {
-            alert(response.error)
+            debugStatement(response.error)
         } else {
             var object = createMesh(response, url);
             addToScene(object);
@@ -90,13 +90,13 @@ function createMesh(response, name) {
         object = new THREE.Mesh(geometry, new THREE.MeshNormalMaterial({ overdraw:true }));
         object.doubleSided = true;
         object.name = name;
+        object.visible = true;
     })
     return object
 }
 
 function addToScene(object) {
-    object.visible = true;
-    parent.add(object);
+    group.add(object);
     $(container).bind('mousedown', onDocumentMouseDown);
     $(container).mousewheel(zoom);
 }
@@ -107,16 +107,25 @@ function initialiseCanvas(containerId) {
     containerHeight = window.innerHeight;
     windowHalfX = containerWidth / 2;
     windowHalfY = containerHeight / 2;
-    camera = new THREE.PerspectiveCamera(50, containerWidth / containerHeight, 1, 1000);
+
+    camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 10000 );
+    camera.target = new THREE.Vector3();
     camera.position.x = 0;
     camera.position.y = 0;
     camera.position.z = 500;
-    renderer = new THREE.CanvasRenderer();
-    renderer.setSize(containerWidth, containerHeight);
-    $(container).html(renderer.domElement);
-    parent = new THREE.Object3D();
+
+    group = new THREE.Object3D();
+
     scene = new THREE.Scene();
-    scene.add(parent)
+    scene.add(camera);
+    scene.add(group)
+
+
+    renderer = new THREE.WebGLRenderer();
+    renderer.setSize(containerWidth, containerHeight);
+    renderer.sortObjects = false;
+
+    $(container).html(renderer.domElement);
 }
 
 function zoom(event, delta, deltaX, deltaY) {
@@ -162,8 +171,12 @@ function animate() {
 }
 
 function render() {
-    parent.rotation.y += ( targetRotation - parent.rotation.y ) * 0.1;
-    parent.rotation.x += ( targetRotationY - parent.rotation.x ) * 0.1;
+    camera.position.x += ( mouseX - camera.position.x ) * .01;
+    camera.position.y += ( - mouseY - camera.position.y ) * .01;
+    camera.lookAt(scene.position);
+
+    group.rotation.y += ( targetRotation - group.rotation.y ) * 0.1;
+    group.rotation.x += ( targetRotationY - group.rotation.x ) * 0.1;
     if (renderer) {
         renderer.render(scene, camera);
     }
@@ -265,7 +278,7 @@ function defaultMenu(node) {
 
 function toggleVisibility(node) {
     var url = $(node).children().filter('a').attr('href');
-    var object = parent.getChildByName(url);
+    var object = group.getChildByName(url);
     if (object) {
         if (object.visible) {
             object.visible = false;
@@ -334,9 +347,9 @@ function debugStatement(msg) {
 function removeObjects(ids) {
     $.each(ids, function (index, value) {
         var url = createLink('CADObject', 'show') + "/" + value;
-        var object = parent.getChildByName(url);
+        var object = group.getChildByName(url);
         if (object) {
-            parent.remove(object)
+            group.remove(object)
         }
     })
 

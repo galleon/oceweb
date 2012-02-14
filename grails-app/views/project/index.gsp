@@ -9,6 +9,21 @@
         $(function () {
             stats = new Stats();
             $("#frameArea").append(stats.domElement);
+            $("#cubeForm").submit(function () {
+                var x  = $("#cubeForm #x").val()
+                var y  = $("#cubeForm #y").val()
+                var z  = $("#cubeForm #z").val()
+                var x1 = $("#cubeForm #x1").val()
+                var y1 = $("#cubeForm #y1").val()
+                var z1 = $("#cubeForm #z1").val()
+                if ((x == x1) || (y == y1) || (z == z1)) {
+                    alert("This is not the correct specification for a cube !!! ")
+                    return false;
+                }
+                else {
+                    return true;
+                }
+            })
         })
     </script>
 </head>
