@@ -22,6 +22,8 @@ import org.jcae.mesh.xmldata.MeshWriter
 import org.jcae.mesh.amibe.algos2d.*
 import org.jcae.opencascade.jni.*
 import com.eads.threedviewer.util.ShapeUtil
+import org.jcae.mesh.amibe.ds.Mesh
+import com.eads.threedviewer.util.UNVParser
 
 class UtilController {
 
@@ -79,23 +81,22 @@ class UtilController {
         render generateData(shape) as JSON
     }
 
-    def mesh(Long id, float elementSize, float deflection){
+    def mesh(Long id, float elementSize, float deflection) {
         CADObject cadObject = CADObject.get(id)
-        File file = ShapeUtil.getFile(cadObject.shape, 'box')
-        String brepfile = file.name
+        File file = ShapeUtil.getFile(cadObject.shape, 'mesh')
+        String brepFile = file.name
         String outputDir = "tmp${File.separator}${cadObject.id.toString()}"
-        log.info("Path to output directory : "+outputDir)
         File xmlDirF = new File(outputDir)
         xmlDirF.mkdir()
         float leng = elementSize
         float defl = deflection
         String brepdir = ""
-        if (brepfile.indexOf((int) File.separatorChar) >= 0) {
-            int idx = brepfile.lastIndexOf((int) File.separatorChar)
+        if (brepFile.indexOf((int) File.separatorChar) >= 0) {         //not going inside this condition
+            int idx = brepFile.lastIndexOf((int) File.separatorChar)
             brepdir = brepfile.substring(0, idx)
-            brepfile = brepfile.substring(idx + 1)
+            brepFile = brepFile.substring(idx + 1)
         }
-        String unvName = "difference.unv"
+        String unvName = "${outputDir}${File.separator}difference.unv"
         CADShapeFactory factory = CADShapeFactory.getFactory()
         MMesh1D mesh1d
         CADShape shape
@@ -104,7 +105,7 @@ class UtilController {
         try {
             is = new FileInputStream(file);
             FileChannel iChannel = is.getChannel();
-            os = new FileOutputStream(new File(outputDir, brepfile), false);
+            os = new FileOutputStream(new File(outputDir, brepFile), false);
             FileChannel oChannel = os.getChannel();
             oChannel.transferFrom(iChannel, 0, iChannel.size());
         }
@@ -112,8 +113,10 @@ class UtilController {
             if (is != null) is.close();
             if (os != null) os.close();
         }
-        mesh1d = new MMesh1D(outputDir+"/"+brepfile)
+        mesh1d = new MMesh1D(outputDir + File.separator + brepFile)
         shape = mesh1d.getGeometry();
+        log.info(">>>>>>>>>>>>> Shape of mesh1d : "+shape.class)
+
         HashMap<String, String> options1d = new HashMap<String, String>()
         options1d.put("size", "" + leng)
         if (defl <= 0.0) {
@@ -124,7 +127,7 @@ class UtilController {
             new UniformLengthDeflection(mesh1d, options1d).compute()
             new Compat1D2D(mesh1d, options1d).compute()
         }
-        MMesh1DWriter.writeObject(mesh1d, outputDir, brepfile)
+        MMesh1DWriter.writeObject(mesh1d, outputDir, brepFile)
         mesh1d.duplicateEdges()
         mesh1d.updateNodeLabels()
         HashMap<String, String> options2d = new HashMap<String, String>()
@@ -132,12 +135,14 @@ class UtilController {
         options2d.put("deflection", "" + defl)
         options2d.put("relativeDeflection", "true")
         options2d.put("isotropic", "true")
+        log.info("State of options2d : "+options2d)
         HashMap<String, String> smoothOptions2d = new HashMap<String, String>()
         smoothOptions2d.put("modifiedLaplacian", "true")
         smoothOptions2d.put("refresh", "false")
         smoothOptions2d.put("iterations", "5")
         smoothOptions2d.put("tolerance", "1")
         smoothOptions2d.put("relaxation", "0.6")
+        log.info("State of smoothOptions2d : "+smoothOptions2d)
         MeshTraitsBuilder mtb = MeshTraitsBuilder.getDefault2D()
         CADExplorer expl = factory.newExplorer()
         List seen = []
@@ -175,15 +180,19 @@ class UtilController {
                     new CheckDelaunay(mesh).compute()
                     println "Face #${iface} has been meshed"
                 }
-                MeshWriter.writeObject(mesh, outputDir, brepfile, iface)
+                log.info("After face ${iface} mesh ....")
+                log.info("Mesh CADShape : " + mesh.geometry)
+                MeshWriter.writeObject(mesh, outputDir, brepFile, iface)
             }
 
             //Mesh 3D
+            log.info(">>>>>>>>>>>>>> Shape 2D : "+shape)
             expl = factory.newExplorer()
-            m2dto3d = new MeshToMMesh3DConvert(outputDir, brepfile, shape)
+            m2dto3d = new MeshToMMesh3DConvert(outputDir, brepFile, shape)
             m2dto3d.exportUNV(unvName != null, unvName)
             iface = 0
             for (expl.init(shape, CADShapeEnum.FACE); expl.more(); expl.next()) {
+//                log.info("inside mesh3d ....")
                 iface++
             }
             int[] iArray = new int[iface]
@@ -195,13 +204,54 @@ class UtilController {
                 face = expl.current()
                 iface++
                 m2dto3d.processOneShape(iface, "" + iface, iface)
+//                log.info("inside last loop of mesh3d ....")
             }
             m2dto3d.afterProcessingAllShapes()
-//            break;
+            break;
         }
-        log.info("Mesh Object created ...." + m2dto3d)
 //        file.delete()
+/*
+        Mesh mesh = new Mesh()
+        mesh.
+*/
     }
+
+    def testUNV() {
+        String outputDir = "tmp${File.separator}1"
+        String unvName = "${outputDir}${File.separator}difference.unv"
+        File file = new File(unvName)
+        Map data = ['metadata': ['formatVersion': 3, 'generatedBy': 'tog'], 'scale': 10, 'materials': [], 'morphTargets': [], 'normals': [], 'colors': [], 'uvs': [[]], 'edges': []]
+
+        UNVParser unvParser = new UNVParser()
+        unvParser.parse(new BufferedReader(new FileReader(unvName)));
+        List vertices = []
+
+        unvParser.nodesCoordinates.each {nodeCoordinate->
+            vertices << nodeCoordinate
+        }
+        data['vertices'] = vertices;
+        return data
+    }
+
+/*
+    public static Map getMeshEdges(){
+        log.info(">>>>>>>>>>>>>>>>> inside testUNV .... ")
+        String outputDir = "tmp${File.separator}2"
+        String unvName = "${outputDir}${File.separator}difference.unv"
+        File file = new File(unvName)
+        Map data = ['metadata': ['formatVersion': 3, 'generatedBy': 'tog'], 'scale': 10, 'materials': [], 'morphTargets': [], 'normals': [], 'colors': [], 'uvs': [[]], 'edges': []]
+
+        UNVParser unvParser = new UNVParser()
+        unvParser.parse(new BufferedReader(new FileReader(unvName)));
+        List vertices = []
+
+        unvParser.nodesCoordinates.each {nodeCoordinate->
+            vertices << nodeCoordinate
+        }
+        data['vertices'] = vertices;
+        return data
+    }
+*/
 
     private BRepPrimAPI_MakeBox getBox() {
         double[] p2 = [1000, 1000, 1000]

@@ -49,6 +49,24 @@ class ShapeUtil {
         return getData(getShape(file))
     }
 
+    public static Map getMeshEdges(){
+        String outputDir = "tmp${File.separator}2"
+        String unvName = "${outputDir}${File.separator}difference.unv"
+        File file = new File(unvName)
+        Map data = ['metadata': ['formatVersion': 3, 'generatedBy': 'tog'], 'scale': 10, 'materials': [], 'morphTargets': [], 'normals': [], 'colors': [], 'uvs': [[]], 'edges': []]
+
+        UNVParser unvParser = new UNVParser()
+        unvParser.parse(new BufferedReader(new FileReader(unvName)));
+        List vertices = []
+
+        unvParser.nodesCoordinates.each {nodeCoordinate->
+            vertices << nodeCoordinate
+        }
+        data['vertices'] = vertices;
+        return data
+    }
+
+
     public static File createBrepFile(byte[] content, String prefix = '') {
         File file = File.createTempFile("${prefix ?: 'temp'}", ".brep")
         file.bytes = content

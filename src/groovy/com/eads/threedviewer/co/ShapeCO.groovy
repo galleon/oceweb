@@ -45,4 +45,8 @@ abstract class ShapeCO {
     Map getData() {
         return ShapeUtil.getData(shape)
     }
+    
+    Map getMeshData(){
+        return ShapeUtil.getMeshEdges()
+    }
 }
