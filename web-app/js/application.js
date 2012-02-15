@@ -26,6 +26,11 @@ $(document).ready(function () {
     $("#selectProject").change(function () {
         $("#changeProject").submit();
     });
+    $('.errors .close').click(function () {
+        $(this).parent().fadeOut('slow', function () {
+            $(this).remove();
+        });
+    });
     $("#toolbar").draggable();
     $("#projectTree").draggable();
     initialiseCanvas('content');
@@ -48,6 +53,8 @@ $(document).ready(function () {
             window.location.href = data.substring(data.indexOf("=") + 1, data.length);
         }
     });
+    removeErrorMessage();
+    removeFlashMessage();
 })
 
 var stats, camera, renderer, containerWidth, containerHeight, scene, container;
@@ -56,6 +63,7 @@ var targetRotationY = 0;
 var targetRotationOnMouseDown = 0;
 var targetRotationYOnMouseDown = 0;
 var group;
+var updateTimer = 0;
 var mouseX = 0;
 var mouseY = 0;
 var mouseXOnMouseDown = 0;
@@ -129,7 +137,6 @@ function initialiseCanvas(containerId) {
     renderer.sortObjects = false;
 
     $(container).html(renderer.domElement);
-    console.debug("renderer.domElement : " + renderer.domElement)
 }
 
 function zoom(event, delta, deltaX, deltaY) {
@@ -343,4 +350,10 @@ function debugStatement(msg) {
     if (typeof(console) != 'undefined') {
         console.debug(msg);
     }
+}
+function removeErrorMessage() {
+    updateTimer = setTimeout('jQuery("#instanceErrors").remove()', 2000);
+}
+function removeFlashMessage() {
+    updateTimer = setTimeout('jQuery("#flashError").remove()', 2000);
 }
