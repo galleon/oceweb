@@ -25,7 +25,7 @@ class CubeCO extends ShapeCO {
     }
 
     CADObject getCADObject() {
-        CADObject cadObject = new CADObject(name: name, project: project, x: x, y: y, z: z, x1: x1, y1: y1, z1: z1, content: content)
+        CADObject cadObject = new CADCubeObject(name: name, project: project, x: x, y: y, z: z, x1: x1, y1: y1, z1: z1, content: content)
         return cadObject
     }
 

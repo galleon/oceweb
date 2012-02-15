@@ -13,3 +13,4 @@ test.brep
 *.iml
 web-app/mrdoob-three.js-32b581f/
 *.unv*
+tmp

@@ -62,7 +62,7 @@ class CADObjectController {
     def explode(Long id) {
         CADObject cadObject = id ? CADObject.get(id) : null
         TopAbs_ShapeEnum shapeType = params.shape as TopAbs_ShapeEnum
-        shapeService.saveSubCadObjects(cadObject,shapeType)
+        shapeService.saveSubCadObjects(cadObject, shapeType)
         redirect(controller: 'project', action: 'index', params: [name: cadObject?.project?.name])
     }
 
