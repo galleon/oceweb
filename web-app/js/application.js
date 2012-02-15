@@ -66,6 +66,7 @@ var group;
 var updateTimer = 0;
 var mouseX = 0;
 var mouseY = 0;
+var fov = 50;
 var mouseXOnMouseDown = 0;
 var mouseYOnMouseDown = 0;
 var windowHalfX, windowHalfY;
@@ -118,7 +119,7 @@ function initialiseCanvas(containerId) {
     windowHalfX = containerWidth / 2;
     windowHalfY = containerHeight / 2;
 
-    camera = new THREE.PerspectiveCamera(50, containerWidth / containerHeight, 1, 1000);
+    camera = new THREE.PerspectiveCamera(fov, containerWidth / containerHeight, 1, 1000);
     camera.target = new THREE.Vector3();
     camera.position.x = 0;
     camera.position.y = 0;
@@ -141,7 +142,8 @@ function initialiseCanvas(containerId) {
 function zoom(event, delta, deltaX, deltaY) {
     event.preventDefault();
     if (delta != 0) {
-        camera.translateZ(-(delta * 10))
+        fov -= deltaY * 2;
+        camera.projectionMatrix = THREE.Matrix4.makePerspective(fov, containerWidth / containerHeight, 1, 1100);
     }
 }
 function onDocumentMouseDown(event) {
