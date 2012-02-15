@@ -85,17 +85,15 @@ class UtilController {
         CADObject cadObject = CADObject.get(id)
         File file = ShapeUtil.getFile(cadObject.shape, 'mesh')
         String brepFile = file.name
-        String outputDir = "tmp${File.separator}${cadObject.id.toString()}"
+        File tempFile = new File("tmp")
+        if (!tempFile.exists()) {
+            tempFile.mkdir()
+        }
+        String outputDir = "${tempFile.name}${File.separator}${cadObject.id.toString()}"
         File xmlDirF = new File(outputDir)
         xmlDirF.mkdir()
         float leng = elementSize
         float defl = deflection
-        String brepdir = ""
-        if (brepFile.indexOf((int) File.separatorChar) >= 0) {         //not going inside this condition
-            int idx = brepFile.lastIndexOf((int) File.separatorChar)
-            brepdir = brepfile.substring(0, idx)
-            brepFile = brepFile.substring(idx + 1)
-        }
         String unvName = "${outputDir}${File.separator}difference.unv"
         CADShapeFactory factory = CADShapeFactory.getFactory()
         MMesh1D mesh1d
@@ -115,7 +113,6 @@ class UtilController {
         }
         mesh1d = new MMesh1D(outputDir + File.separator + brepFile)
         shape = mesh1d.getGeometry();
-        log.info(">>>>>>>>>>>>> Shape of mesh1d : "+shape.class)
 
         HashMap<String, String> options1d = new HashMap<String, String>()
         options1d.put("size", "" + leng)
@@ -135,14 +132,14 @@ class UtilController {
         options2d.put("deflection", "" + defl)
         options2d.put("relativeDeflection", "true")
         options2d.put("isotropic", "true")
-        log.info("State of options2d : "+options2d)
+        log.info("State of options2d : " + options2d)
         HashMap<String, String> smoothOptions2d = new HashMap<String, String>()
         smoothOptions2d.put("modifiedLaplacian", "true")
         smoothOptions2d.put("refresh", "false")
         smoothOptions2d.put("iterations", "5")
         smoothOptions2d.put("tolerance", "1")
         smoothOptions2d.put("relaxation", "0.6")
-        log.info("State of smoothOptions2d : "+smoothOptions2d)
+        log.info("State of smoothOptions2d : " + smoothOptions2d)
         MeshTraitsBuilder mtb = MeshTraitsBuilder.getDefault2D()
         CADExplorer expl = factory.newExplorer()
         List seen = []
@@ -153,6 +150,7 @@ class UtilController {
         for (expl.init(shape, CADShapeEnum.FACE); expl.more(); expl.next()) {
             CADShape face = expl.current()
             iface++
+            log.info "Iface Count -: ${iface}"
             if (!(face in seen)) {
                 seen << face
                 MeshParameters mp = new MeshParameters(options2d)
@@ -161,11 +159,11 @@ class UtilController {
                 try {
                     new Initial(mesh, mtb, mesh1d).compute()
                 } catch (InvalidFaceException ex) {
-                    println "Face #${iface} is invalid. Skipping ..."
+                    log.info "Face #${iface} is invalid. Skipping ..."
                     success = false
                 } catch (Exception ex) {
                     ex.printStackTrace()
-                    println "Unexpected error when triangulating face #${iface}. Skipping ..."
+                    log.info "Unexpected error when triangulating face #${iface}. Skipping ..."
                     success = false
                 }
                 if (!success) {
@@ -178,7 +176,7 @@ class UtilController {
                     new SmoothNodes2D(mesh, smoothOptions2d).compute()
                     new ConstraintNormal3D(mesh).compute()
                     new CheckDelaunay(mesh).compute()
-                    println "Face #${iface} has been meshed"
+                    log.info "Face #${iface} has been meshed"
                 }
                 log.info("After face ${iface} mesh ....")
                 log.info("Mesh CADShape : " + mesh.geometry)
@@ -186,7 +184,6 @@ class UtilController {
             }
 
             //Mesh 3D
-            log.info(">>>>>>>>>>>>>> Shape 2D : "+shape)
             expl = factory.newExplorer()
             m2dto3d = new MeshToMMesh3DConvert(outputDir, brepFile, shape)
             m2dto3d.exportUNV(unvName != null, unvName)
@@ -204,33 +201,18 @@ class UtilController {
                 face = expl.current()
                 iface++
                 m2dto3d.processOneShape(iface, "" + iface, iface)
-//                log.info("inside last loop of mesh3d ....")
+                log.info "inside inner face ${iface} ...."
             }
             m2dto3d.afterProcessingAllShapes()
-            break;
+
         }
-//        file.delete()
-/*
-        Mesh mesh = new Mesh()
-        mesh.
-*/
+        forward(action: 'index', controller: 'project', params: [shapeId: cadObject.id])
     }
 
-    def testUNV() {
-        String outputDir = "tmp${File.separator}1"
-        String unvName = "${outputDir}${File.separator}difference.unv"
-        File file = new File(unvName)
-        Map data = ['metadata': ['formatVersion': 3, 'generatedBy': 'tog'], 'scale': 10, 'materials': [], 'morphTargets': [], 'normals': [], 'colors': [], 'uvs': [[]], 'edges': []]
-
-        UNVParser unvParser = new UNVParser()
-        unvParser.parse(new BufferedReader(new FileReader(unvName)));
-        List vertices = []
-
-        unvParser.nodesCoordinates.each {nodeCoordinate->
-            vertices << nodeCoordinate
-        }
-        data['vertices'] = vertices;
-        return data
+    def test() {
+        String unvName = "tmp/2/difference.unv"
+        Map data = ShapeUtil.getMeshEdges(unvName)
+        render data as JSON
     }
 
 /*
