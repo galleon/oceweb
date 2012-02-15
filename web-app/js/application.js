@@ -101,7 +101,6 @@ function createMesh(response, name) {
         object.updateMatrix();
     })
     object.name = name;
-    console.debug("Object Name : " + object.name)
     return object
 }
 
