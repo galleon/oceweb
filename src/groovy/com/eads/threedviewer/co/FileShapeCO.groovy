@@ -12,7 +12,11 @@ class FileShapeCO extends ShapeCO {
     MultipartFile file
 
     static constraints = {
-        file(nullable: false, blank: false, minSize: 1)
+        file(nullable: false, blank: false, minSize: 1, validator: {var, obj ->
+            if (!var.originalFilename.toLowerCase().endsWith(".brep")) {
+                return ["content.type.not.supported", 'brep']
+            }
+        })
     }
 
     @Override

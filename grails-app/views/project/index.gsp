@@ -10,9 +10,9 @@
             stats = new Stats();
             $("#frameArea").append(stats.domElement);
             $("#cubeForm").submit(function () {
-                var x  = $("#cubeForm #x").val()
-                var y  = $("#cubeForm #y").val()
-                var z  = $("#cubeForm #z").val()
+                var x = $("#cubeForm #x").val()
+                var y = $("#cubeForm #y").val()
+                var z = $("#cubeForm #z").val()
                 var x1 = $("#cubeForm #x1").val()
                 var y1 = $("#cubeForm #y1").val()
                 var z1 = $("#cubeForm #z1").val()
@@ -31,24 +31,29 @@
 <body>
 <div>
     <g:hasErrors bean="${co}">
-        <g:renderErrors bean="${co}"/>
+        <div class="errors" role="alert" id="instanceErrors">
+            <ul>
+                <g:eachError bean="${co}" var="error">
+                    <li <g:if test="${error in org.springframework.validation.FieldError}">data-field-id="${error.field}"</g:if>><g:message error="${error}"/></li>
+                </g:eachError>
+            </ul>
+        </div>
     </g:hasErrors>
     <g:if test="${flash.error}">
-        <ul class="errors" role="alert"><li>${flash.error}</li></ul>
+        <ul class="errors" role="alert" id="flashError"><li>${flash.error}</li></ul>
     </g:if>
-        <div id="projectTree">
-            <g:render template="/project/cadObjects" model="[projects: projects, project: project]"/>
-        </div>
-        <g:if test="${project}">
-            <div id="toolbar">
-                <g:render template="/project/toolbar" model="[project: project]"/>
-            </div>
-
-        </g:if>
-
-        <div id="content">
+    <div id="projectTree">
+        <g:render template="/project/cadObjects" model="[projects: projects, project: project]"/>
+    </div>
+    <g:if test="${project}">
+        <div id="toolbar">
+            <g:render template="/project/toolbar" model="[project: project]"/>
         </div>
 
+    </g:if>
+
+    <div id="content">
+    </div>
 
 </div>
 <a href="#explode" class="nyroModal" style="display: none" id="explodeLink">Explode</a>
