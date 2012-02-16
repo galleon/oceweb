@@ -1,31 +1,11 @@
-<g:form action="createCube" controller="CADObject" name="cubeForm" >
+<g:form action="createCube" controller="CADObject" name="cubeForm">
     <fieldset class="form">
         <div class="data-fields">
             <g:render template="/cadObject/shapeInfo"/>
             <g:render template="/cadObject/axisInfo"/>
-            <div class="fieldcontain required">
-                <label for="x1">
-                    X1
-                    <span class="required-indicator">*</span>
-                </label>
-                <g:textField name="x1" value="" required="true"/>
-            </div>
-
-            <div class="fieldcontain required">
-                <label for="y1">
-                    Y1
-                    <span class="required-indicator">*</span>
-                </label>
-                <g:textField name="y1" value="" required="true"/>
-            </div>
-
-            <div class="fieldcontain required">
-                <label for="z1">
-                    Z1
-                    <span class="required-indicator">*</span>
-                </label>
-                <g:textField name="z1" value="" required="true"/>
-            </div>
+            <td:textField label="X1" name="x1"/>
+            <td:textField label="Y1" name="y1"/>
+            <td:textField label="Z1" name="z1"/>
         </div>
     </fieldset>
     <fieldset class="buttons">

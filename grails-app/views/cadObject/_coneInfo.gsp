@@ -3,22 +3,8 @@
         <div class="data-fields">
             <g:render template="/cadObject/shapeInfo"/>
             <g:render template="/cadObject/axisInfo"/>
-            <div class="fieldcontain required">
-                <label for="baseRadius">
-                    Base Radius
-                    <span class="required-indicator">*</span>
-                </label>
-                <g:textField name="baseRadius" value="" required="true"/>
-            </div>
-
-            <div class="fieldcontain required">
-                <label for="height">
-                    Height
-                    <span class="required-indicator">*</span>
-                </label>
-                <g:textField name="height" value="" required="true"/>
-            </div>
-
+            <td:textField label="Base Radius" name="baseRadius"/>
+            <td:textField label="Height" name="height"/>
         </div>
     </fieldset>
     <fieldset class="buttons">

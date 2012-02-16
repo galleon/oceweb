@@ -26,7 +26,6 @@ $(document).ready(function () {
     $("#selectProject").change(function () {
         $("#changeProject").submit();
     });
-    $("#toolbar").draggable();
     $("#projectTree").draggable();
     initialiseCanvas('content');
 
@@ -187,12 +186,7 @@ function render() {
 }
 
 function createLink(controller, action) {
-    var link = '/';
-    var path = window.location.pathname;
-    if (path.indexOf('threedViewer') == 1) {
-        link = '/threedViewer' + link;
-    }
-    link = link + controller + '/' + action;
+    var link = getContext() + controller + '/' + action;
     return link
 }
 
@@ -365,5 +359,13 @@ function removeObjects(ids) {
             group.remove(object)
         }
     })
+}
 
+function getContext(){
+    var context = '/';
+    var path = window.location.pathname;
+    if (path.indexOf('threedViewer') == 1) {
+        context = '/threedViewer' + context;
+    }
+    return context
 }

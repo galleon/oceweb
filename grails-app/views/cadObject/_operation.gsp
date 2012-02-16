@@ -2,8 +2,8 @@
 <g:form action="booleanOperation" controller="CADObject" name="booleanForm" class="shapeForm">
     <g:hiddenField name="object1" value=""/>
     <g:hiddenField name="object2" value=""/>
-    <fieldset class="form" style="width: 420px;">
-        <h3>Boolean Operation</h3>   <br/>
+    <fieldset class="form">
+        <h3>Boolean Operation</h3>
 
         <div class="fieldcontain required">
             <label for="name">

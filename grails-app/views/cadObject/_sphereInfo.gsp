@@ -1,16 +1,9 @@
 <g:form action="createSphere" controller="CADObject" name="sphereForm">
-
     <fieldset class="form">
         <div class="data-fields">
             <g:render template="/cadObject/shapeInfo"/>
             <g:render template="/cadObject/axisInfo"/>
-            <div class="fieldcontain required">
-                <label for="radius">
-                    Radius
-                    <span class="required-indicator">*</span>
-                </label>
-                <g:textField name="radius" value="" required="true"/>
-            </div>
+            <td:textField label="Radius" name="radius"/>
         </div>
     </fieldset>
     <fieldset class="buttons">
