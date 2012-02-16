@@ -78,6 +78,11 @@ class CADObjectController {
         render result as JSON
     }
 
+    def editShape(Long id){
+        log.info(">>>>>>>>>>>>>>>>> params : "+params)
+//        render ">>>>>>>>>>>>>>>>>>>>>>>>"+id.toString()
+    }
+
 
     def delete() {
         Map result = ['success': 'Deleted Successfully']

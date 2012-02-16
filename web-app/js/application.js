@@ -291,11 +291,24 @@ function defaultMenu(node) {
 }
 
 function editShape(shape){
-    $("#"+shape.type.toLowerCase()+"Form "+ "#name").val(shape.name)
+    var name = $("#"+shape.type.toLowerCase()+"Form "+ "#name").val(shape.name)
     $("#"+shape.type.toLowerCase()+"Form "+ "#x").val(shape.x)
     $("#"+shape.type.toLowerCase()+"Form "+ "#y").val(shape.y)
     $("#"+shape.type.toLowerCase()+"Form "+ "#z").val(shape.z)
+    $("#"+shape.type.toLowerCase()+"Form "+ "#submit").attr("name", "_action_editShape")
+/*
+
     debugStatement("#"+shape.type.toLowerCase()+"Form"+ "#name")
+    $("#"+shape.type.toLowerCase()+"Form "+"#submit").click(function(){
+        $("#cadObjectId").val(id);
+        var url = createLink('CADObject', 'editShape');
+        url = url + "/" + id;
+        $.post(url, function(response){
+            debugStatement(response)
+        });
+        return false;
+    })
+*/
     $("#"+shape.type).click()
 }
 
