@@ -11,6 +11,8 @@ class ProjectService {
             Project project = co.project
             project.addToCadObjects(cadObject)
             project.save()
+        }else{
+            log.debug co.errors
         }
         return cadObject
     }

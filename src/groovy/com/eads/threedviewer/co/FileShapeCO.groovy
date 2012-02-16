@@ -5,6 +5,8 @@ import groovy.transform.ToString
 import org.codehaus.groovy.grails.validation.Validateable
 import org.jcae.opencascade.jni.TopoDS_Shape
 import org.springframework.web.multipart.MultipartFile
+import com.eads.threedviewer.CADObject
+import com.eads.threedviewer.enums.ShapeType
 
 @Validateable
 @ToString(includeNames = true, includeFields = true, excludes = 'metaClass,errors', includeSuper = true)
@@ -26,5 +28,11 @@ class FileShapeCO extends ShapeCO {
 
     byte[] getContent() {
         return file.bytes
+    }
+
+    CADObject getCADObject() {
+        CADObject cadObject = super.getCADObject()
+        cadObject.type = ShapeType.FILE
+        return cadObject
     }
 }
