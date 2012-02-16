@@ -80,13 +80,51 @@ class ShapeService {
         return object
     }
 
-    public static Map getShapeInfo(CADObject cadObject) {
+    public static getCubeInfo(CADCubeObject cadObject){
         Map result = [:]
         result.name = cadObject.name
         result.type = cadObject.type.toString()
         result.x = cadObject.x
         result.y = cadObject.y
         result.z = cadObject.z
+        result.x1 = cadObject.x1
+        result.y1 = cadObject.y1
+        result.z1 = cadObject.z1
+        return result
+    }
+
+    public static getConeInfo(CADConeObject cadObject){
+        Map result = [:]
+        result.name = cadObject.name
+        result.type = cadObject.type.toString()
+        result.x = cadObject.x
+        result.y = cadObject.y
+        result.z = cadObject.z
+        result.baseRadius = cadObject.baseRadius
+        result.height = cadObject.height
+        return result
+    }
+
+    public static getCylinderInfo(CADCylinderObject cadObject){
+        Map result = [:]
+        result.name = cadObject.name
+        result.type = cadObject.type.toString()
+        result.x = cadObject.x
+        result.y = cadObject.y
+        result.z = cadObject.z
+        result.radius = cadObject.radius
+        result.height = cadObject.height
+        return result
+    }
+
+    public static getSphereInfo(CADSphereObject cadObject){
+        Map result = [:]
+        result.name = cadObject.name
+        result.type = cadObject.type.toString()
+        result.x = cadObject.x
+        result.y = cadObject.y
+        result.z = cadObject.z
+        result.radius = cadObject.radius
         return result
     }
 }

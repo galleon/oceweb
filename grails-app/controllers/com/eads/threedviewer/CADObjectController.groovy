@@ -74,7 +74,19 @@ class CADObjectController {
 
     def edit(Long id){
         CADObject cadObject = CADObject.get(id)
-        Map result  = ShapeService.getShapeInfo(cadObject)
+        Map result
+        if(cadObject.type == ShapeType.CUBE){
+            result = ShapeService.getCubeInfo(cadObject)
+        }
+        if(cadObject.type == ShapeType.CONE){
+            result = ShapeService.getConeInfo(cadObject)
+        }
+        if(cadObject.type == ShapeType.CYLINDER){
+            result = ShapeService.getCylinderInfo(cadObject)
+        }
+        if(cadObject.type == ShapeType.SPHERE){
+            result = ShapeService.getSphereInfo(cadObject)
+        }
         render result as JSON
     }
 

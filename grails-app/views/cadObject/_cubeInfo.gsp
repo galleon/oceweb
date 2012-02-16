@@ -1,5 +1,6 @@
+<%@ page import="com.eads.threedviewer.enums.ShapeType" %>
 <g:form action="createCube" controller="CADObject" name="cubeForm">
-    <g:hiddenField name="type" value="CUBE"/>
+    <g:hiddenField name="type" value="${ShapeType.CUBE}"/>
     <fieldset class="form">
         <div class="data-fields">
             <g:render template="/cadObject/shapeInfo"/>

@@ -230,7 +230,8 @@ function defaultMenu(node) {
                 var url = createLink('CADObject', 'edit');
                 url = url + "/" + id;
                 $.post(url, function(response){
-                    editShape(response)
+                    debugStatement(response)
+//                    editShape(response)
                 });
             },
             "separator_before":false,
@@ -282,6 +283,9 @@ function defaultMenu(node) {
 
     }
     return items;
+}
+
+function editCube(shape){
 }
 
 function editShape(shape){
