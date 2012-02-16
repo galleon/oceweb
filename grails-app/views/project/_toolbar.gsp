@@ -1,9 +1,4 @@
 <g:if test="${project}">
-    <script type="text/javascript">
-        $(document).ready(function () {
-            enableJsTree();
-        })
-    </script>
     <g:hiddenField name="projectId" value="${project.id}"/>
     <ul class="toolbox-list clearfix">
         <li><a title="Create sphere" class="sphere nyroModal" href="#sphereInfo"></a></li>

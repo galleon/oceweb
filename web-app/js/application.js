@@ -47,13 +47,14 @@ $(document).ready(function () {
             window.location.href = data.substring(data.indexOf("=") + 1, data.length);
         }
     });
-    $("#deleteProject").click(function () {
-        $("#confirmDeleteProject").dialog();
-    })
+    enableJsTree();
     $(".closeModel").click(function () {
         $(".ui-icon-closethick").click();
     })
     $("input:submit,input:button, button,a.modelLink").button();
+    $("#phtml_1").click(function () {
+        return false;
+    })
     removeErrorMessage();
     removeFlashMessage();
 })
@@ -276,7 +277,13 @@ function defaultMenu(node) {
     };
     var selectedId = $(node).attr('id');
     if (selectedId == "phtml_1") {
-        items = {}
+        items = {deleteNode:{
+            label:"Delete",
+            "action":deleteProject,
+            "_class":"class",
+            "separator_before":false,
+            "separator_after":true
+        } }
     }
     if ($('#project').jstree('get_selected').size() == 2) {
         items = {
@@ -398,4 +405,7 @@ function getContext() {
         context = '/threedViewer' + context;
     }
     return context
+}
+function deleteProject() {
+    $("#confirmDeleteProject").dialog();
 }

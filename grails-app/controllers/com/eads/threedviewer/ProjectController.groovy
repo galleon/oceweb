@@ -3,10 +3,10 @@ package com.eads.threedviewer
 class ProjectController {
 
     def index(String name) {
-        List<Project> projects = Project.list()
         CADObject cadObject = params.shapeId ? CADObject.get(params.shapeId) : null
         Project project = cadObject ? cadObject.project : null
         project = name ? Project.findOrSaveWhere([name: name]) : project
+        List<Project> projects = Project.list()
         [projects: projects, project: project ?: (projects ? projects.first() : null), shapeId: params.shapeId]
     }
 

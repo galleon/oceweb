@@ -33,13 +33,4 @@
         </g:else>
     </div>
 
-
-    <div class="bendl"></div>
-
-    <div class="bendr"></div>
 </div>
-<script type="text/javascript">
-    $(document).ready(function () {
-        enableJsTree();
-    })
-</script>

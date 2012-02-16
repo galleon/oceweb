@@ -50,7 +50,6 @@
                                   id='selectProject'/>
                     </li>
                     <g:render template="/project/confirmDelete" model="[project: project]"/>
-                    <li style="margin-left: 10px;"><input type="button"  value="Delete" id="deleteProject"/></li>
                 </g:if>
                 <li class="last"><g:link uri="/">3-D Viewer</g:link><div id="spinner" style="display:none; text-align: right">Please wait while you content is loading</div></li>
             </ul>
@@ -58,7 +57,7 @@
     </div>
 
     <div id="projectTree">
-        <g:render template="/project/cadObjects" model="[projects: projects, project: project]"/>
+        <g:render template="/project/cadObjects" model="[project: project]"/>
     </div>
 
     <div class="righttools clearfix">
