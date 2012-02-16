@@ -670,7 +670,7 @@ input#duration {
 .clearfix {
   zoom: 1;
 }
-#projectTree{z-index:5;position: absolute; top:4px; left: 210px ;cursor: pointer}
+#projectTree{z-index:5;position: absolute; top:4px; left: 235px ;cursor: pointer}
 
 .block.small.left {
     clear: none;
@@ -797,3 +797,4 @@ a {
 .fieldcontain input{float: right;}
 .last{color: #DDD;margin-left: 10px;float: right!important;}
 .last a{color: #ddd !important;font-size: 23px}
+.showInModel{display: none;}

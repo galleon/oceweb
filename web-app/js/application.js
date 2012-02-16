@@ -47,6 +47,13 @@ $(document).ready(function () {
             window.location.href = data.substring(data.indexOf("=") + 1, data.length);
         }
     });
+    $("#deleteProject").click(function () {
+        $("#confirmDeleteProject").dialog();
+    })
+    $(".closeModel").click(function () {
+        $(".ui-icon-closethick").click();
+    })
+    $("input:submit,input:button, button,a.modelLink").button();
     removeErrorMessage();
     removeFlashMessage();
 })

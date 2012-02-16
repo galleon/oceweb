@@ -16,11 +16,15 @@
     <link rel="stylesheet" href="${resource(dir: 'css', file: 'style.css')}" type="text/css">
     <link rel="stylesheet" href="${resource(dir: 'css', file: 'mobile.css')}" type="text/css">
     <link rel="stylesheet" href="${resource(dir: 'css', file: 'nyroModal.css')}" type="text/css">
+    <link rel="stylesheet" href="${resource(dir: 'css', file: 'jquery.ui.all.css')}" type="text/css">
     <jq:resources/>
     <script src="${resource(dir: 'js', file: 'jquery.ui.core.js')}"></script>
     <script src="${resource(dir: 'js', file: 'jquery.ui.widget.js')}"></script>
     <script src="${resource(dir: 'js', file: 'jquery.ui.mouse.js')}"></script>
+    <script src="${resource(dir: 'js', file: 'jquery.ui.button.js')}"></script>
     <script src="${resource(dir: 'js', file: 'jquery.ui.draggable.js')}"></script>
+    <script src="${resource(dir: 'js', file: 'jquery.ui.position.js')}"></script>
+    <script src="${resource(dir: 'js', file: 'jquery.ui.dialog.js')}"></script>
     <script src="${resource(dir: 'js', file: 'jquery.mousewheel.js')}"></script>
     <script src="${resource(dir: 'js', file: 'jquery.cookie.js')}"></script>
     <script src="${resource(dir: 'js', file: 'jquery.hotkeys.js')}"></script>
@@ -45,8 +49,8 @@
                         <g:select name="name" from="${projects}" optionKey="name" optionValue="name" noSelection="['': 'Choose Project']" value="${project?.name}"
                                   id='selectProject'/>
                     </li>
-                    <li style="margin-left: 10px;"><g:actionSubmit style="width:52px" value="Delete" action="delete" controller="project" class="export button"/></li>
-                    <g:hiddenField name="id" value="${project.id}"/>
+                    <g:render template="/project/confirmDelete" model="[project: project]"/>
+                    <li style="margin-left: 10px;"><input type="button"  value="Delete" id="deleteProject"/></li>
                 </g:if>
                 <li class="last"><g:link uri="/">3-D Viewer</g:link><div id="spinner" style="display:none; text-align: right">Please wait while you content is loading</div></li>
             </ul>

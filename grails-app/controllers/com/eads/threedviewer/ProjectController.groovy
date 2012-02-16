@@ -15,7 +15,7 @@ class ProjectController {
         render(template: 'cadObjects', model: [project: project, projects: Project.list()])
     }
 
-    def delete(String name, Long id) {
+    def delete(Long id) {
         Project project = id ? Project.get(id) : null
         if (project) {
             project.delete()
