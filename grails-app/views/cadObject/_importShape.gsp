@@ -1,5 +1,5 @@
 <g:uploadForm action="createShapeFromFile" controller="CADObject" name="cubeForm">
-    <fieldset class="form" style="width: 500px">
+    <fieldset class="form">
         <div class="data-fields">
             <g:render template="/cadObject/shapeInfo"/>
             <input type="file" name="file">
