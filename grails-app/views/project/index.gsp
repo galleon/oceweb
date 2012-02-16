@@ -44,25 +44,6 @@
     </div>
 
 </div>
-<a href="#explode" class="nyroModal" style="display: none" id="explodeLink">Explode</a>
-<a href="#mesh" class="nyroModal" style="display: none" id="meshLink">Mesh</a>
-
-<div id="editCube">Edit Cube Area</div>
-
-
-<div id="explode" style="display: none">
-    <g:render template="/cadObject/explode"/>
-</div>
-
-<div id="mesh" style="display: none">
-    <g:render template="/cadObject/mesh"/>
-</div>
-<a href="#operation" class="nyroModal" style="display: none" id="operationLink">Operation</a>
-
-<div id="operation" style="display: none">
-    <g:render template="/cadObject/operation"/>
-</div>
-
 
 <script type="text/javascript">
     var shapeId = '${shapeId}';
@@ -73,8 +54,6 @@
             $(this).addClass('active-face');
             return false;
         })
-        $('.nyroModal').nyroModal({filter:{title:''}});
-        $('.nyroModalTitle').html('');
         if (shapeId) {
             var url = createLink('CADObject', 'show');
             url = url + '/' + shapeId;

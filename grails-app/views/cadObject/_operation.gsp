@@ -4,29 +4,29 @@
     <g:hiddenField name="object2" value=""/>
     <g:hiddenField name="type" value="COMPOUND"/>
     <fieldset class="form">
-        <h3>Boolean Operation</h3>
-        <td:textField label="Name" name="name"/>
-        <div class="fieldcontain required">
-            <label>
-                Object 1
-            </label>
-            <span id="obj_1"></span>
-        </div>
+        <div class="data-fields">
+            <td:textField label="Name" name="name"/>
+            <div class="fieldcontain required">
+                <label>
+                    Object 1
+                </label>
+                <span id="obj_1"></span>
+            </div>
 
-        <div class="fieldcontain required">
-            <label>
-                Object 2
-            </label>
-            <span id="obj_2"></span>
-        </div>
+            <div class="fieldcontain required">
+                <label>
+                    Object 2
+                </label>
+                <span id="obj_2"></span>
+            </div>
 
-        <div class="fieldcontain required">
-            <label>
-                Operation
-            </label>
-            <g:select name="operation" from="${Operation.values()}"/>
+            <div class="fieldcontain required">
+                <label>
+                    Operation
+                </label>
+                <g:select name="operation" from="${Operation.values()}"/>
+            </div>
         </div>
-
     </fieldset>
     <fieldset class="buttons">
         <g:submitButton name="create" value="Create" class="save"/>

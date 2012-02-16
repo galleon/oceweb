@@ -793,8 +793,8 @@ a {
     top: 0.1em;
 }
 .fieldcontain{border-bottom: 1px solid #2C2C2C;margin-top: 12px;padding-bottom: 12px}
-.buttons{padding-top: 5px; float: right;background: #777;width: 100%}
+.buttons{margin-top: 5px}
 .fieldcontain input{float: right;}
 .last{color: #DDD;margin-left: 10px;float: right!important;}
 .last a{color: #ddd !important;font-size: 23px}
-.showInModel{display: none;}
+.hidden{display: none;}

@@ -27,6 +27,23 @@
                     </li>
                 </ul>
             </div>
+
+            <a href="#explode" class="model" style="display: none" id="explodeLink">Explode</a>
+            <a href="#mesh" class="model" style="display: none" id="meshLink">Mesh</a>
+
+            <div id="explode" style="display: none" title="Explode">
+                <g:render template="/cadObject/explode"/>
+            </div>
+
+            <div id="mesh" style="display: none" title="Create Mesh">
+                <g:render template="/cadObject/mesh"/>
+            </div>
+            <a href="#operation" class="model" style="display: none" id="operationLink">Operation</a>
+
+            <div id="operation" style="display: none" title="Boolean Operation">
+                <g:render template="/cadObject/operation"/>
+            </div>
+
         </g:if>
         <g:else>
             Project Not Found

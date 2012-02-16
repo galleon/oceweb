@@ -2,7 +2,6 @@
 <g:form action="explode" controller="CADObject" name="explodeForm">
     <g:hiddenField name="id" id="cadObjectId" value=""/>
     <fieldset class="form">
-        <h3>Explode Form</h3>
         <g:hiddenField name="type" value="EXPLODE"/>
         <div class="data-fields">
             <div class="fieldcontain required">

@@ -52,8 +52,8 @@ $(document).ready(function () {
         $(".ui-icon-closethick").click();
     })
     $("input:submit,input:button, button,a.modelLink").button();
-    $("#phtml_1").click(function () {
-        return false;
+    $(".model").click(function () {
+        $($(this).attr('href')).dialog();
     })
     removeErrorMessage();
     removeFlashMessage();
@@ -407,5 +407,5 @@ function getContext() {
     return context
 }
 function deleteProject() {
-    $("#confirmDeleteProject").dialog();
+    $("#confirmDeleteProject").show().removeClass('hidden').dialog();
 }

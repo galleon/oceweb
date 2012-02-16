@@ -2,7 +2,6 @@
 <g:form action="mesh" controller="util" name="meshForm">
     <g:hiddenField name="id" id="cadObjectId" value=""/>
     <fieldset class="form" >
-        <h3>Create a Mesh</h3>
         <div class="data-fields">
             <td:textField label="CAD Name" name="CADName"/>
             <td:textField label="Element Size" name="elementSize"/>
