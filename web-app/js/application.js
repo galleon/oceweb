@@ -51,7 +51,7 @@ $(document).ready(function () {
     removeFlashMessage();
 })
 
-var stats, camera, renderer, containerWidth, containerHeight, scene, container;
+var stats, camera, renderer, containerWidth, containerHeight, scene, container, trihedra;
 var targetRotation = 0;
 var targetRotationY = 0;
 var targetRotationOnMouseDown = 0;
@@ -101,8 +101,6 @@ function createMesh(response, name) {
 function addToGroup(object) {
     object.visible = true;
     group.add(object);
-    $(container).bind('mousedown', onDocumentMouseDown);
-    $(container).mousewheel(zoom);
 }
 
 function initialiseCanvas(containerId) {
@@ -122,14 +120,22 @@ function initialiseCanvas(containerId) {
 
     scene = new THREE.Scene();
     scene.add(camera);
-    scene.add(group);
-
-
     renderer = new THREE.CanvasRenderer();
     renderer.setSize(containerWidth, containerHeight);
     renderer.sortObjects = false;
 
+    trihedra  = new THREE.Axes();
+    trihedra.position.set(10, 10, 100);
+    trihedra.scale.x = trihedra.scale.y = trihedra.scale.z = 0.5;
+    trihedra.rotation.y = 5.5;
+    scene.add(trihedra);
+    scene.add(group);
     $(container).html(renderer.domElement);
+    $(container).bind('mousedown', onDocumentMouseDown);
+    $(container).mousewheel(zoom);
+    stats = new Stats();
+    $("#frameArea").append(stats.domElement);
+    animate();
 }
 
 function zoom(event, delta, deltaX, deltaY) {
@@ -229,7 +235,7 @@ function defaultMenu(node) {
                 $("#cadObjectId").val(id);
                 var url = createLink('CADObject', 'edit');
                 url = url + "/" + id;
-                $.post(url, function(response){
+                $.post(url, function (response) {
                     editShape(response)
                 });
             },
@@ -284,13 +290,13 @@ function defaultMenu(node) {
     return items;
 }
 
-function editShape(shape){
-    $("#"+shape.type.toLowerCase()+"Form "+ "#name").val(shape.name)
-    $("#"+shape.type.toLowerCase()+"Form "+ "#x").val(shape.x)
-    $("#"+shape.type.toLowerCase()+"Form "+ "#y").val(shape.y)
-    $("#"+shape.type.toLowerCase()+"Form "+ "#z").val(shape.z)
-    debugStatement("#"+shape.type.toLowerCase()+"Form"+ "#name")
-    $("#"+shape.type).click()
+function editShape(shape) {
+    $("#" + shape.type.toLowerCase() + "Form " + "#name").val(shape.name)
+    $("#" + shape.type.toLowerCase() + "Form " + "#x").val(shape.x)
+    $("#" + shape.type.toLowerCase() + "Form " + "#y").val(shape.y)
+    $("#" + shape.type.toLowerCase() + "Form " + "#z").val(shape.z)
+    debugStatement("#" + shape.type.toLowerCase() + "Form" + "#name")
+    $("#" + shape.type).click()
 }
 
 function toggleVisibility(node) {
@@ -376,7 +382,7 @@ function removeObjects(ids) {
     })
 }
 
-function getContext(){
+function getContext() {
     var context = '/';
     var path = window.location.pathname;
     if (path.indexOf('threedViewer') == 1) {

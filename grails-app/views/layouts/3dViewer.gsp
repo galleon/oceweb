@@ -36,8 +36,6 @@
 </head>
 
 <body>
-<div id="spinner" style="display: none;text-align: center">Please wait while you content is loading</div>
-
 <div id="toolbox">
     <div id="logo" class="righttools clearfix">
         <g:form action="index" controller="project" name="changeProject">
@@ -50,7 +48,7 @@
                     <li style="margin-left: 10px;"><g:actionSubmit style="width:52px" value="Delete" action="delete" controller="project" class="export button"/></li>
                     <g:hiddenField name="id" value="${project.id}"/>
                 </g:if>
-                <li class="last"><g:link uri="/">3-D Viewer</g:link></li>
+                <li class="last"><g:link uri="/">3-D Viewer</g:link><div id="spinner" style="display:none; text-align: right">Please wait while you content is loading</div></li>
             </ul>
         </g:form>
     </div>

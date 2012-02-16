@@ -7,8 +7,6 @@
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
     <script type="text/javascript">
         $(function () {
-            stats = new Stats();
-            $("#frameArea").append(stats.domElement);
             $("#cubeForm").submit(function () {
                 var x = $("#cubeForm #x").val()
                 var y = $("#cubeForm #y").val()
