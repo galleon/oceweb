@@ -10,22 +10,22 @@
                 </a>
             </li>
             <li style="float: right;padding:5px">
-                <a href="#sphereInfo" class="nyroModal" id="createSphere" title="Create sphere">
+                <a href="#sphereInfo" class="nyroModal" id="SPHERE" title="Create sphere">
                     <img src="${resource(dir: 'images', file: 'sphere.png')}">
                 </a>
             </li>
             <li style="float: right;padding:5px">
-                <a href="#cubeInfo" class="nyroModal" id="createCube" title="Create cube">
+                <a href="#cubeInfo" class="nyroModal" id="CUBE" title="Create cube">
                     <img src="${resource(dir: 'images', file: 'cube.png')}">
                 </a>
             </li>
             <li style="float: right;padding:5px">
-                <a href="#cylinderInfo" class="nyroModal" id="createCylinder" title="Create cylinder">
+                <a href="#cylinderInfo" class="nyroModal" id="CYLINDER" title="Create cylinder">
                     <img src="${resource(dir: 'images', file: 'cylinder.png')}">
                 </a>
             </li>
             <li style="float: right;padding:5px">
-                <a href="#coneInfo" class="nyroModal" id="createCone" title="Create Cone">
+                <a href="#coneInfo" class="nyroModal" id="CONE" title="Create Cone">
                     <img src="${resource(dir: 'images', file: 'cone.jpg')}">
                 </a>
             </li>

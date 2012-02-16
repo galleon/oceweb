@@ -2,6 +2,7 @@
 <g:form action="booleanOperation" controller="CADObject" name="booleanForm" class="shapeForm">
     <g:hiddenField name="object1" value=""/>
     <g:hiddenField name="object2" value=""/>
+    <g:hiddenField name="type" value="COMPOUND"/>
     <fieldset class="form" style="width: 420px;">
         <h3>Boolean Operation</h3>   <br/>
 

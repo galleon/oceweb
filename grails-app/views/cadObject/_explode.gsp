@@ -1,6 +1,7 @@
 <%@ page import="org.jcae.opencascade.jni.TopAbs_ShapeEnum" %>
 <g:form action="explode" controller="CADObject" name="explodeForm">
     <g:hiddenField name="id" id="cadObjectId" value=""/>
+    <g:hiddenField name="type"  value="EXPLODE"/>
     <fieldset class="form" style="width: 420px;">
         <h3>Explode Form</h3>   <br/>
 

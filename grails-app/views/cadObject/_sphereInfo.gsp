@@ -1,5 +1,5 @@
 <g:form action="createSphere" controller="CADObject" name="sphereForm">
-
+    <g:hiddenField name="type" value="SPHERE"/>
     <fieldset class="form">
         <div class="data-fields">
             <g:render template="/cadObject/shapeInfo"/>

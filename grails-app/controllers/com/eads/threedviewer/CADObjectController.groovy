@@ -5,6 +5,7 @@ import grails.converters.JSON
 import grails.validation.ValidationException
 import com.eads.threedviewer.co.*
 import org.jcae.opencascade.jni.TopAbs_ShapeEnum
+import com.eads.threedviewer.enums.ShapeType
 
 class CADObjectController {
 
@@ -69,6 +70,12 @@ class CADObjectController {
     def booleanOperation(BooleanOperationCO co) {
         CADObject cadObject = shapeService.createBooleanObject(co)
         redirect(controller: 'project', action: 'index', params: [name: cadObject?.project?.name, shapeId: cadObject.id])
+    }
+
+    def edit(Long id){
+        CADObject cadObject = CADObject.get(id)
+        Map result  = ShapeService.getShapeInfo(cadObject)
+        render result as JSON
     }
 
 
