@@ -47,6 +47,9 @@
 <a href="#explode" class="nyroModal" style="display: none" id="explodeLink">Explode</a>
 <a href="#mesh" class="nyroModal" style="display: none" id="meshLink">Mesh</a>
 
+<div id="editCube">Edit Cube Area</div>
+
+
 <div id="explode" style="display: none">
     <g:render template="/cadObject/explode"/>
 </div>

@@ -1,5 +1,6 @@
+<%@ page import="com.eads.threedviewer.enums.ShapeType" %>
 <g:form action="createCylinder" controller="CADObject" name="cylinderForm">
-    <g:hiddenField name="type" value="CYLINDER"/>
+    <g:hiddenField name="type" value="${ShapeType.CYLINDER}"/>
     <fieldset class="form">
         <div class="data-fields">
             <g:render template="/cadObject/shapeInfo"/>
@@ -9,7 +10,7 @@
         </div>
     </fieldset>
     <fieldset class="buttons">
-        <g:actionSubmit value="Create" action="createCylinder" class="save"/>
+        <g:actionSubmit value="Create" id="submit" action="createCylinder" class="save"/>
         <input type="button" value="Cancel" id="cancel" class="save nyroModalClose"/>
     </fieldset>
 </g:form>

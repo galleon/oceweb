@@ -5,12 +5,12 @@
         <div class="data-fields">
             <g:render template="/cadObject/shapeInfo"/>
             <g:render template="/cadObject/axisInfo"/>
-            <td:textField label="Base Radius" name="baseRadius"/>
-            <td:textField label="Height" name="height"/>
+            <td:textField label="Base Radius" name="baseRadius" value="${cadObject?.baseRadius}"/>
+            <td:textField label="Height" name="height" value="${cadObject?.height}"/>
         </div>
     </fieldset>
     <fieldset class="buttons">
-        <g:actionSubmit value="Create" id="submit" action="createCone" class="save"/>
+        <g:actionSubmit value="Edit" id="submit" action="editCone" class="save"/>
         <input type="button" value="Cancel" id="cancel" class="save nyroModalClose"/>
     </fieldset>
 </g:form>

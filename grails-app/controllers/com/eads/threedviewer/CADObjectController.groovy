@@ -32,6 +32,37 @@ class CADObjectController {
         sendResponse(co)
     }
 
+    def editCube(CubeCO co) {
+        editResponse(co)
+    }
+
+    def editCylinder(CubeCO co) {
+        editResponse(co)
+    }
+
+    def editCone(CubeCO co) {
+        editResponse(co)
+    }
+
+    def editSphere(CubeCO co) {
+        editResponse(co)
+    }
+
+    Closure editResponse = {ShapeCO co ->
+        CADObject cadObject
+        try{
+            cadObject = projectService.editCADObject(co)
+        }
+        catch(ValidationException ve) {
+            flash.error = ve.message
+        }
+        if (cadObject) {
+            redirect(controller: 'project', action: 'index', params: [shapeId: cadObject.id])
+        } else {
+            render(view: '/project/index', model: [project: co.project, projects: Project.list(), co: co])
+        }
+    }
+
     Closure sendResponse = {ShapeCO co ->
         CADObject cadObject
         try {
@@ -72,10 +103,23 @@ class CADObjectController {
         redirect(controller: 'project', action: 'index', params: [name: cadObject?.project?.name, shapeId: cadObject.id])
     }
 
-    def edit(Long id){
-        CADObject cadObject = CADObject.get(id)
-        Map result  = ShapeService.getShapeInfo(cadObject)
-        render result as JSON
+    def edit(){
+        CADObject cadObject = CADObject.get(params.id)
+        if(cadObject.type == ShapeType.CUBE){
+            render(template: '/cadObject/editCube', model: [cadObject: cadObject, project: cadObject.project])
+        }
+        if(cadObject.type == ShapeType.CONE){
+            render(template: '/cadObject/editCone', model: [cadObject: cadObject, project: cadObject.project])
+        }
+        if(cadObject.type == ShapeType.CYLINDER){
+            render(template: '/cadObject/editCylinder', model: [cadObject: cadObject, project: cadObject.project])
+        }
+        if(cadObject.type == ShapeType.SPHERE){
+            render(template: '/cadObject/editSphere', model: [cadObject: cadObject, project: cadObject.project])
+        }
+    }
+
+    def editShape(Long id){
     }
 
 
