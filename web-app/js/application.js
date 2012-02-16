@@ -26,11 +26,6 @@ $(document).ready(function () {
     $("#selectProject").change(function () {
         $("#changeProject").submit();
     });
-    $('.errors .close').click(function () {
-        $(this).parent().fadeOut('slow', function () {
-            $(this).remove();
-        });
-    });
     $("#toolbar").draggable();
     $("#projectTree").draggable();
     initialiseCanvas('content');
@@ -87,8 +82,7 @@ function showShapeFromRemote(url) {
             alert(response.error)
         } else {
             var object = createMesh(response, url);
-//            group.add(object)
-            addToScene(object);
+            addToGroup(object);
         }
     });
 }
@@ -105,7 +99,7 @@ function createMesh(response, name) {
     return object
 }
 
-function addToScene(object) {
+function addToGroup(object) {
     object.visible = true;
     group.add(object);
     $(container).bind('mousedown', onDocumentMouseDown);
@@ -183,7 +177,6 @@ function animate() {
 }
 
 function render() {
-
     group.rotation.y += ( targetRotation - group.rotation.y ) * 0.1;
     group.rotation.x += ( targetRotationY - group.rotation.x ) * 0.1;
 
@@ -308,11 +301,16 @@ function toggleVisibility(node) {
 function deleteObject(node) {
     var url = createLink('CADObject', 'delete');
     var ids = [];
+    var objectIds = [];
     $.each($('#project').jstree('get_selected').children().filter('a'), function () {
-        ids.push("ids=" + $(this).attr('id'));
+        var id = $(this).attr('id');
+        ids.push("ids=" + id);
+        objectIds.push(id)
     });
     $.each($(node).children().filter('a'), function () {
-        ids.push("ids=" + $(this).attr('id'));
+        var id = $(this).attr('id');
+        ids.push("ids=" + id);
+        objectIds.push(id)
     });
     if (ids.length > 0) {
         url = url + "?" + ids.join("&");
@@ -320,13 +318,13 @@ function deleteObject(node) {
             if (response.success) {
                 $('#project').jstree('get_selected').remove();
                 $(node).remove();
+                removeObjects(objectIds)
                 alert(response.success)
             } else {
                 alert(response.error)
             }
         });
     }
-
 }
 
 function updateName(id, name) {
@@ -357,4 +355,15 @@ function removeErrorMessage() {
 }
 function removeFlashMessage() {
     updateTimer = setTimeout('jQuery("#flashError").remove()', 2000);
+}
+
+function removeObjects(ids) {
+    $.each(ids, function (index, value) {
+        var url = createLink('CADObject', 'show') + "/" + value;
+        var object = group.getChildByName(url);
+        if (object) {
+            group.remove(object)
+        }
+    })
+
 }
