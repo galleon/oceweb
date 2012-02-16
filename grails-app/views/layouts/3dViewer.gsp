@@ -40,19 +40,23 @@
 
 <div id="toolbox">
     <div id="logo" class="righttools clearfix">
-        <g:if test="${project}">
-            <g:form action="index" controller="project" name="changeProject">
-                <ul class="light-list clearfix" style="width: 100%">
+        <g:form action="index" controller="project" name="changeProject">
+            <ul class="light-list clearfix" style="width: 100%">
+                <g:if test="${project}">
                     <li>
                         <g:select name="name" from="${projects}" optionKey="name" optionValue="name" noSelection="['': 'Choose Project']" value="${project?.name}"
                                   id='selectProject'/>
                     </li>
                     <li style="margin-left: 10px;"><g:actionSubmit style="width:52px" value="Delete" action="delete" controller="project" class="export button"/></li>
-                    <li class="last"><g:link uri="/">3-D Viewer</g:link></li>
-                </ul>
-                <g:hiddenField name="id" value="${project.id}"/>
-            </g:form>
-        </g:if>
+                    <g:hiddenField name="id" value="${project.id}"/>
+                </g:if>
+                <li class="last"><g:link uri="/">3-D Viewer</g:link></li>
+            </ul>
+        </g:form>
+    </div>
+
+    <div id="projectTree">
+        <g:render template="/project/cadObjects" model="[projects: projects, project: project]"/>
     </div>
 
     <div class="righttools clearfix">

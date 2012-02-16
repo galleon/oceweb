@@ -42,10 +42,7 @@
     <g:if test="${flash.error}">
         <ul class="errors" role="alert" id="flashError"><li>${flash.error}</li></ul>
     </g:if>
-    <div id="projectTree">
-        <g:render template="/project/cadObjects" model="[projects: projects, project: project]"/>
-    </div>
-    <div id="content">
+   <div id="content">
     </div>
 
 </div>
