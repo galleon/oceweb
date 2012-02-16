@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <title>Project</title>
-    <meta name="layout" content="main"/>
+    <meta name="layout" content="3dViewer"/>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
     <script type="text/javascript">
@@ -42,17 +42,7 @@
     <g:if test="${flash.error}">
         <ul class="errors" role="alert" id="flashError"><li>${flash.error}</li></ul>
     </g:if>
-    <div id="projectTree">
-        <g:render template="/project/cadObjects" model="[projects: projects, project: project]"/>
-    </div>
-    <g:if test="${project}">
-        <div id="toolbar">
-            <g:render template="/project/toolbar" model="[project: project]"/>
-        </div>
-
-    </g:if>
-
-    <div id="content">
+   <div id="content">
     </div>
 
 </div>

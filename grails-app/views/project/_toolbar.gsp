@@ -1,66 +1,38 @@
-<div class="block small left">
-
-    <div class="block_content">
-
-        <g:hiddenField name="projectId" value="${project.id}"/>
-        <ul>
-            <li style="float: right;padding:5px ">
-                <a href="#importShapeInfo" class="nyroModal" id="importShape" title="Import Shape">
-                    <img src="${resource(dir: 'images', file: 'folder-big.png')}">
-                </a>
-            </li>
-            <li style="float: right;padding:5px">
-                <a href="#sphereInfo" class="nyroModal" id="SPHERE" title="Create sphere">
-                    <img src="${resource(dir: 'images', file: 'sphere.png')}">
-                </a>
-            </li>
-            <li style="float: right;padding:5px">
-                <a href="#cubeInfo" class="nyroModal" id="CUBE" title="Create cube">
-                    <img src="${resource(dir: 'images', file: 'cube.png')}">
-                </a>
-            </li>
-            <li style="float: right;padding:5px">
-                <a href="#cylinderInfo" class="nyroModal" id="CYLINDER" title="Create cylinder">
-                    <img src="${resource(dir: 'images', file: 'cylinder.png')}">
-                </a>
-            </li>
-            <li style="float: right;padding:5px">
-                <a href="#coneInfo" class="nyroModal" id="CONE" title="Create Cone">
-                    <img src="${resource(dir: 'images', file: 'cone.jpg')}">
-                </a>
-            </li>
-            <li style="float: left;" id="frameArea"></li>
-        </ul>
-
-        <div id="cubeInfo" style="display: none">
-            <g:render template="/cadObject/cubeInfo"/>
-        </div>
-
-        <div id="sphereInfo" style="display: none">
-            <g:render template="/cadObject/sphereInfo"/>
-        </div>
-
-        <div id="cylinderInfo" style="display: none">
-            <g:render template="/cadObject/cylinderInfo"/>
-        </div>
-
-        <div id="coneInfo" style="display: none">
-            <g:render template="/cadObject/coneInfo"/>
-        </div>
-
-        <div id="importShapeInfo" style="display: none">
-            <g:render template="/cadObject/importShape"/>
-        </div>
-
-    </div>
-
-
-    <div class="bendl"></div>
-
-    <div class="bendr"></div>
-</div>
 <script type="text/javascript">
     $(document).ready(function () {
         enableJsTree();
     })
 </script>
+<g:if test="${project}">
+    <g:hiddenField name="projectId" value="${project.id}"/>
+    <ul class="toolbox-list clearfix">
+        <li><a title="Create sphere" class="sphere nyroModal" href="#sphereInfo"></a></li>
+        <li><a title="Create Cube" class="cube nyroModal" href="#cubeInfo"></a></li>
+        <li><a title="Create Cylinder" class="cylinder nyroModal" href="#cylinderInfo"></a></li>
+        <li><a title="Create Cone" class="cone nyroModal" href="#coneInfo"></a></li>
+        <li><a title="Import File" class="plane nyroModal" href="#importShapeInfo"></a></li>
+    </ul>
+    <ul class="export-list">
+        <li id="frameArea"></li>
+    </ul>
+
+    <div id="cubeInfo" style="display: none">
+        <g:render template="/cadObject/cubeInfo"/>
+    </div>
+
+    <div id="sphereInfo" style="display: none">
+        <g:render template="/cadObject/sphereInfo"/>
+    </div>
+
+    <div id="cylinderInfo" style="display: none">
+        <g:render template="/cadObject/cylinderInfo"/>
+    </div>
+
+    <div id="coneInfo" style="display: none">
+        <g:render template="/cadObject/coneInfo"/>
+    </div>
+
+    <div id="importShapeInfo" style="display: none">
+        <g:render template="/cadObject/importShape"/>
+    </div>
+</g:if>

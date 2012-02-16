@@ -3,17 +3,9 @@
     <g:hiddenField name="object1" value=""/>
     <g:hiddenField name="object2" value=""/>
     <g:hiddenField name="type" value="COMPOUND"/>
-    <fieldset class="form" style="width: 420px;">
-        <h3>Boolean Operation</h3>   <br/>
-
-        <div class="fieldcontain required">
-            <label for="name">
-                Name
-                <span class="required-indicator">*</span>
-            </label>
-            <g:textField name="name" value="Compound" required="true"/>
-        </div>
-
+    <fieldset class="form">
+        <h3>Boolean Operation</h3>
+        <td:textField label="Name" name="name"/>
         <div class="fieldcontain required">
             <label>
                 Object 1
@@ -27,9 +19,10 @@
             </label>
             <span id="obj_2"></span>
         </div>
+
         <div class="fieldcontain required">
             <label>
-               Operation
+                Operation
             </label>
             <g:select name="operation" from="${Operation.values()}"/>
         </div>
