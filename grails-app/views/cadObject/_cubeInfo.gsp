@@ -1,4 +1,5 @@
 <g:form action="createCube" controller="CADObject" name="cubeForm">
+    <g:hiddenField name="type" value="CUBE"/>
     <fieldset class="form">
         <div class="data-fields">
             <g:render template="/cadObject/shapeInfo"/>

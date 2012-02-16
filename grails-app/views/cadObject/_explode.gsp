@@ -3,6 +3,7 @@
     <g:hiddenField name="id" id="cadObjectId" value=""/>
     <fieldset class="form">
         <h3>Explode Form</h3>
+        <g:hiddenField name="type" value="EXPLODE"/>
         <div class="data-fields">
             <div class="fieldcontain required">
                 <label for="shape">

@@ -1,4 +1,5 @@
-<g:form action="createCone" controller="CADObject" name="cubeForm" >
+<g:form action="createCone" controller="CADObject" name="coneForm" >
+    <g:hiddenField name="type" value="CONE"/>
     <fieldset class="form">
         <div class="data-fields">
             <g:render template="/cadObject/shapeInfo"/>

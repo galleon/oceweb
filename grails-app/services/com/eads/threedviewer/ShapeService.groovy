@@ -7,6 +7,7 @@ import org.jcae.opencascade.jni.TopoDS_Shape
 import com.eads.threedviewer.co.BooleanOperationCO
 import org.jcae.opencascade.jni.*
 import com.eads.threedviewer.enums.Operation
+import com.eads.threedviewer.enums.ShapeType
 
 class ShapeService {
 
@@ -43,7 +44,7 @@ class ShapeService {
 
     CADObject saveSubCadObjects(CADObject cadObject, String name, TopoDS_Shape currentShape) {
         File file = ShapeUtil.getFile(currentShape, cadObject.name)
-        CADObject subCadObject = new CADObject(name: name, project: cadObject.project, content: file.bytes, parent: cadObject)
+        CADObject subCadObject = new CADObject(name: name, project: cadObject.project, content: file.bytes, parent: cadObject, type: ShapeType.EXPLODE)
         file.delete()
         return subCadObject.save()
     }
@@ -61,7 +62,7 @@ class ShapeService {
     }
 
     CADObject saveCADObject(String name, byte[] content, Project project) {
-        CADObject cadObject = new CADObject(name: name, content: content, project: project)
+        CADObject cadObject = new CADObject(name: name, content: content, project: project, type: ShapeType.COMPOUND)
         return cadObject.save(flush: true)
     }
 
@@ -77,5 +78,15 @@ class ShapeService {
             object = new BRepAlgoAPI_Cut(shape1, shape2)
         }
         return object
+    }
+
+    public static Map getShapeInfo(CADObject cadObject) {
+        Map result = [:]
+        result.name = cadObject.name
+        result.type = cadObject.type.toString()
+        result.x = cadObject.x
+        result.y = cadObject.y
+        result.z = cadObject.z
+        return result
     }
 }

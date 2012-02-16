@@ -1,4 +1,5 @@
 <g:form action="createCylinder" controller="CADObject" name="cylinderForm">
+    <g:hiddenField name="type" value="CYLINDER"/>
     <fieldset class="form">
         <div class="data-fields">
             <g:render template="/cadObject/shapeInfo"/>

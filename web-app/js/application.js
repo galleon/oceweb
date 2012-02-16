@@ -225,7 +225,13 @@ function defaultMenu(node) {
             label:"Edit",
             "_class":"class",
             "action":function (obj) {
-                this.rename(obj);
+                var id = $(obj).children().filter('a').attr('id');
+                $("#cadObjectId").val(id);
+                var url = createLink('CADObject', 'edit');
+                url = url + "/" + id;
+                $.post(url, function(response){
+                    editShape(response)
+                });
             },
             "separator_before":false,
             "separator_after":true
@@ -276,6 +282,15 @@ function defaultMenu(node) {
 
     }
     return items;
+}
+
+function editShape(shape){
+    $("#"+shape.type.toLowerCase()+"Form "+ "#name").val(shape.name)
+    $("#"+shape.type.toLowerCase()+"Form "+ "#x").val(shape.x)
+    $("#"+shape.type.toLowerCase()+"Form "+ "#y").val(shape.y)
+    $("#"+shape.type.toLowerCase()+"Form "+ "#z").val(shape.z)
+    debugStatement("#"+shape.type.toLowerCase()+"Form"+ "#name")
+    $("#"+shape.type).click()
 }
 
 function toggleVisibility(node) {
