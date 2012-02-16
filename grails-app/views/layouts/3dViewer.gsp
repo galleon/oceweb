@@ -23,6 +23,7 @@
     <script src="${resource(dir: 'js', file: 'jquery.ui.button.js')}"></script>
     <script src="${resource(dir: 'js', file: 'jquery.ui.draggable.js')}"></script>
     <script src="${resource(dir: 'js', file: 'jquery.ui.position.js')}"></script>
+    <script src="${resource(dir: 'js', file: 'jquery.ui.resizable.js')}"></script>
     <script src="${resource(dir: 'js', file: 'jquery.ui.dialog.js')}"></script>
     <script src="${resource(dir: 'js', file: 'jquery.mousewheel.js')}"></script>
     <script src="${resource(dir: 'js', file: 'jquery.cookie.js')}"></script>

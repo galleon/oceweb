@@ -11,6 +11,6 @@
     </fieldset>
     <fieldset class="buttons">
         <g:actionSubmit value="Create" id="submit" action="createCylinder" class="save"/>
-        <input type="button" value="Cancel" id="cancel" class="save nyroModalClose"/>
+        <input type="button" value="Cancel" id="cancel" class="save closeModel"/>
     </fieldset>
 </g:form>
