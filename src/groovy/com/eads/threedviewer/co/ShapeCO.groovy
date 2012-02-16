@@ -30,27 +30,6 @@ abstract class ShapeCO {
 
     CADObject getCADObject() {
         CADObject cadObject = new CADObject(name: name, project: project, x: x, y: y, z: z, content: content)
-        if (type == ShapeType.CONE.toString()) {
-            cadObject.type = ShapeType.CONE
-        }
-        if (type == ShapeType.CYLINDER.toString()) {
-            cadObject.type = ShapeType.CYLINDER
-        }
-        if (type == ShapeType.CUBE.toString()) {
-            cadObject.type = ShapeType.CUBE
-        }
-        if (type == ShapeType.SPHERE.toString()) {
-            cadObject.type = ShapeType.SPHERE
-        }
-        if (type == ShapeType.FILE.toString()) {
-            cadObject.type = ShapeType.FILE
-        }
-        if (type == ShapeType.COMPOUND.toString()) {
-            cadObject.type = ShapeType.COMPOUND
-        }
-        if (type == ShapeType.EXPLODE.toString()) {
-            cadObject.type = ShapeType.EXPLODE
-        }
         return cadObject
     }
 

@@ -231,6 +231,8 @@ function defaultMenu(node) {
                 url = url + "/" + id;
                 $.post(url, function(response){
                     debugStatement(response)
+                    $("#editCube").nyroModal();
+                    $("#editCube").html(response);
 //                    editShape(response)
                 });
             },
