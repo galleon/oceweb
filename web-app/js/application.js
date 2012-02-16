@@ -128,7 +128,7 @@ function initialiseCanvas(containerId) {
     trihedra.position.set(10, 10, 100);
     trihedra.scale.x = trihedra.scale.y = trihedra.scale.z = 0.5;
     trihedra.rotation.y = 5.5;
-    scene.add(trihedra);
+    addToGroup(trihedra);
     scene.add(group);
     $(container).html(renderer.domElement);
     $(container).bind('mousedown', onDocumentMouseDown);
