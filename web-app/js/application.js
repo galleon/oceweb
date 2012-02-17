@@ -53,6 +53,7 @@ $(document).ready(function () {
     $("input:submit,input:button, button,a.modelLink").button();
     $(".model").click(function () {
         $($(this).attr('href')).dialog();
+        $('.ui-dialog').css('padding-top', '8px').width('340px');
     })
     removeErrorMessage();
     removeFlashMessage();
@@ -88,9 +89,7 @@ function showShapeFromRemote(id) {
     $.getJSON(url, {id:id}, function (response) {
         if (response.error) {
             $("#dialog-confirm p").html(response.error);
-            $("#dialog-confirm").attr("title", "Error");
-            $("#dialog-confirm").dialog();
-//            alert(response.error)
+            $("#dialog-confirm").dialog({title:'Error'});
         } else {
             var object = createMesh(response, id);
             addToGroup(object);
@@ -250,7 +249,6 @@ function defaultMenu(node) {
                 url = url + "/" + id;
                 $.post(url, function (response) {
                     debugStatement(response)
-                    $("#editCube").nyroModal();
                     $("#editCube").html(response);
                 });
             },
@@ -276,6 +274,7 @@ function defaultMenu(node) {
                 var id = $(obj).children().filter('a').attr('id');
                 $("#meshForm #cadObjectId").val(id);
                 $("#mesh").dialog();
+                $('.ui-dialog').width('340px');
             },
             "separator_before":false
         }
