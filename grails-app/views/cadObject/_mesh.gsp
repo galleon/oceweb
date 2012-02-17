@@ -1,10 +1,10 @@
 <%@ page import="org.jcae.mesh.cad.CADShapeEnum" %>
 <g:form action="mesh" controller="util" name="meshForm">
-    <g:hiddenField name="id" id="cadObjectId" value=""/>
-    <fieldset class="form" >
+    <g:hiddenField name="parent.id" id="cadObjectId" value=""/>
+    <fieldset class="form">
         <div class="data-fields">
-            <td:textField label="CAD Name" name="CADName"/>
-            <td:textField label="Element Size" name="elementSize"/>
+            <g:render template="/cadObject/shapeInfo"/>
+            <td:textField label="Element Size" name="size"/>
             <td:textField label=" Deflection" name="deflection"/>
         </div>
     </fieldset>

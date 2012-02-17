@@ -18,9 +18,9 @@ class CADObject {
     double z
     CADObject parent
     byte[] content
+    ShapeType type
     Date dateCreated
     Date lastUpdated
-    ShapeType type
 
 /* Transients */
     static transients = ['subCadObjects', 'shape']

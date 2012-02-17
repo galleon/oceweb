@@ -17,7 +17,7 @@ abstract class ShapeCO {
     double x
     double y
     double z
-    String type
+    ShapeType type
 
     static constraints = {
         name(nullable: false, blank: false)

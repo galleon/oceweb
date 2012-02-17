@@ -22,8 +22,9 @@ import org.jcae.mesh.xmldata.MeshWriter
 import org.jcae.mesh.amibe.algos2d.*
 import org.jcae.opencascade.jni.*
 import com.eads.threedviewer.util.ShapeUtil
-import org.jcae.mesh.amibe.ds.Mesh
-import com.eads.threedviewer.util.UNVParser
+
+import grails.web.RequestParameter
+import com.eads.threedviewer.co.MeshCO
 
 class UtilController {
 
@@ -81,54 +82,73 @@ class UtilController {
         render generateData(shape) as JSON
     }
 
-    def mesh(Long id, float elementSize, float deflection) {
+    def mesh(MeshCO co) {
+        Long id = co.parent.id
+        float size = co.size
+        float deflection = co.deflection
         CADObject cadObject = CADObject.get(id)
         File file = cadObject.createFile()
         String brepfile = file.name
-        String outputDir = "/tmp"
-        File xmlDirF = new File(outputDir)
-        xmlDirF.mkdir()
-        float leng = elementSize
-        float defl = deflection
+        String outputDir = "/tmp/${id}"
 
-        String unvName = "${outputDir}${File.separator}.unv"
 
+        String brepdir = file.parent
+        if (brepfile.indexOf((int) File.separatorChar) >= 0) {
+            int idx = brepfile.lastIndexOf((int) File.separatorChar)
+            brepdir = brepfile.substring(0, idx)
+            brepfile = brepfile.substring(idx + 1)
+        }
+
+        String unvName = "${outputDir}/${id}.unv"
+        log.info "Ouput Dir -: ${outputDir} ,unvName -: ${unvName} ,brepDir -: ${brepdir}"
+
+        File xmlDirF = new File(outputDir);
         xmlDirF.mkdirs();
         if (!xmlDirF.exists() || !xmlDirF.isDirectory()) {
-            println "Cannot write to ${outputDir}"
+            log.info "Cannot write to ${outputDir}"
             System.exit(1);
         }
 
         CADShapeFactory factory = CADShapeFactory.getFactory()
 
-// Mesh 1D
-// This method takes as
-//    Input : shape (the shape to be meshed)
-//    Output: ...
+        if (!brepdir.equals(outputDir)) {
+            FileInputStream is = null;
+            FileOutputStream os = null;
+            try {
+                is = new FileInputStream(brepdir + File.separator + brepfile);
+                FileChannel iChannel = is.getChannel();
+                os = new FileOutputStream(new File(outputDir, brepfile), false);
+                FileChannel oChannel = os.getChannel();
+                oChannel.transferFrom(iChannel, 0, iChannel.size());
+            } finally {
+                if (is != null) is.close();
+                if (os != null) os.close();
+            }
+        }
 
         MMesh1D mesh1d = new MMesh1D(outputDir + File.separator + brepfile)
         CADShape shape = mesh1d.getGeometry();
         HashMap<String, String> options1d = new HashMap<String, String>()
-        options1d.put("size", "" + leng)
-        if (defl <= 0.0) {
+        options1d.put("size", "" + size)
+        if (deflection <= 0.0) {
             new UniformLength(mesh1d, options1d).compute()
         } else {
-            options1d.put("deflection", "" + defl)
+            options1d.put("deflection", "" + deflection)
             options1d.put("relativeDeflection", "true")
             new UniformLengthDeflection(mesh1d, options1d).compute()
             new Compat1D2D(mesh1d, options1d).compute()
         }
 
         MMesh1DWriter.writeObject(mesh1d, outputDir, brepfile)
-        println "Edges discretized"
+        log.info "Edges discretized"
 
 // Mesh 2D
         mesh1d.duplicateEdges()
         mesh1d.updateNodeLabels()
 
         HashMap<String, String> options2d = new HashMap<String, String>()
-        options2d.put("size", "" + leng)
-        options2d.put("deflection", "" + defl)
+        options2d.put("size", "" + size)
+        options2d.put("deflection", "" + deflection)
         options2d.put("relativeDeflection", "true")
         options2d.put("isotropic", "true")
 
@@ -159,17 +179,17 @@ class UtilController {
                 try {
                     new Initial(mesh, mtb, mesh1d).compute()
                 } catch (InvalidFaceException ex) {
-                    println "Face #${iface} is invalid. Skipping ..."
+                    log.info "Face #${iface} is invalid. Skipping ..."
                     success = false
                 } catch (Exception ex) {
                     ex.printStackTrace()
-                    println "Unexpected error when triangulating face #${iface}. Skipping ..."
+                    log.info "Unexpected error when triangulating face #${iface}. Skipping ..."
                     success = false
                 }
                 if (!success) {
                     bads << iface
                     BRepTools.write(face.getShape(), "error.brep")
-                    println "Bogus face has been written into error.brep file"
+                    log.info "Bogus face has been written into error.brep file"
                     mesh = new Mesh2D(mtb, mp, face)
                 } else {
                     new BasicMesh(mesh).compute()
@@ -177,7 +197,7 @@ class UtilController {
                     new ConstraintNormal3D(mesh).compute()
                     new CheckDelaunay(mesh).compute()
 
-                    println "Face #${iface} has been meshed"
+                    log.info "Face #${iface} has been meshed"
                 }
                 MeshWriter.writeObject(mesh, outputDir, brepfile, iface)
             }
@@ -203,8 +223,8 @@ class UtilController {
             m2dto3d.processOneShape(iface, "" + iface, iface)
         }
         m2dto3d.afterProcessingAllShapes()
-
-        forward(action: 'index', controller: 'project', params: [shapeId: cadObject.id])
+        file.delete()
+        forward(action: 'index', controller: 'project', params: [shapeId: id])
     }
 
     def test() {
