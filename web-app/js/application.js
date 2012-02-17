@@ -377,8 +377,7 @@ function removeFlashMessage() {
 
 function removeObjects(ids) {
     $.each(ids, function (index, value) {
-        var url = createLink('CADObject', 'show') + "/" + value;
-        var object = group.getChildByName(url);
+        var object = group.getChildByName(value);
         if (object) {
             group.remove(object)
         }
