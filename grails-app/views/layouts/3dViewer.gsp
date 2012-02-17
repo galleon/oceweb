@@ -58,6 +58,10 @@
         <g:render template="/project/cadObjects" model="[project: project]"/>
     </div>
 
+    <div id="dialog-confirm" title="Delete selected items?" style="display: none;">
+        <p></p>
+    </div>
+
     <div class="righttools clearfix">
         <g:render template="/project/toolbar"/>
     </div>

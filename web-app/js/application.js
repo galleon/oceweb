@@ -21,7 +21,6 @@ var httpData = $.httpData || function (xhr, type, s) { // lifted from jq1.4.4
     return data;
 };
 
-
 $(document).ready(function () {
     $("#selectProject").change(function () {
         $("#changeProject").submit();
@@ -85,8 +84,8 @@ function showShape(id) {
 }
 
 function showShapeFromRemote(id) {
-    var url = createLink('CADObject','show');
-    $.getJSON(url,{id:id}, function (response) {
+    var url = createLink('CADObject', 'show');
+    $.getJSON(url, {id:id}, function (response) {
         if (response.error) {
             alert(response.error)
         } else {
@@ -155,6 +154,7 @@ function zoom(event, delta, deltaX, deltaY) {
         camera.projectionMatrix = THREE.Matrix4.makePerspective(fov, containerWidth / containerHeight, 1, 1100);
     }
 }
+
 function onDocumentMouseDown(event) {
     event.preventDefault();
 
@@ -172,18 +172,18 @@ function onDocumentMouseMove(event) {
     targetRotation = targetRotationOnMouseDown + ( mouseX - mouseXOnMouseDown ) * 0.01;
     targetRotationY = targetRotationYOnMouseDown + ( mouseY - mouseYOnMouseDown ) * 0.01;
 }
+
 function onDocumentMouseUp(event) {
     $(container).unbind('mousemove', onDocumentMouseMove);
     $(container).unbind('mouseup', onDocumentMouseUp);
     $(container).unbind('mouseout', onDocumentMouseOut);
 }
+
 function onDocumentMouseOut(event) {
     $(container).unbind('mousemove', onDocumentMouseMove);
     $(container).unbind('mouseup', onDocumentMouseUp);
     $(container).unbind('mouseout', onDocumentMouseOut);
 }
-
-//
 
 function animate() {
     requestAnimationFrame(animate);
@@ -232,7 +232,7 @@ function defaultMenu(node) {
         },
         deleteNode:{
             label:"Delete",
-            "action":deleteObject,
+            "action":confirmDelete,
             "_class":"class",
             "separator_before":false,
             "separator_after":true
@@ -331,33 +331,15 @@ function toggleVisibility(node) {
     }
 }
 
-function deleteObject(node) {
-    var url = createLink('CADObject', 'delete');
-    var ids = [];
-    var objectIds = [];
+function getSelectedObjects(node) {
+    var objects = [];
     $.each($('#project').jstree('get_selected').children().filter('a'), function () {
-        var id = $(this).attr('id');
-        ids.push("ids=" + id);
-        objectIds.push(id)
+        objects.push($(this))
     });
     $.each($(node).children().filter('a'), function () {
-        var id = $(this).attr('id');
-        ids.push("ids=" + id);
-        objectIds.push(id)
+        objects.push($(this))
     });
-    if (ids.length > 0) {
-        url = url + "?" + ids.join("&");
-        $.post(url, function (response) {
-            if (response.success) {
-                $('#project').jstree('get_selected').remove();
-                $(node).remove();
-                removeObjects(objectIds)
-                alert(response.success)
-            } else {
-                alert(response.error)
-            }
-        });
-    }
+    return $.unique(objects);
 }
 
 function updateName(id, name) {
@@ -410,4 +392,44 @@ function getContext() {
 }
 function deleteProject() {
     $("#confirmDeleteProject").show().removeClass('hidden').dialog();
+}
+
+function confirmDelete(node) {
+    var selectedObjects = getSelectedObjects(node);
+    var names = [];
+    var ids = [];
+    var idVars = [];
+    $(selectedObjects).each(function (index, value) {
+        var id = $(value).attr('id');
+        if (ids.indexOf(id) < 0) {
+            names.push($(value).text());
+            ids.push(id);
+            idVars.push("ids=" + id);
+        }
+    });
+    $("#dialog-confirm p").html("Are you sure you want to delete " + names.join(", ") + "?")
+    $("#dialog-confirm").dialog({
+        buttons:{
+            "Delete all items":function () {
+                var model = $(this);
+                if (ids.length > 0) {
+                    var url = createLink('CADObject', 'delete');
+                    url = url + "?" + idVars.join("&");
+                    $.post(url, function (response) {
+                        if (response.success) {
+                            $('#project').jstree('get_selected').remove();
+                            $(node).remove();
+                            removeObjects(ids);
+                            $(model).dialog("close");
+                        } else {
+                            $("#dialog-confirm p").html(response.error);
+                        }
+                    });
+                }
+            },
+            Cancel:function () {
+                $(this).dialog("close");
+            }
+        }
+    })
 }
