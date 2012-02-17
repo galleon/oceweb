@@ -40,14 +40,14 @@
     <g:if test="${flash.error}">
         <ul class="errors" role="alert" id="flashError"><li>${flash.error}</li></ul>
     </g:if>
-   <div id="content">
+    <div id="content">
     </div>
 
 </div>
 
 <script type="text/javascript">
-    var shapeId = '${shapeId}';
     $(document).ready(function () {
+        var shapeId = '${shapeId}';
         $(".showFace").click(function () {
             var url = $(this).attr('rel');
             $(".active-face").removeClass('active-face');
@@ -55,9 +55,7 @@
             return false;
         })
         if (shapeId) {
-            var url = createLink('CADObject', 'show');
-            url = url + '/' + shapeId;
-            showShape(url);
+            showShape(shapeId);
         }
     })
 </script>

@@ -73,22 +73,24 @@ var mouseXOnMouseDown = 0;
 var mouseYOnMouseDown = 0;
 var windowHalfX, windowHalfY;
 
-function showShape(url) {
-    var object = group.getChildByName(url);
+function showShape(id) {
+    var object = group.getChildByName(id);
     if (object) {
         object.visible = true;
+        object.doubleSided = true;
     } else {
-        showShapeFromRemote(url);
+        showShapeFromRemote(id);
     }
     animate();
 }
 
-function showShapeFromRemote(url) {
-    $.getJSON(url, function (response) {
+function showShapeFromRemote(id) {
+    var url = createLink('CADObject','show');
+    $.getJSON(url,{id:id}, function (response) {
         if (response.error) {
             alert(response.error)
         } else {
-            var object = createMesh(response, url);
+            var object = createMesh(response, id);
             addToGroup(object);
         }
     });
@@ -209,7 +211,7 @@ function enableJsTree() {
         "icons":true}, contextmenu:{items:defaultMenu}, "core":{ "initially_open":[ "phtml_1" ] }}).bind("select_node.jstree",
         function (event, data) {
             if ($('#project').jstree('get_selected').size() == 1) {
-                showShape(data.rslt.obj.children().filter('a').attr('href'))
+                showShape(data.rslt.obj.children().filter('a').attr('id'))
             }
 
         }).bind("rename_node.jstree", function (event, data) {
@@ -316,7 +318,7 @@ function editShape(shape) {
 }
 
 function toggleVisibility(node) {
-    var url = $(node).children().filter('a').attr('href');
+    var url = $(node).children().filter('a').attr('id');
     var object = group.getChildByName(url);
     if (object) {
         if (object.visible) {
