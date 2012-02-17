@@ -208,30 +208,10 @@ class UtilController {
     }
 
     def test() {
-        String unvName = "tmp/2/difference.unv"
+        String unvName = "tmp/19/difference.unv"
         Map data = ShapeUtil.getMeshEdges(unvName)
         render data as JSON
     }
-
-/*
-    public static Map getMeshEdges(){
-        log.info(">>>>>>>>>>>>>>>>> inside testUNV .... ")
-        String outputDir = "tmp${File.separator}2"
-        String unvName = "${outputDir}${File.separator}difference.unv"
-        File file = new File(unvName)
-        Map data = ['metadata': ['formatVersion': 3, 'generatedBy': 'tog'], 'scale': 10, 'materials': [], 'morphTargets': [], 'normals': [], 'colors': [], 'uvs': [[]], 'edges': []]
-
-        UNVParser unvParser = new UNVParser()
-        unvParser.parse(new BufferedReader(new FileReader(unvName)));
-        List vertices = []
-
-        unvParser.nodesCoordinates.each {nodeCoordinate->
-            vertices << nodeCoordinate
-        }
-        data['vertices'] = vertices;
-        return data
-    }
-*/
 
     private BRepPrimAPI_MakeBox getBox() {
         double[] p2 = [1000, 1000, 1000]

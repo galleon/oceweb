@@ -87,7 +87,10 @@ function showShapeFromRemote(id) {
     var url = createLink('CADObject', 'show');
     $.getJSON(url, {id:id}, function (response) {
         if (response.error) {
-            alert(response.error)
+            $("#dialog-confirm p").html(response.error);
+            $("#dialog-confirm").attr("title", "Error");
+            $("#dialog-confirm").dialog();
+//            alert(response.error)
         } else {
             var object = createMesh(response, id);
             addToGroup(object);
