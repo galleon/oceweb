@@ -134,7 +134,7 @@ function initialiseCanvas(containerId) {
     renderer.sortObjects = false;
 
     trihedra = new THREE.Axes();
-    trihedra.position.set(10, 10, 100);
+    trihedra.position.set(0, 0, 0);
     trihedra.scale.x = trihedra.scale.y = trihedra.scale.z = 0.5;
     trihedra.rotation.y = 5.5;
     addToGroup(trihedra);
