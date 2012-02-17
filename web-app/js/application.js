@@ -407,7 +407,7 @@ function confirmDelete(node) {
             idVars.push("ids=" + id);
         }
     });
-    $("#dialog-confirm p").html("Are you sure you want to delete " + names.join(", ") + "?")
+    $("#dialog-confirm p").html("Are you sure you want to delete" + names.join(", ") + "?")
     $("#dialog-confirm").dialog({
         buttons:{
             "Delete all items":function () {
