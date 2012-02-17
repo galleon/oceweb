@@ -34,8 +34,7 @@ class ConeCO extends ShapeCO {
     }
 
     CADObject getCADObject() {
-        CADObject cadObject = new CADConeObject(name: name, project: project, x: x, y: y, z: z, basRadius: baseRadius, height: height, content: content,
-                type: ShapeType.CONE)
+        CADObject cadObject = new CADConeObject(name: name, project: project, x: x, y: y, z: z, basRadius: baseRadius, height: height, content: content, type: ShapeType.CONE)
         return cadObject
     }
 

@@ -9,6 +9,7 @@ class ProjectService {
         if (co.validate()) {
             cadObject = co.CADObject
             Project project = co.project
+            cadObject.save()
             project.addToCadObjects(cadObject)
             project.save()
         }else{

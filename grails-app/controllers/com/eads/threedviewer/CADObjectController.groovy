@@ -71,6 +71,7 @@ class CADObjectController {
             flash.error = ve.message
         }
         if (cadObject) {
+            println cadObject.errors
             redirect(controller: 'project', action: 'index', params: [shapeId: cadObject.id])
         } else {
             render(view: '/project/index', model: [project: co.project, projects: Project.list(), co: co])

@@ -260,7 +260,7 @@ function defaultMenu(node) {
             "action":function (obj) {
                 var id = $(obj).children().filter('a').attr('id');
                 $("#cadObjectId").val(id);
-                $("#explodeLink").click();
+                $("#explode").dialog();
 
             },
             "separator_before":false,
@@ -272,7 +272,7 @@ function defaultMenu(node) {
             "action":function (obj) {
                 var id = $(obj).children().filter('a').attr('id');
                 $("#meshForm #cadObjectId").val(id);
-                $("#meshLink").click();
+                $("#mesh").dialog();
             },
             "separator_before":false
         }
@@ -350,7 +350,7 @@ function updateName(id, name) {
 
 function operation(obj) {
     var id = $(obj).children().filter('a').attr('id');
-    $("#operationLink").click();
+    $("#operation").dialog();
     $.each($('#project').jstree('get_selected').children().filter('a'), function (index, value) {
         var count = index + 1;
         var id = $(value).attr('id');

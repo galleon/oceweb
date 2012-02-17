@@ -86,10 +86,6 @@ class UtilController {
         File file = cadObject.createFile()
         String brepfile = file.name
         String outputDir = "/tmp"
-        File tempFile = new File("temp")
-        if (!tempFile.exists()){
-             tempFile.mkdir()
-        }
         File xmlDirF = new File(outputDir)
         xmlDirF.mkdir()
         float leng = elementSize
