@@ -85,16 +85,18 @@ function showShape(id) {
 }
 
 function showShapeFromRemote(id) {
-    var url = createLink('CADObject', 'show');
-    $.getJSON(url, {id:id}, function (response) {
-        if (response.error) {
-            $("#dialog-confirm p").html(response.error);
-            $("#dialog-confirm").dialog({title:'Error'});
-        } else {
-            var object = createMesh(response, id);
-            addToGroup(object);
-        }
-    });
+    if (id) {
+        var url = createLink('CADObject', 'show');
+        $.getJSON(url, {id:id}, function (response) {
+            if (response.error) {
+                $("#dialog-confirm p").html(response.error);
+                $("#dialog-confirm").dialog({title:'Error'});
+            } else {
+                var object = createMesh(response, id);
+                addToGroup(object);
+            }
+        });
+    }
 }
 
 function createMesh(response, name) {
@@ -320,7 +322,7 @@ function editShape(shape) {
 }
 
 function toggleVisibility(node) {
-    var url = $(node).children().filter('a').attr('id');
+    var id = $(node).children().filter('a').attr('id');
     var object = group.getChildByName(url);
     if (object) {
         if (object.visible) {
@@ -329,7 +331,7 @@ function toggleVisibility(node) {
             object.visible = true;
         }
     } else {
-        showShape(url);
+        showShape(id);
     }
 }
 
