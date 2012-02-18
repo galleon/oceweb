@@ -147,7 +147,7 @@ function initialiseCanvas(containerId) {
     $(container).bind('mousedown', onDocumentMouseDown);
     $(container).mousewheel(zoom);
     stats = new Stats();
-    $("#frameArea").append(stats.domElement);
+    $("#frameArea").append($(stats.domElement).find('div>div:first'));
     animate();
 }
 
