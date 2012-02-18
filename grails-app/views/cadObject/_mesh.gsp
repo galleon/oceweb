@@ -1,5 +1,5 @@
 <%@ page import="org.jcae.mesh.cad.CADShapeEnum" %>
-<g:form action="mesh" controller="util" name="meshForm">
+<g:form action="createMesh" controller="CADObject" name="meshForm">
     <g:hiddenField name="parent.id" id="cadObjectId" value=""/>
     <fieldset class="form">
         <div class="data-fields">
