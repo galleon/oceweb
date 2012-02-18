@@ -1,3 +1,6 @@
+<ul class="export-list">
+    <li id="frameArea" style="margin-top:10px;"></li>
+</ul>
 <g:if test="${project}">
     <g:hiddenField name="projectId" value="${project.id}"/>
     <ul class="toolbox-list clearfix">
@@ -28,7 +31,3 @@
         <g:render template="/cadObject/importShape"/>
     </div>
 </g:if>
-<ul class="export-list">
-    <li id="frameArea"></li>
-</ul>
-
