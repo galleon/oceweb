@@ -17,7 +17,9 @@ class ShapeService {
         List<CADObject> cadObjects = []
         if (cadObject) {
             explode(cadObject, shapeType).eachWithIndex {TopoDS_Shape shape, int index ->
-                CADObject currentObject = saveSubCadObjects(cadObject, "${cadObject.name}_${index}", shape)
+                File file = ShapeUtil.getFile(shape, cadObject.name)
+                CADObject currentObject = saveSubCadObjects(cadObject, "${cadObject.name}_${index}", file.bytes, shapeType)
+                file.delete()
                 if (currentObject) {
                     cadObjects.add(currentObject)
                 }
@@ -44,10 +46,8 @@ class ShapeService {
         return shapes
     }
 
-    CADObject saveSubCadObjects(CADObject cadObject, String name, TopoDS_Shape currentShape) {
-        File file = ShapeUtil.getFile(currentShape, cadObject.name)
-        CADObject subCadObject = new CADObject(name: name, project: cadObject.project, content: file.bytes, parent: cadObject, type: ShapeType.EXPLODE)
-        file.delete()
+    CADObject saveSubCadObjects(CADObject cadObject, String name, byte[] content, TopAbs_ShapeEnum type) {
+        CADObject subCadObject = new CADExplodeObject(name: name, project: cadObject.project, content: content, parent: cadObject, type: ShapeType.EXPLODE, explodeType: type)
         return subCadObject.save()
     }
 
@@ -82,7 +82,7 @@ class ShapeService {
         return object
     }
 
-    public static getCubeInfo(CADCubeObject cadObject){
+    public static getCubeInfo(CADCubeObject cadObject) {
         Map result = [:]
         result.name = cadObject.name
         result.type = cadObject.type.toString()
@@ -95,7 +95,7 @@ class ShapeService {
         return result
     }
 
-    public static getConeInfo(CADConeObject cadObject){
+    public static getConeInfo(CADConeObject cadObject) {
         Map result = [:]
         result.name = cadObject.name
         result.type = cadObject.type.toString()
@@ -107,7 +107,7 @@ class ShapeService {
         return result
     }
 
-    public static getCylinderInfo(CADCylinderObject cadObject){
+    public static getCylinderInfo(CADCylinderObject cadObject) {
         Map result = [:]
         result.name = cadObject.name
         result.type = cadObject.type.toString()
@@ -119,7 +119,7 @@ class ShapeService {
         return result
     }
 
-    public static getSphereInfo(CADSphereObject cadObject){
+    public static getSphereInfo(CADSphereObject cadObject) {
         Map result = [:]
         result.name = cadObject.name
         result.type = cadObject.type.toString()

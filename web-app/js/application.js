@@ -107,6 +107,7 @@ function createMesh(response, name) {
         object = new THREE.Mesh(geometry, new THREE.MeshNormalMaterial({ overdraw:true }));
         object.updateMatrix();
     })
+    object.doubleSided = true;
     object.name = name;
     return object
 }

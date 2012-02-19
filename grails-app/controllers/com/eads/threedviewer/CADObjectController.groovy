@@ -1,11 +1,8 @@
 package com.eads.threedviewer
 
 import org.jcae.opencascade.jni.TopAbs_ShapeEnum
-
 import org.jcae.opencascade.jni.TopoDS_Shape
-
 import org.jcae.mesh.cad.CADShapeFactory
-
 import org.jcae.mesh.amibe.ds.MMesh1D
 import org.jcae.mesh.cad.CADShape
 import org.jcae.mesh.amibe.algos1d.UniformLength

@@ -1,6 +1,5 @@
 <div class="block small left">
     <div class="block_content">
-        <g:if test="${project}">
             <div id="project">
                 <ul>
                     <g:set var="count" value="1"/>
@@ -44,10 +43,6 @@
                 <g:render template="/cadObject/operation"/>
             </div>
 
-        </g:if>
-        <g:else>
-            Project Not Found
-        </g:else>
     </div>
 
 </div>
