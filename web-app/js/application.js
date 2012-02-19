@@ -323,7 +323,7 @@ function editShape(shape) {
 
 function toggleVisibility(node) {
     var id = $(node).children().filter('a').attr('id');
-    var object = group.getChildByName(url);
+    var object = group.getChildByName(id);
     if (object) {
         if (object.visible) {
             object.visible = false;
