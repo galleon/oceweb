@@ -122,7 +122,7 @@ class CADObjectController {
             try {
                 result = ShapeUtil.getData(file)
             } catch (RuntimeException rte) {
-                result = ['error': "File type not supported"]
+                result = ['error': rte.message]
             }
             file.delete()
         } else {

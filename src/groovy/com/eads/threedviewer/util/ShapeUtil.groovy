@@ -13,20 +13,19 @@ class ShapeUtil {
         Map data = ['metadata': ['formatVersion': 3, 'generatedBy': 'tog'], 'scale': 10, 'materials': [], 'morphTargets': [], 'normals': [], 'colors': [], 'uvs': [[]], 'edges': []]
         OCCMeshExtractor ome = new OCCMeshExtractor(shape)
         int noffset = 0
-        OCCMeshExtractor.FaceData f
         List vertices = []
         List faces = []
         ome.faces.each {
-            f = new OCCMeshExtractor.FaceData(it, false)
-            f.load()
+            OCCMeshExtractor.FaceData shapeData = new OCCMeshExtractor.FaceData(it, false)
+            shapeData.load()
             int n = 0
-            f.nodes.each {
+            shapeData.nodes.each {
                 vertices << it
                 n++
             }
             int p = 0
             def npts
-            f.polys.each {
+            shapeData.polys.each {
                 if (p == 0) {
                     faces << 0
                     npts = it
@@ -49,14 +48,14 @@ class ShapeUtil {
         return getData(getShape(file))
     }
 
-    public static Map getMeshEdges(String filePath){
+    public static Map getMeshEdges(String filePath) {
         Map data = ['metadata': ['formatVersion': 3, 'generatedBy': 'tog'], 'scale': 10, 'materials': [], 'morphTargets': [], 'normals': [], 'colors': [], 'uvs': [[]], 'edges': []]
 
         UNVParser unvParser = new UNVParser()
         unvParser.parse(new BufferedReader(new FileReader(filePath)));
         List vertices = []
 
-        unvParser.nodesCoordinates.each {nodeCoordinate->
+        unvParser.nodesCoordinates.each {nodeCoordinate ->
             vertices << nodeCoordinate
         }
         data['vertices'] = vertices;
