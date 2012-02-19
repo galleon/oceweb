@@ -100,7 +100,6 @@ function showShapeFromRemote(id) {
 }
 
 function createMesh(response, name) {
-    targetRotation = 0;
     var object;
     var loader = new THREE.JSONLoader();
     loader.createModel(response, function (geometry) {
