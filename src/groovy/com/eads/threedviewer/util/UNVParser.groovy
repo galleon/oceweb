@@ -472,23 +472,4 @@ public class UNVParser {
         return unit;
     }
 
-    /**
-     * Debug
-     * @param args
-     */
-/*
-    public static void main(String[] args)
-    {
-        try
-        {
-            UNVParser unvp=new UNVParser();
-            unvp.parse(new BufferedReader(new FileReader("/home/jerome/cassiope/resources/example/tecplot50x50x50.unv")));
-            System.out.println(unvp.getQuad4FromGroup(0).length);
-        }
-        catch(Exception ex)
-        {
-            ex.printStackTrace();
-        }
-    }
-*/
 }
