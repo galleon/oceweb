@@ -4,7 +4,7 @@
         <li><a title="Create sphere" class="sphere model" href="#sphereInfo"></a></li>
         <li><a title="Create Cube" class="cube model" href="#cubeInfo"></a></li>
         <li><a title="Create Cylinder" class="cylinder model" href="#cylinderInfo"></a></li>
-        <li><a title="Create Cone" class="cone model" href="#coneInfo"></a></li>
+        <li><a title="Create Cone" id="coneLink" class="cone model" href="#coneInfo"></a></li>
         <li><a title="Import File" class="plane model" href="#importShapeInfo"></a></li>
     </ul>
 

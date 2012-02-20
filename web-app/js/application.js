@@ -251,7 +251,8 @@ function defaultMenu(node) {
                 url = url + "/" + id;
                 $.post(url, function (response) {
                     debugStatement(response)
-                    $("#editCube").html(response);
+                    $("#coneInfo").html(response);
+                    $("#coneLink").click();
                 });
             },
             "separator_before":false,

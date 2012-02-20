@@ -3,8 +3,8 @@
     <g:hiddenField name="type" value="${ShapeType.CUBE}"/>
     <fieldset class="form">
         <div class="data-fields">
-            <g:render template="/cadObject/shapeInfo"/>
-            <g:render template="/cadObject/axisInfo"/>
+            <g:render template="/cadObject/shapeInfo" model="[projectId:project,id:cadObject.id,name:cadObject?.name]"/>
+            <g:render template="/cadObject/axisInfo" model="[x:cadObject?.x,y:cadObject?.y,z:cadObject?.z]"/>
             <td:textField label="X1" name="x1" value="${cadObject?.x1}"/>
             <td:textField label="Y1" name="y1" value="${cadObject?.y1}"/>
             <td:textField label="Z1" name="z1" value="${cadObject?.z1}"/>

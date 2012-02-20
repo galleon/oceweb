@@ -1,2 +1,3 @@
-<g:hiddenField name="project.id" value="${project?.id}"/>
-<td:textField label="Name" name="name" value="${cadObject?.name}"/>
+<g:hiddenField name="project.id" value="${projectId}"/>
+<g:hiddenField name="id" value="${id}"/>
+<td:textField label="Name" name="name" value="${name}"/>

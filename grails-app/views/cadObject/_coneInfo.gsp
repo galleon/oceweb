@@ -5,8 +5,9 @@
         <div class="data-fields">
             <g:render template="/cadObject/shapeInfo"/>
             <g:render template="/cadObject/axisInfo"/>
-            <td:textField label="Base Radius" name="baseRadius"/>
-            <td:textField label="Height" name="height"/>
+            This is fucking cone
+            <td:textField label="Base Radius" name="baseRadius" value="${cadObject?.baseRadius}"/>
+            <td:textField label="Height" name="height" value="${cadObject?.height}"/>
         </div>
     </fieldset>
     <fieldset class="buttons">

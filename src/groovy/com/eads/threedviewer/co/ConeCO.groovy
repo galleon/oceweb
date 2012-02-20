@@ -16,7 +16,6 @@ class ConeCO extends ShapeCO {
     double baseRadius
     double height
     double angle
-    double epsilon = 0.001
 
     static constraints = {
         baseRadius(nullable: false)
@@ -34,7 +33,9 @@ class ConeCO extends ShapeCO {
     }
 
     CADObject getCADObject() {
-        CADObject cadObject = new CADConeObject(name: name, project: project, x: x, y: y, z: z, basRadius: baseRadius, height: height, content: content, type: ShapeType.CONE)
+        println "Value of baseRadius inside getCADObject in CONECO : ${baseRadius}"
+        CADObject cadObject = new CADConeObject(name: name, project: project, x: x, y: y, z: z, baseRadius: baseRadius, height: height, content: content, type: ShapeType.CONE)
+        println "Value of cadObject inside getCADObject in CONECO after creating new CADObject: ${cadObject}"
         return cadObject
     }
 

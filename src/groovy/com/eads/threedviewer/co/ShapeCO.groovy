@@ -12,6 +12,7 @@ import com.eads.threedviewer.enums.ShapeType
 @Validateable
 @ToString(includeNames = true, includeFields = true, excludes = 'metaClass,errors')
 abstract class ShapeCO {
+    Long id
     Project project
     String name
     double x
@@ -29,7 +30,13 @@ abstract class ShapeCO {
     abstract TopoDS_Shape getShape()
 
     CADObject getCADObject() {
-        CADObject cadObject = new CADObject(name: name, project: project, x: x, y: y, z: z, content: content)
+        CADObject cadObject = id ? CADObject.get(id) : new CADObject()
+        cadObject.name = name
+        cadObject.x = x
+        cadObject.y = y
+        cadObject.z = z
+        cadObject.project = project
+        cadObject.content = content
         return cadObject
     }
 

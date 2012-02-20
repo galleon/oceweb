@@ -42,6 +42,9 @@
     </g:if>
     <div id="content">
     </div>
+    <a href="#edit" id="#editLink" class="nyroModal"></a>
+    <div id="edit" style="display: none"></div>
+
 
 </div>
 

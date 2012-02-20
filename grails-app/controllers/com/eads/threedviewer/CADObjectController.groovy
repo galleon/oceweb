@@ -21,6 +21,7 @@ class CADObjectController {
     }
 
     def createCone(ConeCO co) {
+        println "Base Radius is : ${co.baseRadius}"
         sendResponse(co)
     }
 
@@ -30,37 +31,6 @@ class CADObjectController {
 
     def createShapeFromFile(FileShapeCO co) {
         sendResponse(co)
-    }
-
-    def editCube(CubeCO co) {
-        editResponse(co)
-    }
-
-    def editCylinder(CubeCO co) {
-        editResponse(co)
-    }
-
-    def editCone(CubeCO co) {
-        editResponse(co)
-    }
-
-    def editSphere(CubeCO co) {
-        editResponse(co)
-    }
-
-    Closure editResponse = {ShapeCO co ->
-        CADObject cadObject
-        try{
-            cadObject = projectService.editCADObject(co)
-        }
-        catch(ValidationException ve) {
-            flash.error = ve.message
-        }
-        if (cadObject) {
-            redirect(controller: 'project', action: 'index', params: [shapeId: cadObject.id])
-        } else {
-            render(view: '/project/index', model: [project: co.project, projects: Project.list(), co: co])
-        }
     }
 
     Closure sendResponse = {ShapeCO co ->
@@ -104,25 +74,12 @@ class CADObjectController {
         redirect(controller: 'project', action: 'index', params: [name: cadObject?.project?.name, shapeId: cadObject.id])
     }
 
-    def edit(){
-        CADObject cadObject = CADObject.get(params.id)
-        if(cadObject.type == ShapeType.CUBE){
-            render(template: '/cadObject/editCube', model: [cadObject: cadObject, project: cadObject.project])
-        }
-        if(cadObject.type == ShapeType.CONE){
-            render(template: '/cadObject/editCone', model: [cadObject: cadObject, project: cadObject.project])
-        }
-        if(cadObject.type == ShapeType.CYLINDER){
-            render(template: '/cadObject/editCylinder', model: [cadObject: cadObject, project: cadObject.project])
-        }
-        if(cadObject.type == ShapeType.SPHERE){
-            render(template: '/cadObject/editSphere', model: [cadObject: cadObject, project: cadObject.project])
-        }
-    }
+    def edit(Project project, ShapeType type, Long id) {
+        CADObject cadObject = id ? CADObject.get(id) : new CADObject(type: type,project:project)
+        println "CadObject Type : ${cadObject.type}"
+            render(template: "/cadObject/${type}Info", model: [cadObject: cadObject])
 
-    def editShape(Long id){
     }
-
 
     def delete() {
         Map result = ['success': 'Deleted Successfully']
