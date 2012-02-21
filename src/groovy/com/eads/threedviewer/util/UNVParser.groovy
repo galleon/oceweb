@@ -463,9 +463,6 @@ public class UNVParser {
             String unite = st.nextToken();
             unite = unite.replace('D', 'E');
             unit = Double.parseDouble(unite);
-            while (!(line = rd.readLine().trim()).equals("-1")) {
-                // ???
-            }
         } catch (Exception e) {
             e.printStackTrace();
         }
