@@ -56,9 +56,7 @@ $(document).ready(function () {
             $.post(url, function (response) {
                 $("#templateHolder").html(response);
                 $("#templateHolder").dialog({title:title});
-                $('.ui-dialog').css('padding-top', '8px').width('340px');
-                $("input:submit,input:button, button,a.modelLink").button();
-                closeModel();
+                setupUI();
             });
             return false;
         }
@@ -70,6 +68,12 @@ $(document).ready(function () {
     removeErrorMessage();
     removeFlashMessage();
 })
+
+function setupUI() {
+    $('.ui-dialog').css('padding-top', '8px').width('340px');
+    $("input:submit,input:button, button,a.modelLink").button();
+    closeModel();
+}
 
 function closeModel() {
     $(".closeModel").click(function () {
@@ -164,7 +168,7 @@ function initialiseCanvas(containerId) {
     $(container).bind('mousedown', onDocumentMouseDown);
     $(container).mousewheel(zoom);
     stats = new Stats();
-    $("#frameArea").append($(stats.domElement).find('div>div:first').css({'float':'right','margin-right':'13px','padding-top':'6px'}));
+    $("#frameArea").append($(stats.domElement).find('div>div:first').css({'float':'right', 'margin-right':'13px', 'padding-top':'6px'}));
     animate();
 }
 
@@ -268,6 +272,7 @@ function defaultMenu(node) {
                 $.post(url, function (response) {
                     $("#templateHolder").html(response);
                     $("#templateHolder").dialog({title:title});
+                    setupUI();
                 });
             },
             "separator_before":false,
