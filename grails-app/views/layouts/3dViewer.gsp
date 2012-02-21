@@ -42,26 +42,19 @@
     <div id="logo" class="righttools clearfix">
         <g:form action="index" controller="project" name="changeProject">
             <ul class="light-list clearfix" style="width: 100%">
-                <g:if test="${project}">
-                    <li>
-                        <g:select name="name" from="${projects}" optionKey="name" optionValue="name" noSelection="['': 'Choose Project']" value="${project?.name}"
-                                  id='selectProject'/>
-                    </li>
-                    <g:render template="/project/confirmDelete" model="[project: project]"/>
+                <g:if test="${!project}">
+                    <li style="padding:5px 0 0 5px;">Project Not Found</li>
                 </g:if>
-                <g:else>
-                            <li style="padding:5px 0 0 5px;">Project Not Found</li>
-                        </g:else>
                 <li class="last"><g:link uri="/">3-D Viewer</g:link><div id="spinner" style="display:none; text-align: right">Please wait while you content is loading</div></li>
             </ul>
         </g:form>
     </div>
     <g:if test="${project}">
-    <div id="projectTree" title="Project">
-        <g:render template="/project/cadObjects" model="[project: project]"/>
-    </div>
+        <div id="projectTree" title="Project">
+            <g:render template="/project/cadObjects" model="[project: project,projects:projects]"/>
+        </div>
 
-        </g:if>
+    </g:if>
 
     <div id="dialog-confirm" title="Delete selected items?" style="display: none;">
         <p></p>

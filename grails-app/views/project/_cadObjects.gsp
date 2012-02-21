@@ -1,4 +1,10 @@
+<g:render template="/project/confirmDelete" model="[project: project]"/>
+
 <div class="block small left">
+    <div class="block_head">
+        <h2><g:select name="name" from="${projects}" optionKey="name" optionValue="name" noSelection="['': 'Choose Project']" value="${project?.name}" id='selectProject'/></h2>
+    </div>
+
     <div class="block_content">
         <div id="project">
             <ul>

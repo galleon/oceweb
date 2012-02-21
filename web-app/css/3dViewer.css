@@ -670,7 +670,7 @@ input#duration {
 .clearfix {
   zoom: 1;
 }
-#projectTree{z-index:5;position: absolute; top:4px; left: 150px ;cursor: pointer;opacity: 0.7}
+#projectTree{z-index:5;position: absolute; top:4px; left:0 ;cursor: pointer;opacity: 0.7}
 a {
     outline: medium none;
     text-decoration: none;
@@ -697,4 +697,85 @@ a {
 .hidden{display: none;}
 #selectProject{width: 55%}
 #project{background-color: #414042}
-.jstree a{color: #fff!important;}
+.jstree a:hover{color: #000;}
+.jstree-clicked{color: #000!important;}
+
+.block.small.left {
+    clear: none;
+    float: left;
+}
+.block.small {
+    background: url("../images/bnd.gif") repeat-x scroll center bottom #FFFFFF;
+    padding-bottom: 0;
+}
+.block {
+    background: url("../images/bnd.gif") repeat-x scroll center bottom #FFFFFF;
+    clear: both;
+    /*margin-bottom: 25px;*/
+    padding-bottom: 5px;
+}
+.block .bendl {
+    background: url("../images/bendl.gif") no-repeat scroll left bottom transparent;
+    float: left;
+    height: 5px;
+    width: 5px;
+}
+.block .bendr {
+    background: url("../images/bendr.gif") no-repeat scroll left bottom transparent;
+    float: right;
+    height: 5px;
+    width: 5px;
+}
+.block .block_head .bheadl {
+    background: url("../images/bheadl.gif") no-repeat scroll left top transparent;
+    float: left;
+    height: 54px;
+    width: 20px;
+}
+.block .block_head .bheadr {
+    background: url("../images/bheadr.gif") no-repeat scroll right top transparent;
+    float: right;
+    height: 54px;
+    width: 20px;
+}
+.block .block_head {
+    background-color: #414042;
+    height: 25px;
+    overflow: hidden;
+}
+.block .block_head h2 {
+    font-size: 12px;
+    margin-top: 1px;
+    margin-left: 3px;
+}
+.block.small.right {
+    clear: none;
+    float: right;
+    width: 75%;
+}
+.block.small {
+    background: url("../images/bnd.gif") repeat-x scroll center bottom #FFFFFF;
+    padding-bottom: 0;
+}
+.block .block_head ul {
+    float: right;
+    font-size: 11px;
+    font-weight: bold;
+    text-shadow: 1px 1px 0 #FFFFFF;
+    text-transform: uppercase;
+}
+.block .block_head ul li.nobg {
+    background: none repeat scroll 0 0 transparent;
+}
+.block .block_head ul li {
+    display: inline;
+    padding: 3px 0 3px 20px;
+}
+ul li {
+    list-style: none outside none;
+}
+.block .block_head ul li a {
+    color: #666666;
+    outline: medium none;
+    text-decoration: none;
+}
