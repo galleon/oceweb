@@ -463,32 +463,10 @@ public class UNVParser {
             String unite = st.nextToken();
             unite = unite.replace('D', 'E');
             unit = Double.parseDouble(unite);
-            while (!(line = rd.readLine().trim()).equals("-1")) {
-                // ???
-            }
         } catch (Exception e) {
             e.printStackTrace();
         }
         return unit;
     }
 
-    /**
-     * Debug
-     * @param args
-     */
-/*
-    public static void main(String[] args)
-    {
-        try
-        {
-            UNVParser unvp=new UNVParser();
-            unvp.parse(new BufferedReader(new FileReader("/home/jerome/cassiope/resources/example/tecplot50x50x50.unv")));
-            System.out.println(unvp.getQuad4FromGroup(0).length);
-        }
-        catch(Exception ex)
-        {
-            ex.printStackTrace();
-        }
-    }
-*/
 }
