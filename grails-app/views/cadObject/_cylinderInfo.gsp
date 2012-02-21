@@ -1,16 +1,20 @@
 <%@ page import="com.eads.threedviewer.enums.ShapeType" %>
-<g:form action="createCylinder" controller="CADObject" name="cylinderForm">
-    <g:hiddenField name="type" value="${ShapeType.CYLINDER}"/>
+<g:form action="saveCylinder" controller="CADObject" name="cylinderForm">
     <fieldset class="form">
         <div class="data-fields">
-            <g:render template="/cadObject/shapeInfo"/>
-            <g:render template="/cadObject/axisInfo"/>
-            <td:textField label="Radius" name="radius"/>
-            <td:textField label="Height" name="height"/>
+            <g:render template="/cadObject/shapeInfo" model="[cadObject:cadObject]"/>
+            <g:render template="/cadObject/axisInfo" model="[x:cadObject?.x,y:cadObject?.y,z:cadObject?.z]"/>
+            <td:textField label="Radius" name="radius" value="${cadObject?.radius}"/>
+            <td:textField label="Height" name="height" value="${cadObject?.height}"/>
         </div>
     </fieldset>
     <fieldset class="buttons">
-        <g:actionSubmit value="Create" id="submit" action="createCylinder" class="save"/>
+        <g:if test="${cadObject?.id}">
+            <g:actionSubmit value="Update" id="submit" action="saveCylinder" class="save"/>
+        </g:if>
+        <g:else>
+            <g:actionSubmit value="Save" id="submit" action="saveCylinder" class="save"/>
+        </g:else>
         <input type="button" value="Cancel" id="cancel" class="save closeModel"/>
     </fieldset>
 </g:form>

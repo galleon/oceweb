@@ -1,29 +1,10 @@
 package com.eads.threedviewer
 
-import com.eads.threedviewer.vo.ShapeVO
-import grails.converters.JSON
-import java.nio.channels.FileChannel
 import occmeshextractor.OCCMeshExtractor
-import org.jcae.mesh.amibe.algos1d.Compat1D2D
-import org.jcae.mesh.amibe.algos1d.UniformLength
-import org.jcae.mesh.amibe.algos1d.UniformLengthDeflection
-import org.jcae.mesh.amibe.ds.MMesh1D
-import org.jcae.mesh.amibe.ds.MeshParameters
-import org.jcae.mesh.amibe.patch.InvalidFaceException
-import org.jcae.mesh.amibe.patch.Mesh2D
-import org.jcae.mesh.amibe.traits.MeshTraitsBuilder
-import org.jcae.mesh.cad.CADExplorer
-import org.jcae.mesh.cad.CADShape
-import org.jcae.mesh.cad.CADShapeEnum
-import org.jcae.mesh.cad.CADShapeFactory
-import org.jcae.mesh.xmldata.MMesh1DWriter
-import org.jcae.mesh.xmldata.MeshToMMesh3DConvert
-import org.jcae.mesh.xmldata.MeshWriter
-import org.jcae.mesh.amibe.algos2d.*
 import org.jcae.opencascade.jni.*
 import com.eads.threedviewer.util.ShapeUtil
-import org.jcae.mesh.amibe.ds.Mesh
-import com.eads.threedviewer.util.UNVParser
+import com.eads.threedviewer.vo.ShapeVO
+import grails.converters.JSON
 
 class UtilController {
 
@@ -79,132 +60,6 @@ class UtilController {
         List<ShapeVO> shapes = session.shapes
         TopoDS_Shape shape = shapes.find {it.id == id}?.shape
         render generateData(shape) as JSON
-    }
-
-    def mesh(Long id, float elementSize, float deflection) {
-        CADObject cadObject = CADObject.get(id)
-        File file = cadObject.createFile()
-        String brepfile = file.name
-        String outputDir = "/tmp"
-        File xmlDirF = new File(outputDir)
-        xmlDirF.mkdir()
-        float leng = elementSize
-        float defl = deflection
-
-        String unvName = "${outputDir}${File.separator}.unv"
-
-        xmlDirF.mkdirs();
-        if (!xmlDirF.exists() || !xmlDirF.isDirectory()) {
-            println "Cannot write to ${outputDir}"
-            System.exit(1);
-        }
-
-        CADShapeFactory factory = CADShapeFactory.getFactory()
-
-// Mesh 1D
-// This method takes as
-//    Input : shape (the shape to be meshed)
-//    Output: ...
-
-        MMesh1D mesh1d = new MMesh1D(outputDir + File.separator + brepfile)
-        CADShape shape = mesh1d.getGeometry();
-        HashMap<String, String> options1d = new HashMap<String, String>()
-        options1d.put("size", "" + leng)
-        if (defl <= 0.0) {
-            new UniformLength(mesh1d, options1d).compute()
-        } else {
-            options1d.put("deflection", "" + defl)
-            options1d.put("relativeDeflection", "true")
-            new UniformLengthDeflection(mesh1d, options1d).compute()
-            new Compat1D2D(mesh1d, options1d).compute()
-        }
-
-        MMesh1DWriter.writeObject(mesh1d, outputDir, brepfile)
-        println "Edges discretized"
-
-// Mesh 2D
-        mesh1d.duplicateEdges()
-        mesh1d.updateNodeLabels()
-
-        HashMap<String, String> options2d = new HashMap<String, String>()
-        options2d.put("size", "" + leng)
-        options2d.put("deflection", "" + defl)
-        options2d.put("relativeDeflection", "true")
-        options2d.put("isotropic", "true")
-
-        HashMap<String, String> smoothOptions2d = new HashMap<String, String>()
-        smoothOptions2d.put("modifiedLaplacian", "true")
-        smoothOptions2d.put("refresh", "false")
-        smoothOptions2d.put("iterations", "5")
-        smoothOptions2d.put("tolerance", "1")
-        smoothOptions2d.put("relaxation", "0.6")
-
-        MeshTraitsBuilder mtb = MeshTraitsBuilder.getDefault2D()
-
-        CADExplorer expl = factory.newExplorer()
-        List seen = []
-        List bads = []
-        int iface = 0
-        CADShape face
-        for (expl.init(shape, CADShapeEnum.FACE); expl.more(); expl.next()) {
-            face = expl.current()
-            iface++
-            if (!(face in seen)) {
-                seen << face
-
-                MeshParameters mp = new MeshParameters(options2d)
-                Mesh2D mesh = new Mesh2D(mtb, mp, face)
-
-                boolean success = true
-                try {
-                    new Initial(mesh, mtb, mesh1d).compute()
-                } catch (InvalidFaceException ex) {
-                    println "Face #${iface} is invalid. Skipping ..."
-                    success = false
-                } catch (Exception ex) {
-                    ex.printStackTrace()
-                    println "Unexpected error when triangulating face #${iface}. Skipping ..."
-                    success = false
-                }
-                if (!success) {
-                    bads << iface
-                    BRepTools.write(face.getShape(), "error.brep")
-                    println "Bogus face has been written into error.brep file"
-                    mesh = new Mesh2D(mtb, mp, face)
-                } else {
-                    new BasicMesh(mesh).compute()
-                    new SmoothNodes2D(mesh, smoothOptions2d).compute()
-                    new ConstraintNormal3D(mesh).compute()
-                    new CheckDelaunay(mesh).compute()
-
-                    println "Face #${iface} has been meshed"
-                }
-                MeshWriter.writeObject(mesh, outputDir, brepfile, iface)
-            }
-        }
-
-// Mesh 3D
-        expl = factory.newExplorer()
-        MeshToMMesh3DConvert m2dto3d = new MeshToMMesh3DConvert(outputDir, brepfile, shape)
-        m2dto3d.exportUNV(unvName != null, unvName)
-
-        iface = 0
-        for (expl.init(shape, CADShapeEnum.FACE); expl.more(); expl.next()) {
-            iface++
-        }
-        int[] iArray = new int[iface]
-        for (int i = 0; i < iface; i++) iArray[i] = i + 1
-        m2dto3d.collectBoundaryNodes(iArray)
-        m2dto3d.beforeProcessingAllShapes(false)
-        iface = 0
-        for (expl.init(shape, CADShapeEnum.FACE); expl.more(); expl.next()) {
-            face = expl.current()
-            iface++
-            m2dto3d.processOneShape(iface, "" + iface, iface)
-        }
-        m2dto3d.afterProcessingAllShapes()
-
-        forward(action: 'index', controller: 'project', params: [shapeId: cadObject.id])
     }
 
     def test() {

@@ -1,13 +1,15 @@
 package com.eads.threedviewer.co
 
-import groovy.transform.ToString
-import org.codehaus.groovy.grails.validation.Validateable
 import org.jcae.opencascade.jni.BRepPrimAPI_MakeCylinder
 import org.jcae.opencascade.jni.TopoDS_Shape
-import com.eads.threedviewer.CADObject
-import com.eads.threedviewer.CADCubeObject
-import com.eads.threedviewer.enums.ShapeType
+
 import com.eads.threedviewer.CADCylinderObject
+import com.eads.threedviewer.CADObject
+import com.eads.threedviewer.enums.ShapeType
+import groovy.transform.ToString
+import org.codehaus.groovy.grails.validation.Validateable
+import com.eads.threedviewer.CADSphereObject
+import com.eads.threedviewer.CADCubeObject
 
 @Validateable
 @ToString(includeNames = true, includeFields = true, excludes = 'metaClass,errors', includeSuper = true)
@@ -29,7 +31,15 @@ class CylinderCO extends ShapeCO {
     }
 
     CADObject getCADObject() {
-        CADObject cadObject = new CADCylinderObject(name: name, project: project, x: x, y: y, z: z, radius: radius, height: height, content: content, type: ShapeType.CYLINDER)
+        CADObject cadObject = id ? CADCylinderObject.get(id) : new CADCylinderObject()
+        cadObject.name = name ?: cadObject.name
+        cadObject.x = x ?: cadObject.x
+        cadObject.y = y ?: cadObject.y
+        cadObject.z = z ?: cadObject.z
+        cadObject.radius = radius ?: cadObject.radius
+        cadObject.height = height ?: cadObject.height
+        cadObject.type = type ?: cadObject.type
+        cadObject.project = project ?: cadObject.project
         return cadObject
     }
 

@@ -1,13 +1,14 @@
 package com.eads.threedviewer.co
 
+import org.jcae.opencascade.jni.BRepTools
+import org.jcae.opencascade.jni.TopoDS_Shape
+
 import com.eads.threedviewer.CADObject
 import com.eads.threedviewer.Project
+import com.eads.threedviewer.enums.ShapeType
 import com.eads.threedviewer.util.ShapeUtil
 import groovy.transform.ToString
 import org.codehaus.groovy.grails.validation.Validateable
-import org.jcae.opencascade.jni.BRepTools
-import org.jcae.opencascade.jni.TopoDS_Shape
-import com.eads.threedviewer.enums.ShapeType
 
 @Validateable
 @ToString(includeNames = true, includeFields = true, excludes = 'metaClass,errors')
@@ -18,7 +19,7 @@ abstract class ShapeCO {
     double x
     double y
     double z
-    String type
+    ShapeType type
 
     static constraints = {
         name(nullable: false, blank: false)
@@ -29,14 +30,19 @@ abstract class ShapeCO {
 
     abstract TopoDS_Shape getShape()
 
-    CADObject getCADObject() {
+    CADObject findOrCreateCADObject() {
         CADObject cadObject = id ? CADObject.get(id) : new CADObject()
+        return cadObject
+    }
+
+    CADObject getCADObject() {
+        CADObject cadObject = findOrCreateCADObject()
         cadObject.name = name
         cadObject.x = x
         cadObject.y = y
         cadObject.z = z
-        cadObject.project = project
-        cadObject.content = content
+        cadObject.project = cadObject.project ?: project
+        cadObject.type = cadObject.type ?: type
         return cadObject
     }
 

@@ -47,18 +47,34 @@ $(document).ready(function () {
         }
     });
     enableJsTree();
-    $(".closeModel").click(function () {
-        $(".ui-icon-closethick").click();
-    })
+    closeModel();
     $("input:submit,input:button, button,a.modelLink").button();
     $(".model").click(function () {
-        $($(this).attr('href')).dialog();
-        $('.ui-dialog').css('padding-top', '8px').width('340px');
+        if ($(this).hasClass('ajax')) {
+            var url = $(this).attr("href")
+            var title = $(this).attr("title")
+            $.post(url, function (response) {
+                $("#templateHolder").html(response);
+                $("#templateHolder").dialog({title:title});
+                $('.ui-dialog').css('padding-top', '8px').width('340px');
+                closeModel();
+            });
+            return false;
+        }
+        else {
+            $($(this).attr('href')).dialog();
+            $('.ui-dialog').css('padding-top', '8px').width('340px');
+        }
     })
     removeErrorMessage();
     removeFlashMessage();
 })
 
+function closeModel() {
+    $(".closeModel").click(function () {
+        $(".ui-icon-closethick").click();
+    })
+}
 var stats, camera, renderer, containerWidth, containerHeight, scene, container, trihedra;
 var targetRotation = 0;
 var targetRotationY = 0;
@@ -100,13 +116,13 @@ function showShapeFromRemote(id) {
 }
 
 function createMesh(response, name) {
-    targetRotation = 0;
     var object;
     var loader = new THREE.JSONLoader();
     loader.createModel(response, function (geometry) {
         object = new THREE.Mesh(geometry, new THREE.MeshNormalMaterial({ overdraw:true }));
         object.updateMatrix();
     })
+    object.doubleSided = true;
     object.name = name;
     return object
 }
@@ -147,7 +163,7 @@ function initialiseCanvas(containerId) {
     $(container).bind('mousedown', onDocumentMouseDown);
     $(container).mousewheel(zoom);
     stats = new Stats();
-    $("#frameArea").append(stats.domElement);
+    $("#frameArea").append($(stats.domElement).find('div>div:first'));
     animate();
 }
 
@@ -245,14 +261,12 @@ function defaultMenu(node) {
             label:"Edit",
             "_class":"class",
             "action":function (obj) {
-                var id = $(obj).children().filter('a').attr('id');
-                $("#cadObjectId").val(id);
-                var url = createLink('CADObject', 'edit');
-                url = url + "/" + id;
+                var anchor = $(obj).children().filter('a');
+                var url = $(anchor).attr('rel');
+                var title = $(anchor).attr('title');
                 $.post(url, function (response) {
-                    debugStatement(response)
-                    $("#coneInfo").html(response);
-                    $("#coneLink").click();
+                    $("#templateHolder").html(response);
+                    $("#templateHolder").dialog({title:title});
                 });
             },
             "separator_before":false,
@@ -313,18 +327,9 @@ function defaultMenu(node) {
     return items;
 }
 
-function editShape(shape) {
-    var name = $("#" + shape.type.toLowerCase() + "Form " + "#name").val(shape.name)
-    $("#" + shape.type.toLowerCase() + "Form " + "#x").val(shape.x)
-    $("#" + shape.type.toLowerCase() + "Form " + "#y").val(shape.y)
-    $("#" + shape.type.toLowerCase() + "Form " + "#z").val(shape.z)
-    $("#" + shape.type.toLowerCase() + "Form " + "#submit").attr("name", "_action_editShape")
-    $("#" + shape.type).click()
-}
-
 function toggleVisibility(node) {
     var id = $(node).children().filter('a').attr('id');
-    var object = group.getChildByName(url);
+    var object = group.getChildByName(id);
     if (object) {
         if (object.visible) {
             object.visible = false;
@@ -371,10 +376,10 @@ function debugStatement(msg) {
     }
 }
 function removeErrorMessage() {
-    updateTimer = setTimeout('jQuery("#instanceErrors").remove()', 2000);
+    updateTimer = setTimeout('jQuery("#instanceErrors").remove()', 10000);
 }
 function removeFlashMessage() {
-    updateTimer = setTimeout('jQuery("#flashError").remove()', 2000);
+    updateTimer = setTimeout('jQuery("#flashError").remove()', 10000);
 }
 
 function removeObjects(ids) {

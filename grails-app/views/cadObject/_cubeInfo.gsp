@@ -1,9 +1,8 @@
 <%@ page import="com.eads.threedviewer.enums.ShapeType" %>
-<g:form action="createCube" controller="CADObject" name="cubeForm">
-    <g:hiddenField name="type" value="${ShapeType.CUBE}"/>
+<g:form action="saveCube" controller="CADObject" name="cubeForm">
     <fieldset class="form">
         <div class="data-fields">
-            <g:render template="/cadObject/shapeInfo" model="[projectId:project,id:cadObject.id,name:cadObject?.name]"/>
+            <g:render template="/cadObject/shapeInfo" model="[cadObject:cadObject]"/>
             <g:render template="/cadObject/axisInfo" model="[x:cadObject?.x,y:cadObject?.y,z:cadObject?.z]"/>
             <td:textField label="X1" name="x1" value="${cadObject?.x1}"/>
             <td:textField label="Y1" name="y1" value="${cadObject?.y1}"/>
@@ -11,7 +10,12 @@
         </div>
     </fieldset>
     <fieldset class="buttons">
-        <g:actionSubmit value="Create" id="submit" action="createCube" class="save"/>
+        <g:if test="${cadObject?.id}">
+            <g:actionSubmit value="Update" id="submit" action="saveCube" class="save"/>
+        </g:if>
+        <g:else>
+            <g:actionSubmit value="Save" id="submit" action="saveCube" class="save"/>
+        </g:else>
         <input type="button" value="Cancel" id="cancel" class="save closeModel"/>
     </fieldset>
 </g:form>

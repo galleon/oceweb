@@ -320,7 +320,7 @@ body {
 #toolbox {
   background: #444444;
   width: 100%;
-  height: 52px;
+  height: 35px;
   position: absolute;
   top: 0;
   left: 0;
@@ -671,109 +671,6 @@ input#duration {
   zoom: 1;
 }
 #projectTree{z-index:5;position: absolute; top:4px; left: 150px ;cursor: pointer}
-
-.block.small.left {
-    clear: none;
-    float: left;
-}
-.block.small {
-    background: url("../images/bnd.gif") repeat-x scroll center bottom #FFFFFF;
-    padding-bottom: 0;
-}
-.block {
-    background: url("../images/bnd.gif") repeat-x scroll center bottom #FFFFFF;
-    clear: both;
-    /*margin-bottom: 25px;*/
-    padding-bottom: 5px;
-}
-.block.small .block_content {
-    background: none repeat scroll 0 0 #FFFFFF;
-    border-left: 1px solid #CCCCCC;
-    border-right: 1px solid #CCCCCC;
-}
-.block .block_content {
-    background: none repeat scroll 0 0 #FFFFFF;
-    border-left: 1px solid #CCCCCC;
-    border-right: 1px solid #CCCCCC;
-    overflow: hidden;
-    padding: 10px 10px 0;
-}
-.block .bendl {
-    background: url("../images/bendl.gif") no-repeat scroll left bottom transparent;
-    float: left;
-    height: 5px;
-    width: 5px;
-}
-.block .bendr {
-    background: url("../images/bendr.gif") no-repeat scroll left bottom transparent;
-    float: right;
-    height: 5px;
-    width: 5px;
-}
-.block .block_head .bheadl {
-    background: url("../images/bheadl.gif") no-repeat scroll left top transparent;
-    float: left;
-    height: 54px;
-    width: 20px;
-}
-.block .block_head .bheadr {
-    background: url("../images/bheadr.gif") no-repeat scroll right top transparent;
-    float: right;
-    height: 54px;
-    width: 20px;
-}
-.block.small .block_head {
-    background: url("../images/bhead.gif") repeat-x scroll 0 0 transparent;
-}
-.block .block_head {
-    background: url("../images/bhead.gif") repeat-x scroll 0 0 transparent;
-    height: 37px;
-    line-height: 37px;
-    overflow: hidden;
-}
-.block .block_head h2 {
-    color: #555555;
-    float: left;
-    font-family: "Titillium999","Trebuchet MS",Arial,sans-serif;
-    font-size: 18px;
-    font-weight: bolder;
-    text-shadow: 1px 1px 0 #FFFFFF;
-    text-transform: uppercase;
-}
-.block .block_head {
-    line-height: 37px;
-}
-.block.small.right {
-    clear: none;
-    float: right;
-    width: 75%;
-}
-.block.small {
-    background: url("../images/bnd.gif") repeat-x scroll center bottom #FFFFFF;
-    padding-bottom: 0;
-}
-.block .block_head ul {
-    float: right;
-    font-size: 11px;
-    font-weight: bold;
-    text-shadow: 1px 1px 0 #FFFFFF;
-    text-transform: uppercase;
-}
-.block .block_head ul li.nobg {
-    background: none repeat scroll 0 0 transparent;
-}
-.block .block_head ul li {
-    display: inline;
-    padding: 3px 0 3px 20px;
-}
-ul li {
-    list-style: none outside none;
-}
-.block .block_head ul li a {
-    color: #666666;
-    outline: medium none;
-    text-decoration: none;
-}
 a {
     outline: medium none;
     text-decoration: none;

@@ -1,10 +1,11 @@
 package com.eads.threedviewer
 
+import org.jcae.opencascade.jni.TopoDS_Shape
+
+import com.eads.threedviewer.enums.ShapeType
 import com.eads.threedviewer.util.ShapeUtil
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
-import org.jcae.opencascade.jni.TopoDS_Shape
-import com.eads.threedviewer.enums.ShapeType
 
 @ToString(includeNames = true, includeFields = true, excludes = 'dateCreated,lastUpdated,metaClass,content')
 @EqualsAndHashCode
@@ -18,9 +19,9 @@ class CADObject {
     double z
     CADObject parent
     byte[] content
+    ShapeType type
     Date dateCreated
     Date lastUpdated
-    ShapeType type
 
 /* Transients */
     static transients = ['subCadObjects', 'shape']

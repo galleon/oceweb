@@ -1,15 +1,19 @@
 <%@ page import="com.eads.threedviewer.enums.ShapeType" %>
-<g:form action="createSphere" controller="CADObject" name="sphereForm">
-    <g:hiddenField name="type" value="${ShapeType.SPHERE}"/>
+<g:form action="saveSphere" controller="CADObject" name="sphereForm">
     <fieldset class="form">
         <div class="data-fields">
-            <g:render template="/cadObject/shapeInfo"/>
-            <g:render template="/cadObject/axisInfo"/>
-            <td:textField label="Radius" name="radius"/>
+            <g:render template="/cadObject/shapeInfo" model="[cadObject:cadObject]"/>
+            <g:render template="/cadObject/axisInfo" model="[x:cadObject?.x,y:cadObject?.y,z:cadObject?.z]"/>
+            <td:textField label="Radius" name="radius" value="${cadObject?.radius}"/>
         </div>
     </fieldset>
     <fieldset class="buttons">
-        <g:actionSubmit value="Create" id="submit" action="createSphere" class="save"/>
+        <g:if test="${cadObject?.id}">
+            <g:actionSubmit value="Update" id="submit" action="saveSphere" class="save"/>
+        </g:if>
+        <g:else>
+            <g:actionSubmit value="Save" id="submit" action="saveSphere" class="save"/>
+        </g:else>
         <input type="button" value="Cancel" id="cancel" class="save closeModel"/>
     </fieldset>
 </g:form>

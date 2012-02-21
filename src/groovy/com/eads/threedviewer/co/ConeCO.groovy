@@ -1,26 +1,26 @@
 package com.eads.threedviewer.co
 
-import groovy.transform.ToString
-import org.codehaus.groovy.grails.validation.Validateable
 import org.jcae.opencascade.jni.BRepPrimAPI_MakeCylinder
 import org.jcae.opencascade.jni.TopoDS_Shape
 import org.jcae.opencascade.jni.BRepPrimAPI_MakeCone
-import com.eads.threedviewer.CADObject
-import com.eads.threedviewer.CADCubeObject
-import com.eads.threedviewer.enums.ShapeType
+
 import com.eads.threedviewer.CADConeObject
+import com.eads.threedviewer.CADObject
+import com.eads.threedviewer.enums.ShapeType
+import groovy.transform.ToString
+import org.codehaus.groovy.grails.validation.Validateable
+import com.eads.threedviewer.CADSphereObject
+import com.eads.threedviewer.CADCylinderObject
 
 @Validateable
 @ToString(includeNames = true, includeFields = true, excludes = 'metaClass,errors', includeSuper = true)
 class ConeCO extends ShapeCO {
     double baseRadius
     double height
-    double angle
 
     static constraints = {
         baseRadius(nullable: false)
         height(nullable: false)
-        angle(nullable: false)
     }
 
 
@@ -33,9 +33,15 @@ class ConeCO extends ShapeCO {
     }
 
     CADObject getCADObject() {
-        println "Value of baseRadius inside getCADObject in CONECO : ${baseRadius}"
-        CADObject cadObject = new CADConeObject(name: name, project: project, x: x, y: y, z: z, baseRadius: baseRadius, height: height, content: content, type: ShapeType.CONE)
-        println "Value of cadObject inside getCADObject in CONECO after creating new CADObject: ${cadObject}"
+        CADObject cadObject = id ? CADConeObject.get(id) : new CADConeObject()
+        cadObject.name = name ?: cadObject.name
+        cadObject.x = x ?: cadObject.x
+        cadObject.y = y ?: cadObject.y
+        cadObject.z = z ?: cadObject.z
+        cadObject.baseRadius = baseRadius ?: cadObject.baseRadius
+        cadObject.height = height ?: cadObject.height
+        cadObject.type = type ?: cadObject.type
+        cadObject.project = project ?: cadObject.project
         return cadObject
     }
 

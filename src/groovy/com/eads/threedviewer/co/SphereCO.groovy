@@ -26,8 +26,14 @@ class SphereCO extends ShapeCO {
     }
 
     CADObject getCADObject() {
-        CADObject cadObject = new CADSphereObject(name: name, project: project, x: x, y: y, z: z, radius: radius, content: content, type: ShapeType.SPHERE)
+        CADObject cadObject = id ? CADSphereObject.get(id) : new CADSphereObject()
+        cadObject.name = name ?: cadObject.name
+        cadObject.x = x ?: cadObject.x
+        cadObject.y = y ?: cadObject.y
+        cadObject.z = z ?: cadObject.z
+        cadObject.radius = radius ?: cadObject.radius
+        cadObject.type = type ?: cadObject.type
+        cadObject.project = project ?: cadObject.project
         return cadObject
     }
-
 }
