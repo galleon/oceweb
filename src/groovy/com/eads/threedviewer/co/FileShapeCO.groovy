@@ -30,10 +30,4 @@ class FileShapeCO extends ShapeCO {
     byte[] getContent() {
         return file.bytes
     }
-
-    CADObject getCADObject() {
-        CADObject cadObject = super.getCADObject()
-        cadObject.type = ShapeType.FILE
-        return cadObject
-    }
 }

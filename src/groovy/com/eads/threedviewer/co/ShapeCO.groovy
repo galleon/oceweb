@@ -30,19 +30,14 @@ abstract class ShapeCO {
 
     abstract TopoDS_Shape getShape()
 
-    CADObject findOrCreateCADObject() {
-        CADObject cadObject = id ? CADObject.get(id) : new CADObject()
-        return cadObject
-    }
-
     CADObject getCADObject() {
-        CADObject cadObject = findOrCreateCADObject()
-        cadObject.name = name
-        cadObject.x = x
-        cadObject.y = y
-        cadObject.z = z
-        cadObject.project = cadObject.project ?: project
-        cadObject.type = cadObject.type ?: type
+        CADObject cadObject = id ? CADObject.get(id) : new CADObject()
+        cadObject.name = name ?: cadObject.name
+        cadObject.x = x ?: cadObject.x
+        cadObject.y = y ?: cadObject.y
+        cadObject.z = z ?: cadObject.z
+        cadObject.project = project ?: cadObject.project
+        cadObject.type = type ?: cadObject.type
         return cadObject
     }
 
