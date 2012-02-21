@@ -696,3 +696,5 @@ a {
 .last a{color: #ddd !important;font-size: 23px}
 .hidden{display: none;}
 #selectProject{width: 55%}
+#project{background-color: #414042}
+.jstree a{color: #fff!important;}
