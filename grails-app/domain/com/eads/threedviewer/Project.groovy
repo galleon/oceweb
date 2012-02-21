@@ -25,6 +25,7 @@ class Project {
 
 /* Mappings */
     static mapping = {
+        cadObjects cascade: 'all-delete-orphan'
     }
 
 /* Hooks */
@@ -32,9 +33,10 @@ class Project {
 /* Named queries */
 
 /* Transient Methods */
- List<CADObject> getParentCadObjects(){
-    return CADObject.findAllByProjectAndParentIsNull(this)
- }
+
+    List<CADObject> getParentCadObjects() {
+        return CADObject.findAllByProjectAndParentIsNull(this)
+    }
 /* Methods */
 
 /* Static Methods */

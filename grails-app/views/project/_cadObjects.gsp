@@ -2,7 +2,11 @@
 
 <div class="block small left">
     <div class="block_head">
-        <h2><g:select name="name" from="${projects}" optionKey="name" optionValue="name" noSelection="['': 'Choose Project']" value="${project?.name}" id='selectProject'/></h2>
+        <h2>
+            <g:form action="index" controller="project" name="changeProject">
+                <g:select name="name" from="${projects}" optionKey="name" optionValue="name" noSelection="['': 'Choose Project']" value="${project?.name}" id='selectProject'/>
+            </g:form>
+        </h2>
     </div>
 
     <div class="block_content">

@@ -38,32 +38,29 @@
 </head>
 
 <body>
+<g:if test="${project}">
+    <div id="projectTree" title="Project">
+        <g:render template="/project/cadObjects" model="[project: project,projects:projects]"/>
+    </div>
+
+</g:if>
+<div id="dialog-confirm" title="Delete selected items?" style="display: none;">
+    <p></p>
+</div>
+
 <div id="toolbox">
-    <div id="logo" class="righttools clearfix">
-        <g:form action="index" controller="project" name="changeProject">
-            <ul class="light-list clearfix" style="width: 100%">
-                <g:if test="${!project}">
-                    <li style="padding:5px 0 0 5px;">Project Not Found</li>
-                </g:if>
-                <li class="last"><g:link uri="/">3-D Viewer</g:link><div id="spinner" style="display:none; text-align: right">Please wait while you content is loading</div></li>
-            </ul>
-        </g:form>
-    </div>
-    <g:if test="${project}">
-        <div id="projectTree" title="Project">
-            <g:render template="/project/cadObjects" model="[project: project,projects:projects]"/>
-        </div>
-
-    </g:if>
-
-    <div id="dialog-confirm" title="Delete selected items?" style="display: none;">
-        <p></p>
-    </div>
-
     <div class="righttools clearfix">
-        <g:render template="/project/toolbar"/>
+        <div id="frameArea"><g:link uri="/">3-D Viewer</g:link></div>
+        <g:if test="${project}">
+            <g:render template="/project/toolbar"/>
+            <div id="spinner" style="display: none;">Please wait while you content is loading</div>
+        </g:if>
+        <g:else>
+            <div id="spinner">Project not found</div>
+        </g:else>
     </div>
 </div>
 <g:layoutBody/>
+
 </body>
 </html>

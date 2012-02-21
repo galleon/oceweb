@@ -1,7 +1,4 @@
 <%@ page import="com.eads.threedviewer.enums.ShapeType" %>
-<ul class="export-list">
-    <li id="frameArea" style="margin-top:10px;"></li>
-</ul>
 <g:if test="${project}">
     <g:hiddenField name="projectId" value="${project.id}"/>
     <ul class="toolbox-list clearfix">

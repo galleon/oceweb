@@ -20,12 +20,12 @@ var httpData = $.httpData || function (xhr, type, s) { // lifted from jq1.4.4
     }
     return data;
 };
-
 $(document).ready(function () {
     $("#selectProject").change(function () {
         $("#changeProject").submit();
     });
     $("#projectTree").draggable();
+    $("#toolbox").draggable();
     initialiseCanvas('content');
 
     jQuery("#spinner").ajaxStart(function () {
@@ -57,6 +57,7 @@ $(document).ready(function () {
                 $("#templateHolder").html(response);
                 $("#templateHolder").dialog({title:title});
                 $('.ui-dialog').css('padding-top', '8px').width('340px');
+                $("input:submit,input:button, button,a.modelLink").button();
                 closeModel();
             });
             return false;
@@ -163,7 +164,7 @@ function initialiseCanvas(containerId) {
     $(container).bind('mousedown', onDocumentMouseDown);
     $(container).mousewheel(zoom);
     stats = new Stats();
-    $("#frameArea").append($(stats.domElement).find('div>div:first'));
+    $("#frameArea").append($(stats.domElement).find('div>div:first').css({'float':'right','margin-right':'13px','padding-top':'6px'}));
     animate();
 }
 
