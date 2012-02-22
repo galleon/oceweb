@@ -1,11 +1,10 @@
 package com.eads.threedviewer
 
-import org.jcae.opencascade.jni.TopoDS_Shape
-
 import com.eads.threedviewer.enums.ShapeType
 import com.eads.threedviewer.util.ShapeUtil
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
+import org.jcae.opencascade.jni.TopoDS_Shape
 
 @ToString(includeNames = true, includeFields = true, excludes = 'dateCreated,lastUpdated,metaClass,content')
 @EqualsAndHashCode

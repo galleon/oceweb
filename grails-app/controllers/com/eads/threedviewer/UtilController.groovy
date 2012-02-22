@@ -1,10 +1,10 @@
 package com.eads.threedviewer
 
-import occmeshextractor.OCCMeshExtractor
-import org.jcae.opencascade.jni.*
 import com.eads.threedviewer.util.ShapeUtil
 import com.eads.threedviewer.vo.ShapeVO
 import grails.converters.JSON
+import occmeshextractor.OCCMeshExtractor
+import org.jcae.opencascade.jni.*
 
 class UtilController {
 

@@ -2,7 +2,6 @@ package com.eads.threedviewer.co
 
 import com.eads.threedviewer.CADObject
 import com.eads.threedviewer.CADSphereObject
-import com.eads.threedviewer.enums.ShapeType
 import groovy.transform.ToString
 import org.codehaus.groovy.grails.validation.Validateable
 import org.jcae.opencascade.jni.BRepPrimAPI_MakeSphere
