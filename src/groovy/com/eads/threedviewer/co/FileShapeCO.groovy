@@ -16,7 +16,17 @@ class FileShapeCO extends ShapeCO {
 
     static constraints = {
         file(nullable: false, blank: false, minSize: 1, validator: {var, obj ->
-            if (!var.originalFilename.toLowerCase().endsWith(".brep")) {
+            boolean isValid = true
+            boolean isBrep = var.originalFilename.toLowerCase().endsWith(".brep")
+            if (!obj.id && !isBrep) {
+                isValid = false
+            }
+            else if (obj.id && !var.isEmpty()) {
+                if (!isBrep) {
+                    isValid = false
+                }
+            }
+            if (!isValid) {
                 return ["content.type.not.supported", 'brep']
             }
         })

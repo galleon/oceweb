@@ -27,7 +27,7 @@ class CubeCO extends ShapeCO {
         return box.shape()
     }
 
-    CADObject getCADObject() {
+    CADObject findOrCreateCADObject() {
         CADObject cadObject = id ? CADCubeObject.get(id) : new CADCubeObject()
         cadObject.name = name ?: cadObject.name
         cadObject.x = x ?: cadObject.x

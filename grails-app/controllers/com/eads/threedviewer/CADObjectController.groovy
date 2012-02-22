@@ -136,7 +136,7 @@ class CADObjectController {
     }
 
     Closure renderTemplate = {ShapeCO shapeCO ->
-        CADObject cadObject = shapeCO.CADObject
+        CADObject cadObject = shapeCO.findOrCreateCADObject()
         render(template: "/cadObject/${cadObject.type.toString().toLowerCase()}Info", model: [cadObject: cadObject])
     }
 

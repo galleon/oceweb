@@ -29,6 +29,7 @@
     <script src="${resource(dir: 'js', file: 'jquery.cookie.js')}"></script>
     <script src="${resource(dir: 'js', file: 'jquery.hotkeys.js')}"></script>
     <script src="${resource(dir: 'js', file: 'jquery.jstree.js')}"></script>
+    <script src="${resource(dir: 'js', file: 'jquery.form.js')}"></script>
     <script src="${resource(dir: 'js', file: 'Stats.js')}"></script>
     <script src="${resource(dir: 'js', file: 'application.js')}"></script>
     <script src="${resource(dir: 'js/three', file: 'Three.js')}"></script>

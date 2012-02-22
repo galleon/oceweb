@@ -7,7 +7,7 @@ class ProjectService {
     CADObject addCADObject(ShapeCO co) {
         CADObject cadObject
         if (co.validate()) {
-            cadObject = co.CADObject
+            cadObject = co.findOrCreateCADObject()
             cadObject.content = co.content
             Project project = co.project
             cadObject.save()
@@ -15,7 +15,7 @@ class ProjectService {
             project.save()
 
         }else{
-            log.debug co.errors
+            log.info co.errors
         }
         return cadObject
     }

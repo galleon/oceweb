@@ -30,7 +30,7 @@ class CylinderCO extends ShapeCO {
         return cylinder.shape()
     }
 
-    CADObject getCADObject() {
+    CADObject findOrCreateCADObject() {
         CADObject cadObject = id ? CADCylinderObject.get(id) : new CADCylinderObject()
         cadObject.name = name ?: cadObject.name
         cadObject.x = x ?: cadObject.x

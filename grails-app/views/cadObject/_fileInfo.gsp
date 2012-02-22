@@ -6,7 +6,12 @@
         </div>
     </fieldset>
     <fieldset class="buttons">
-        <g:actionSubmit value="Create" action="saveShapeFromFile" class="save"/>
+        <g:if test="${cadObject?.id}">
+            <g:submitButton name="submit" value="Update" class="save"/>
+        </g:if>
+        <g:else>
+            <g:submitButton name="Submit" value="Save"  class="save"/>
+        </g:else>
         <input type="button" value="Cancel" id="cancel" class="save closeModel"/>
     </fieldset>
 </g:uploadForm>

@@ -31,7 +31,7 @@ class ConeCO extends ShapeCO {
         return cone.shape()
     }
 
-    CADObject getCADObject() {
+    CADObject findOrCreateCADObject() {
         CADObject cadObject = id ? CADConeObject.get(id) : new CADConeObject()
         cadObject.name = name ?: cadObject.name
         cadObject.x = x ?: cadObject.x
@@ -43,6 +43,4 @@ class ConeCO extends ShapeCO {
         cadObject.project = project ?: cadObject.project
         return cadObject
     }
-
-
 }

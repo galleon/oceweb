@@ -25,7 +25,7 @@ class SphereCO extends ShapeCO {
         return sphere.shape()
     }
 
-    CADObject getCADObject() {
+    CADObject findOrCreateCADObject() {
         CADObject cadObject = id ? CADSphereObject.get(id) : new CADSphereObject()
         cadObject.name = name ?: cadObject.name
         cadObject.x = x ?: cadObject.x
