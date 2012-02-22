@@ -1,34 +1,28 @@
 package com.eads.threedviewer
 
-import org.jcae.opencascade.jni.TopAbs_ShapeEnum
-import org.jcae.opencascade.jni.TopoDS_Shape
-import org.jcae.mesh.cad.CADShapeFactory
-import org.jcae.mesh.amibe.ds.MMesh1D
-import org.jcae.mesh.cad.CADShape
-import org.jcae.mesh.amibe.algos1d.UniformLength
-import org.jcae.mesh.amibe.algos1d.UniformLengthDeflection
-import org.jcae.mesh.amibe.algos1d.Compat1D2D
-import org.jcae.mesh.xmldata.MMesh1DWriter
-import org.jcae.mesh.amibe.traits.MeshTraitsBuilder
-import org.jcae.mesh.cad.CADExplorer
-import org.jcae.mesh.cad.CADShapeEnum
-import org.jcae.mesh.amibe.ds.MeshParameters
-import org.jcae.mesh.amibe.patch.Mesh2D
-import org.jcae.mesh.amibe.algos2d.Initial
-import org.jcae.mesh.amibe.patch.InvalidFaceException
-import org.jcae.opencascade.jni.BRepTools
-import org.jcae.mesh.amibe.algos2d.BasicMesh
-import org.jcae.mesh.amibe.algos2d.SmoothNodes2D
-import org.jcae.mesh.amibe.algos2d.ConstraintNormal3D
-import org.jcae.mesh.amibe.algos2d.CheckDelaunay
-import org.jcae.mesh.xmldata.MeshWriter
-import org.jcae.mesh.xmldata.MeshToMMesh3DConvert
 import com.eads.threedviewer.util.ShapeUtil
 import grails.converters.JSON
 import grails.validation.ValidationException
 import java.nio.channels.FileChannel
+import org.jcae.mesh.amibe.algos1d.Compat1D2D
+import org.jcae.mesh.amibe.algos1d.UniformLength
+import org.jcae.mesh.amibe.algos1d.UniformLengthDeflection
+import org.jcae.mesh.amibe.ds.MMesh1D
+import org.jcae.mesh.amibe.ds.MeshParameters
+import org.jcae.mesh.amibe.patch.InvalidFaceException
+import org.jcae.mesh.amibe.patch.Mesh2D
+import org.jcae.mesh.amibe.traits.MeshTraitsBuilder
+import org.jcae.mesh.cad.CADExplorer
+import org.jcae.mesh.cad.CADShape
+import org.jcae.mesh.cad.CADShapeEnum
+import org.jcae.mesh.cad.CADShapeFactory
+import org.jcae.mesh.xmldata.MMesh1DWriter
+import org.jcae.mesh.xmldata.MeshToMMesh3DConvert
+import org.jcae.mesh.xmldata.MeshWriter
+import org.jcae.opencascade.jni.BRepTools
+import org.jcae.opencascade.jni.TopAbs_ShapeEnum
 import com.eads.threedviewer.co.*
-import com.eads.threedviewer.enums.ShapeType
+import org.jcae.mesh.amibe.algos2d.*
 
 class CADObjectController {
 

@@ -1,6 +1,5 @@
 package com.eads.threedviewer.co
 
-import org.jcae.opencascade.jni.TopoDS_Shape
 import com.eads.threedviewer.CADMeshObject
 import com.eads.threedviewer.CADObject
 import com.eads.threedviewer.enums.ShapeType
@@ -8,6 +7,7 @@ import com.eads.threedviewer.util.ShapeUtil
 import groovy.transform.ToString
 import groovy.util.logging.Log
 import org.codehaus.groovy.grails.validation.Validateable
+import org.jcae.opencascade.jni.TopoDS_Shape
 
 @Log
 @Validateable

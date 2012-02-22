@@ -1,6 +1,5 @@
 package com.eads.threedviewer
 
-import org.jcae.opencascade.jni.TopoDS_Shape
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
 

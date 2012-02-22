@@ -1,15 +1,10 @@
 package com.eads.threedviewer
 
-import org.jcae.opencascade.jni.TopAbs_ShapeEnum
-import org.jcae.opencascade.jni.TopExp_Explorer
-import org.jcae.opencascade.jni.TopoDS_Shape
-
-import org.jcae.opencascade.jni.*
-
 import com.eads.threedviewer.co.BooleanOperationCO
 import com.eads.threedviewer.enums.Operation
 import com.eads.threedviewer.enums.ShapeType
 import com.eads.threedviewer.util.ShapeUtil
+import org.jcae.opencascade.jni.*
 
 class ShapeService {
 

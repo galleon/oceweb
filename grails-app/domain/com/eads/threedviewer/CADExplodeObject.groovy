@@ -1,8 +1,8 @@
 package com.eads.threedviewer
 
-import org.jcae.opencascade.jni.TopAbs_ShapeEnum
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
+import org.jcae.opencascade.jni.TopAbs_ShapeEnum
 
 @ToString(includeNames = true, includeFields = true, excludes = 'dateCreated,lastUpdated,metaClass,content')
 @EqualsAndHashCode

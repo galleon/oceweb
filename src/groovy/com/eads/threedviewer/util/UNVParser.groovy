@@ -1,10 +1,8 @@
 package com.eads.threedviewer.util
 
-
-import gnu.trove.TFloatArrayList;
-import gnu.trove.TIntArrayList;
-import gnu.trove.TIntIntHashMap;
-
+import gnu.trove.TFloatArrayList
+import gnu.trove.TIntArrayList
+import gnu.trove.TIntIntHashMap
 
 public class UNVParser {
     private static final int TETRA4_MASK = 0x10000000;
