@@ -21,7 +21,7 @@ class ConeCO extends ShapeCO {
 
     @Override
     TopoDS_Shape getShape() {
-        double[] axes = [x, y, z, 1, 0, 0]
+        double[] axes = [x, y, z, 0, 1, 0]
         BRepPrimAPI_MakeCone cone = new BRepPrimAPI_MakeCone(axes, baseRadius, 0, height, 2 * Math.PI)
         return cone.shape()
     }
