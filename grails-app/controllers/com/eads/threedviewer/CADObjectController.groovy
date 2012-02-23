@@ -57,14 +57,13 @@ class CADObjectController {
         sendResponse(co)
     }
 
-
-
-    def createMesh(MeshCO co) {
+    def saveMesh(MeshCO co) {
+        CADObject cadObject1 = co.findOrCreateCADObject()
         byte[] content = getContent(co)
         CADObject cadObject = co.findOrCreateCADObject()
         cadObject.content = content
         try {
-            cadObject.save()
+            cadObject.save(failOnError: true)
         } catch (ValidationException ve) {
             flash.error = ve.message
             redirect(controller: 'project', action: 'index', params: [shapeId: co.parent.id])
@@ -148,6 +147,10 @@ class CADObjectController {
         renderTemplate(co)
     }
 
+    def createMesh(MeshCO co) {
+        renderTemplate(co)
+    }
+
     Closure renderTemplate = {ShapeCO shapeCO ->
         CADObject cadObject = shapeCO.findOrCreateCADObject()
         render(template: "/cadObject/${cadObject.type.toString().toLowerCase()}Info", model: [cadObject: cadObject])
@@ -177,10 +180,10 @@ class CADObjectController {
 
     //TODO -: Refactore code and check why its not working in co classed so that project service method of creating cadobject can be used
     private byte[] getContent(MeshCO co) {
-        Long id = co.parent.id
+        Long id = co.findOrCreateCADObject().parent.id
         float size = co.size
         float deflection = co.deflection
-        File file = co.parent.createFile()
+        File file = co.findOrCreateCADObject().parent.createFile()
         String brepfile = file.name
         String outputDir = "/tmp/${id}"
 

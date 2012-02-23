@@ -47,7 +47,7 @@
         </div>
 
         <div id="mesh" style="display: none" title="Create Mesh">
-            <g:render template="/cadObject/mesh"/>
+            <g:render template="/cadObject/meshInfo" model="[project: project]"/>
         </div>
         <a href="#operation" class="model" style="display: none" id="operationLink">Operation</a>
 

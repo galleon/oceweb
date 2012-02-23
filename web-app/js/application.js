@@ -301,7 +301,7 @@ function defaultMenu(node) {
                 var anchor = $(obj).children().filter('a');
                 var url = $(anchor).attr('rel');
                 var title = $(anchor).attr('title');
-                debugStatement(">>>>>>>>>>>>> URL : "+url)
+                debugStatement(">>>>>>>>>>>>>>>>>>>>>> URL : "+url)
                 $.post(url, function (response) {
                     $("#templateHolder").html(response);
                     $("#templateHolder").dialog({title:title});
@@ -330,6 +330,7 @@ function defaultMenu(node) {
             "action":function (obj) {
                 var id = $(obj).children().filter('a').attr('id');
                 $("#meshForm #cadObjectId").val(id);
+                $("#meshForm #cadProjectId").val($("#projectid").val());
                 $("#mesh").dialog();
                 $('.ui-dialog').width('340px');
             },
