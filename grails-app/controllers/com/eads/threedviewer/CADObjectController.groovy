@@ -66,6 +66,7 @@ class CADObjectController {
 
 
     Closure sendResponse = {ShapeCO co ->
+        Map result
         CADObject cadObject
         try {
             cadObject = projectService.addCADObject(co)
@@ -73,9 +74,10 @@ class CADObjectController {
             flash.error = ve.message
         }
         if (cadObject) {
-            redirect(controller: 'project', action: 'index', params: [shapeId: cadObject.id])
+            render cadObject.id
         } else {
-            render(view: '/project/index', model: [project: co.project, projects: Project.list(), co: co])
+            result = ['error': cadObject.errors]
+            render result as JSON
         }
     }
 

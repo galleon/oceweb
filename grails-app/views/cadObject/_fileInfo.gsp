@@ -1,4 +1,4 @@
-<g:uploadForm action="saveShapeFromFile" controller="CADObject" name="cubeForm">
+<g:uploadForm action="saveShapeFromFile" controller="CADObject" class="shapeForm" name="fileForm">
     <fieldset class="form">
         <div class="data-fields">
             <g:render template="/cadObject/shapeInfo" model="[cadObject:cadObject]"/>

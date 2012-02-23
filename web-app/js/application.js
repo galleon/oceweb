@@ -57,6 +57,7 @@ $(document).ready(function () {
                 $("#templateHolder").html(response);
                 $("#templateHolder").dialog({title:title});
                 setupUI();
+                ajaxSubmit();
             });
             return false;
         }
@@ -110,14 +111,18 @@ function showShapeFromRemote(id) {
         var url = createLink('CADObject', 'show');
         $.getJSON(url, {id:id}, function (response) {
             if (response.error) {
-                $("#dialog-confirm p").html(response.error);
-                $("#dialog-confirm").dialog({title:'Error'});
+                showError(response.error)
             } else {
                 var object = createMesh(response, id);
                 addToGroup(object);
             }
         });
     }
+}
+
+function showError(message) {
+    $("#dialog-confirm p").html(message);
+    $("#dialog-confirm").dialog({title:'Error'});
 }
 
 function createMesh(response, name) {
@@ -226,14 +231,41 @@ function render() {
 
 }
 
+function ajaxSubmit() {
+    $(".shapeForm").ajaxForm(function (response) {
+        $("#templateHolder").dialog("close")
+        if (response.error) {
+            showError(response.error)
+        }
+        else {
+            reloadProjectTree()
+            removeObjects([response])
+            showShape(response)
+        }
+    })
+}
+
 function createLink(controller, action) {
     var link = getContext() + controller + '/' + action;
     return link
 }
 
 function enableJsTree() {
-    $("#project").jstree({rules:{ multiple:"shift" }, "plugins":["themes", "html_data", "ui", "crrm", "hotkeys", "contextmenu"], "themes":{"theme":"apple",
-        "icons":true}, contextmenu:{items:defaultMenu}, "core":{ "initially_open":[ "phtml_1" ] }}).bind("select_node.jstree",
+    $("#project").jstree({
+        rules:{
+            multiple:"shift"
+        },
+        "plugins":["themes", "html_data", "ui", "crrm", "hotkeys", "contextmenu"],
+        "themes":{
+            "theme":"apple",
+            "icons":true
+        },
+        contextmenu:{
+            items:defaultMenu
+        },
+        "core":{
+            "initially_open":[ "phtml_1" ] }
+    }).bind("select_node.jstree",
         function (event, data) {
             if ($('#project').jstree('get_selected').size() == 1) {
                 showShape(data.rslt.obj.children().filter('a').attr('id'))
@@ -273,6 +305,7 @@ function defaultMenu(node) {
                     $("#templateHolder").html(response);
                     $("#templateHolder").dialog({title:title});
                     setupUI();
+                    ajaxSubmit();
                 });
             },
             "separator_before":false,
@@ -445,6 +478,21 @@ function confirmDelete(node) {
             Cancel:function () {
                 $(this).dialog("close");
             }
+        }
+    })
+}
+
+function reloadProjectTree() {
+    var url = createLink('project', 'listCadObjects')
+    var projectId = $("#projectId").val();
+    url = url + "/" + projectId;
+    $.get(url, function (response) {
+        if (response.error) {
+            showError(response.error)
+        } else {
+            $("#projectTree").html(response);
+            $("#projectTree").draggable();
+            enableJsTree()
         }
     })
 }

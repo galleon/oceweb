@@ -1,5 +1,5 @@
 <%@ page import="com.eads.threedviewer.enums.ShapeType" %>
-<g:form action="saveCylinder" controller="CADObject" name="cylinderForm">
+<g:form action="saveCylinder" controller="CADObject" class="shapeForm" name="cylinderForm">
     <fieldset class="form">
         <div class="data-fields">
             <g:render template="/cadObject/shapeInfo" model="[cadObject:cadObject]"/>

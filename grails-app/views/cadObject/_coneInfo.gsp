@@ -1,5 +1,5 @@
 <%@ page import="com.eads.threedviewer.enums.ShapeType" %>
-<g:form action="saveCone" controller="CADObject" name="coneForm" >
+<g:form action="saveCone" class="shapeForm" controller="CADObject" name="coneForm" >
     <fieldset class="form">
         <div class="data-fields">
             <g:render template="/cadObject/shapeInfo" model="[cadObject:cadObject]"/>

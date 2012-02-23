@@ -5,6 +5,7 @@ import groovy.transform.ToString
 import org.codehaus.groovy.grails.validation.Validateable
 import org.jcae.opencascade.jni.TopoDS_Shape
 import org.springframework.web.multipart.MultipartFile
+import com.eads.threedviewer.CADObject
 
 @Validateable
 @ToString(includeNames = true, includeFields = true, excludes = 'metaClass,errors', includeSuper = true)
@@ -12,16 +13,14 @@ class FileShapeCO extends ShapeCO {
     MultipartFile file
 
     static constraints = {
-        file(nullable: false, blank: false, minSize: 1, validator: {var, obj ->
+        file(nullable: true, validator: {var, obj ->
             boolean isValid = true
-            boolean isBrep = var.originalFilename.toLowerCase().endsWith(".brep")
+            boolean isBrep = var?.originalFilename?.toLowerCase()?.endsWith(".brep")
             if (!obj.id && !isBrep) {
                 isValid = false
             }
-            else if (obj.id && !var.isEmpty()) {
-                if (!isBrep) {
-                    isValid = false
-                }
+            else if (obj.id && var?.empty && !isBrep) {
+                isValid = false
             }
             if (!isValid) {
                 return ["content.type.not.supported", 'brep']
@@ -35,6 +34,8 @@ class FileShapeCO extends ShapeCO {
     }
 
     byte[] getContent() {
-        return file.bytes
+        CADObject cadObject = super.findOrCreateCADObject()
+        def content = (super.id && !file) ? cadObject?.content : file?.bytes
+        return content
     }
 }
