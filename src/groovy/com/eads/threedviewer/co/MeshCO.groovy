@@ -8,6 +8,7 @@ import groovy.transform.ToString
 import groovy.util.logging.Log
 import org.codehaus.groovy.grails.validation.Validateable
 import org.jcae.opencascade.jni.TopoDS_Shape
+import com.eads.threedviewer.CADCubeObject
 
 @Log
 @Validateable
@@ -25,7 +26,17 @@ class MeshCO extends ShapeCO {
         return ShapeUtil.getShape(content)
     }
 
-    CADObject getCADObject() {
-        return new CADMeshObject(name: name, x: 0, y: 0, z: 0, type: ShapeType.MESH, project: project, size: size, deflection: deflection, parent: parent)
+    CADObject findOrCreateCADObject() {
+        CADObject cadObject = id ? CADMeshObject.get(id) : new CADMeshObject()
+        cadObject.name = name ?: cadObject.name
+        cadObject.x = x ?: cadObject.x
+        cadObject.y = y ?: cadObject.y
+        cadObject.z = z ?: cadObject.z
+        cadObject.size = size ?: cadObject.size
+        cadObject.deflection = deflection ?: cadObject.deflection
+        cadObject.parent = parent ?: cadObject.parent
+        cadObject.type = type ?: cadObject.type
+        cadObject.project = project ?: cadObject.project
+        return cadObject
     }
 }

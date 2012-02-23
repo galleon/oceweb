@@ -1,5 +1,6 @@
 <%@ page import="com.eads.threedviewer.enums.Operation; org.jcae.mesh.cad.CADShapeEnum" %>
 <g:form action="booleanOperation" controller="CADObject" name="booleanForm" class="shapeForm">
+    <g:hiddenField name="project.id" value="${cadObject?.project?.id}"/>
     <g:hiddenField name="object1" value=""/>
     <g:hiddenField name="object2" value=""/>
     <g:hiddenField name="type" value="COMPOUND"/>

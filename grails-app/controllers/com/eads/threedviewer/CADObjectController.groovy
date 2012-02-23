@@ -49,10 +49,19 @@ class CADObjectController {
         sendResponse(co)
     }
 
+    def saveCompound(CompoundShapeCO co) {
+        sendResponse(co)
+    }
+
+    def saveExplode(ExplodeShapeCO co) {
+        sendResponse(co)
+    }
+
+
 
     def createMesh(MeshCO co) {
         byte[] content = getContent(co)
-        CADObject cadObject = co.CADObject
+        CADObject cadObject = co.findOrCreateCADObject()
         cadObject.content = content
         try {
             cadObject.save()
@@ -128,6 +137,14 @@ class CADObjectController {
     }
 
     def createFile(FileShapeCO co) {
+        renderTemplate(co)
+    }
+
+    def createCompound(CompoundShapeCO co) {
+        renderTemplate(co)
+    }
+
+    def createExplode(ExplodeShapeCO co) {
         renderTemplate(co)
     }
 

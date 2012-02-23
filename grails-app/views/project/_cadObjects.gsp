@@ -26,8 +26,8 @@
                                         <g:set var="count" value="${count.toInteger() + 1}"/>
                                         <li id="${"phtml_" + (count)}">
                                             <a href="${createLink(controller: 'CADObject', action: 'show', id: subCadObject.id)}"
-                                               class="showObject" id="${subCadObject.id}" title="Edit ${cadObject.type.value}"
-                                               rel='${createLink(controller: "CADObject", action: "create${cadObject.type.value}", id: subCadObject.id)}'>${subCadObject.name}</a>
+                                               class="showObject" id="${subCadObject.id}" title="Edit ${subCadObject.type.value}"
+                                               rel='${createLink(controller: "CADObject", action: "create${subCadObject.type.value}", id: subCadObject.id)}'>${subCadObject.name}</a>
                                         </li>
                                     </g:each>
                                 </ul>

@@ -301,6 +301,7 @@ function defaultMenu(node) {
                 var anchor = $(obj).children().filter('a');
                 var url = $(anchor).attr('rel');
                 var title = $(anchor).attr('title');
+                debugStatement(">>>>>>>>>>>>> URL : "+url)
                 $.post(url, function (response) {
                     $("#templateHolder").html(response);
                     $("#templateHolder").dialog({title:title});
