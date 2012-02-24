@@ -268,19 +268,14 @@ function enableJsTree() {
         },
         "types":{
             "types":{
-                "root":{
-                    "icon":{
-                        "image":"images/folder_icon.png"
-                    }
-                },
                 "cone":{
                     "icon":{
-                        "image":"images/cone_icon.png"
+                        "image":"images/cone.png"
                     }
                 },
                 "cube":{
                     "icon":{
-                        "image":"images/cube_icon.png"
+                        "image":"images/cube.png"
                     }
                 },
                 "cylinder":{
