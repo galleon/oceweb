@@ -166,7 +166,7 @@ function initialiseCanvas(containerId) {
     trihedra = new THREE.Axes();
     trihedra.position.set(0, 0, 0);
     trihedra.scale.x = trihedra.scale.y = trihedra.scale.z = 0.5;
-    trihedra.rotation.y = 5.5;
+    trihedra.rotation.y = 0;
     addToGroup(trihedra);
     scene.add(group);
     $(container).html(renderer.domElement);
@@ -301,7 +301,6 @@ function defaultMenu(node) {
                 var anchor = $(obj).children().filter('a');
                 var url = $(anchor).attr('rel');
                 var title = $(anchor).attr('title');
-                debugStatement(">>>>>>>>>>>>>>>>>>>>>> URL : "+url)
                 $.post(url, function (response) {
                     $("#templateHolder").html(response);
                     $("#templateHolder").dialog({title:title});
