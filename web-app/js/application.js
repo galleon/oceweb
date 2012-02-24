@@ -255,7 +255,7 @@ function enableJsTree() {
         rules:{
             multiple:"shift"
         },
-        "plugins":["themes", "html_data", "ui", "crrm", "hotkeys", "contextmenu"],
+        "plugins":["themes", "html_data", "ui", "crrm", "hotkeys", "contextmenu", "types", "dnd"],
         "themes":{
             "theme":"apple",
             "icons":true
@@ -264,17 +264,44 @@ function enableJsTree() {
             items:defaultMenu
         },
         "core":{
-            "initially_open":[ "phtml_1" ] }
-    }).bind("select_node.jstree",
+            "initially_open":[ "phtml_1" ]
+        },
+        "types":{
+            "types":{
+                "cone":{
+                    "icon":{
+                        "image":"images/cone.png"
+                    }
+                },
+                "cube":{
+                    "icon":{
+                        "image":"images/cube.png"
+                    }
+                },
+                "cylinder":{
+                    "icon":{
+                        "image":"images/cylinder_icon.png"
+                    }
+                },
+                "sphere":{
+                    "icon":{
+                        "image":"images/sphere_icon.png"
+                    }
+                },
+                "default":{
+                    "icon":{
+                        "image":"images/folder_icon.png"
+                    }
+                }
+            }
+        }
+    }).
+        bind("select_node.jstree",
         function (event, data) {
             if ($('#project').jstree('get_selected').size() == 1) {
                 showShape(data.rslt.obj.children().filter('a').attr('id'))
             }
 
-        }).bind("rename_node.jstree", function (event, data) {
-            var id = data.rslt.obj.children().filter('a').attr('id');
-            var name = data.rslt.name;
-            updateName(id, name)
         })
 }
 

@@ -13,18 +13,18 @@
         <div id="project">
             <ul>
                 <g:set var="count" value="1"/>
-                <li id="${"phtml_" + (count)}"><a href="#">${project.name}</a>
+                <li id="${"phtml_" + (count)}" rel="root"><a href="#">${project.name}</a>
                     <ul>
                         <g:each in="${project.getParentCadObjects()}" var="cadObject">
                             <g:set var="count" value="${count.toInteger() + 1}"/>
-                            <li id="${"phtml_" + (count)}">
+                            <li id="${"phtml_" + (count)}" rel="${cadObject.type}">
                                 <a href="${createLink(controller: 'CADObject', action: 'show', id: cadObject.id)}"
                                    class="showObject" id="${cadObject.id}" title="Edit ${cadObject.type.value}"
                                    rel='${createLink(controller: "CADObject", action: "create${cadObject.type.value}", id: cadObject.id)}'>${cadObject.name}</a>
                                 <ul>
                                     <g:each in="${cadObject.subCadObjects}" var="subCadObject">
                                         <g:set var="count" value="${count.toInteger() + 1}"/>
-                                        <li id="${"phtml_" + (count)}">
+                                        <li id="${"phtml_" + (count)}" rel="${subCadObject.type}">
                                             <a href="${createLink(controller: 'CADObject', action: 'show', id: subCadObject.id)}"
                                                class="showObject" id="${subCadObject.id}" title="Edit ${subCadObject.type.value}"
                                                rel='${createLink(controller: "CADObject", action: "create${subCadObject.type.value}", id: subCadObject.id)}'>${subCadObject.name}</a>
