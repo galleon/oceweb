@@ -54,14 +54,14 @@
         <div id="frameArea"><g:link uri="/">3-D Viewer</g:link></div>
         <g:if test="${project}">
             <g:render template="/project/toolbar"/>
-            <div id="spinner" style="display: none;">Please wait while you content is loading</div>
         </g:if>
-        <g:else>
-            <div id="spinner">Project not found</div>
-        </g:else>
     </div>
 </div>
 <g:layoutBody/>
-
+<div id="spinner" class="message info" style="display: ${project ? 'none' : 'block'};">
+    <p>
+        ${project ? 'Please wait while you content is loading' : 'Project not found'}
+    </p>
+</div>
 </body>
 </html>
