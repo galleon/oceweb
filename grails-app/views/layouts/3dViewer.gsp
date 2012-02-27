@@ -58,10 +58,18 @@
     </div>
 </div>
 <g:layoutBody/>
-<div id="spinner" class="message info" style="display: ${project ? 'none' : 'block'};">
+<div id="spinner" class="message ${project ? 'info' : 'errormsg'}" style="display: ${project ? 'none' : 'block'};">
     <p>
         ${project ? 'Please wait while you content is loading' : 'Project not found'}
     </p>
 </div>
+<g:if test="${flash.error}">
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var message = '${flash.error}';
+            $("#spinner p").text(message).parent().addClass('errormsg').removeClass('info').show();
+        })
+    </script>
+</g:if>
 </body>
 </html>

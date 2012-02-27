@@ -66,8 +66,6 @@ $(document).ready(function () {
             $('.ui-dialog').css('padding-top', '8px').width('340px');
         }
     })
-    removeErrorMessage();
-    removeFlashMessage();
 })
 
 function setupUI() {
@@ -441,12 +439,6 @@ function debugStatement(msg) {
     if (typeof(console) != 'undefined') {
         console.debug(msg);
     }
-}
-function removeErrorMessage() {
-    updateTimer = setTimeout('jQuery("#instanceErrors").remove()', 10000);
-}
-function removeFlashMessage() {
-    updateTimer = setTimeout('jQuery("#flashError").remove()', 10000);
 }
 
 function removeObjects(ids) {

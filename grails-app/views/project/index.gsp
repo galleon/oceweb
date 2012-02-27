@@ -37,9 +37,6 @@
             </ul>
         </div>
     </g:hasErrors>
-    <g:if test="${flash.error}">
-        <ul class="errors" role="alert" id="flashError"><li>${flash.error}</li></ul>
-    </g:if>
     <div id="content">
     </div>
     <a href="#edit" id="#editLink" class="nyroModal"></a>
