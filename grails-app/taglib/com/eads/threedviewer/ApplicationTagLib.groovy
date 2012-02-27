@@ -8,7 +8,9 @@ class ApplicationTagLib {
         String label = attrs['label']
         String name = attrs['name']
         String id = attrs['id'] ?: name
-        def value = attrs['value'] ?: ''
-        out << render(template: '/shared/textField', model: [label: label, name: name, id: id, value: value])
+        boolean isRequired = !(attrs['required'] == 'false')
+        String required = isRequired ? "required='true'" : ""
+        def value = attrs['value'] ?: (attrs['default'] ?: '')
+        out << render(template: '/shared/textField', model: [label: label, name: name, id: id, value: value, required: required])
     }
 }

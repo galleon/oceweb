@@ -13,9 +13,9 @@ class CADObject {
 
 /* Fields */
     String name
-    double x
-    double y
-    double z
+    double x = 0
+    double y = 0
+    double z = 0
     CADObject parent
     byte[] content
     ShapeType type

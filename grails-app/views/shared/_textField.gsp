@@ -1,7 +1,9 @@
 <div class="fieldcontain required">
     <label for="${name}">
         ${label}
-        <span class="required-indicator">*</span>
+        <g:if test="${required}">
+            <span class="required-indicator">*</span>
+        </g:if>
     </label>
-    <g:textField name="${name}" id="${id}" value="${value}" required="true"/>
+    <input type="text" name="${name}" id="${id}" value="${value}" "${required}"/>
 </div>
