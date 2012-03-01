@@ -358,6 +358,16 @@ function defaultMenu(node) {
                 $("#meshForm #cadProjectId").val($("#projectid").val());
                 $("#mesh").dialog();
                 $('.ui-dialog').width('340px');
+                $("#mesh #meshForm").ajaxForm(function (response) {
+                    if (response.error) {
+                        showError(response.error)
+                    }
+                    else {
+                        reloadProjectTree()
+                        removeObjects([response])
+                        showShape(response)
+                    }
+                })
             },
             "separator_before":false
         }

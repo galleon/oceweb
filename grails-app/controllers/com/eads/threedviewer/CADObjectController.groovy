@@ -166,20 +166,13 @@ class CADObjectController {
         Set<Long> ids = params.list('ids')
         List<CADObject> cadObjects = ids ? CADObject.getAll(ids.toList()) : []
         try {
+            CADObject.findAllByParentInList(cadObjects)*.delete()
             cadObjects*.delete()
         } catch (RuntimeException rte) {
             result = ['error': message(code: "error.occured.while.serving.your.request")]
         }
 
         render result as JSON
-    }
-
-    def updateName(Long id, String name) {
-        CADObject cadObject = id ? CADObject.get(id) : null
-        if (cadObject) {
-            cadObject.name = name
-        }
-        render "success"
     }
 
     //TODO -: Refactore code and check why its not working in co classed so that project service method of creating cadobject can be used

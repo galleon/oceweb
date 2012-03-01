@@ -1,5 +1,5 @@
 <%@ page import="com.eads.threedviewer.enums.ShapeType; org.jcae.mesh.cad.CADShapeEnum" %>
-<g:form action="saveMesh" controller="CADObject" name="meshForm" class="shapeForm">
+<g:form action="saveMesh" controller="CADObject" name="meshForm">
     <g:hiddenField name="project.id" value="${project?.id}"/>
     <g:hiddenField name="parent.id" id="cadObjectId" value=""/>
     <fieldset class="form">
