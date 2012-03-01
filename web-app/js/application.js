@@ -34,6 +34,7 @@ $(document).ready(function () {
     jQuery("#spinner").ajaxStop(function () {
         jQuery(this).hide();
     });
+    setupUI();
     jQuery.ajaxSetup({cache:true});
     jQuery("#spinner").ajaxComplete(function (event, xhr, options) {
         var data = httpData(xhr, options.dataType, options);
