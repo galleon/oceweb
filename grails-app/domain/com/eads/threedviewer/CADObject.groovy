@@ -62,6 +62,14 @@ class CADObject {
     File createFile() {
         return ShapeUtil.createBrepFile(content, "${project.name}_${name}_")
     }
+
+    Boolean isType(ShapeType type) {
+        return (this.type == type)
+    }
+
+    Boolean isMesh() {
+        return isType(ShapeType.MESH)
+    }
 /* Static Methods */
 }
 
