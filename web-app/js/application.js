@@ -96,12 +96,22 @@ var mouseYOnMouseDown = 0;
 var windowHalfX, windowHalfY;
 var objects = [];
 var mouse = { x:0, y:0 }, INTERSECTED;
+var objectColor, currentColor;
 
 function showShape(id) {
     var object = group.getChildByName(id);
     if (object) {
         object.visible = true;
         object.doubleSided = true;
+        var currentHex = object.material.color.getHex();
+        if (!(currentHex == 0xff0000)) {
+            objectColor = currentHex;
+            currentColor = 0xff0000;
+        }
+        else {
+            currentColor = objectColor
+        }
+        object.material.color.setHex(currentColor)
     } else {
         showShapeFromRemote(id);
     }
@@ -131,9 +141,9 @@ function createMesh(response, name) {
     var object;
     var loader = new THREE.JSONLoader();
     loader.createModel(response, function (geometry) {
-            object = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({
+            object = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({
                 color:Math.random() * 0xffffff,
-                opacity:0.5
+                opacity:0.8
             })
             )
             object.updateMatrix();
@@ -167,17 +177,7 @@ function initialiseCanvas(containerId) {
     scene = new THREE.Scene();
     scene.add(camera);
 
-    //Lighting for lambert lighting
-    var light = new THREE.DirectionalLight(0xffffff, 2);
-    light.position.set(1, 1, 1).normalize();
-    scene.add(light);
-
-    var light = new THREE.DirectionalLight(0xffffff);
-    light.position.set(-1, -1, -1).normalize();
-    scene.add(light);
-    //End of lighting area
-
-    renderer = new THREE.WebGLRenderer();
+    renderer = new THREE.CanvasRenderer();
     renderer.setSize(containerWidth, containerHeight);
     renderer.sortObjects = false;
 
@@ -215,7 +215,7 @@ function onDocumentMouseDown(event) {
     targetRotationOnMouseDown = targetRotation;
     mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
     mouse.y = -( event.clientY / window.innerHeight ) * 2 + 1;
-    getSelectedObject(mouse.x, mouse.y)
+    highlightSelectedObject(mouse.x, mouse.y)
 }
 
 function onDocumentMouseMove(event) {
@@ -252,7 +252,7 @@ function render() {
     }
 }
 
-function getSelectedObject(x, y) {
+function highlightSelectedObject(x, y) {
     var projector = new THREE.Projector();
     var vector = new THREE.Vector3(x, y, 1);
     var currentHex;
