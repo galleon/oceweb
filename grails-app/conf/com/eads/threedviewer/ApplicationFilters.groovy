@@ -13,7 +13,11 @@ class ApplicationFilters {
 
         consoleImports(controller: 'console', action: '*') {
             before = {
-                String importStatements = "import com.eads.threedviewer.*"
+                String importStatements = """import com.eads.threedviewer.*
+import com.eads.threedviewer.co.*
+import com.eads.threedviewer.vo.*
+import com.eads.threedviewer.util.*
+import com.eads.threedviewer.enum.*"""
                 session['_grails_console_last_code_'] = session['_grails_console_last_code_'] ?: importStatements
             }
         }
