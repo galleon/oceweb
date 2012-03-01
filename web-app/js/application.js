@@ -35,6 +35,7 @@ $(document).ready(function () {
         jQuery(this).hide();
     });
     setupUI();
+    ajaxSubmit();
     jQuery.ajaxSetup({cache:true});
     jQuery("#spinner").ajaxComplete(function (event, xhr, options) {
         var data = httpData(xhr, options.dataType, options);
@@ -86,15 +87,12 @@ var targetRotationY = 0;
 var targetRotationOnMouseDown = 0;
 var targetRotationYOnMouseDown = 0;
 var group;
-var updateTimer = 0;
 var mouseX = 0;
 var mouseY = 0;
 var fov = 50;
 var mouseXOnMouseDown = 0;
 var mouseYOnMouseDown = 0;
 var windowHalfX, windowHalfY;
-var objects = [];
-var mouse = { x:0, y:0 }, INTERSECTED;
 
 function showShape(id) {
     var object = group.getChildByName(id);
@@ -130,14 +128,9 @@ function createMesh(response, name) {
     var object;
     var loader = new THREE.JSONLoader();
     loader.createModel(response, function (geometry) {
-            object = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({
-                color:Math.random() * 0xffffff,
-                opacity:0.5
-            })
-            )
-            object.updateMatrix();
-        }
-    )
+        object = new THREE.Mesh(geometry, new THREE.MeshNormalMaterial({ overdraw:true, wireframe:response.wireframe}));
+        object.updateMatrix();
+    })
     object.doubleSided = true;
     object.name = name;
     return object
@@ -165,18 +158,7 @@ function initialiseCanvas(containerId) {
 
     scene = new THREE.Scene();
     scene.add(camera);
-
-    //Lighting for lambert lighting
-    var light = new THREE.DirectionalLight(0xffffff, 2);
-    light.position.set(1, 1, 1).normalize();
-    scene.add(light);
-
-    var light = new THREE.DirectionalLight(0xffffff);
-    light.position.set(-1, -1, -1).normalize();
-    scene.add(light);
-    //End of lighting area
-
-    renderer = new THREE.WebGLRenderer();
+    renderer = new THREE.CanvasRenderer();
     renderer.setSize(containerWidth, containerHeight);
     renderer.sortObjects = false;
 
@@ -192,7 +174,6 @@ function initialiseCanvas(containerId) {
     stats = new Stats();
     $("#frameArea").append($(stats.domElement).find('div>div:first').css({'float':'right', 'margin-right':'13px', 'padding-top':'6px'}));
     animate();
-
 }
 
 function zoom(event, delta, deltaX, deltaY) {
@@ -212,9 +193,6 @@ function onDocumentMouseDown(event) {
     mouseXOnMouseDown = event.clientX - windowHalfX;
     mouseYOnMouseDown = event.clientY - windowHalfY;
     targetRotationOnMouseDown = targetRotation;
-    mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-    mouse.y = -( event.clientY / window.innerHeight ) * 2 + 1;
-    getSelectedObject(mouse.x, mouse.y)
 }
 
 function onDocumentMouseMove(event) {
@@ -249,36 +227,7 @@ function render() {
     if (renderer) {
         renderer.render(scene, camera);
     }
-}
 
-function getSelectedObject(x, y) {
-    var projector = new THREE.Projector();
-    var vector = new THREE.Vector3(x, y, 1);
-    var currentHex;
-    projector.unprojectVector(vector, camera);
-
-    var ray = new THREE.Ray(camera.position, vector.subSelf(camera.position).normalize());
-
-    var intersects = ray.intersectScene(scene);
-    if (intersects.length > 0) {
-
-        if (INTERSECTED != intersects[ 0 ].object) {
-
-            if (INTERSECTED) INTERSECTED.material.color.setHex(INTERSECTED.currentHex);
-
-            INTERSECTED = intersects[ 0 ].object;
-            INTERSECTED.currentHex = INTERSECTED.material.color.getHex();
-            INTERSECTED.material.color.setHex(0xff0000);
-
-        }
-
-    } else {
-
-        if (INTERSECTED) INTERSECTED.material.color.setHex(INTERSECTED.currentHex);
-
-        INTERSECTED = null;
-
-    }
 }
 
 function ajaxSubmit() {
@@ -459,6 +408,7 @@ function toggleVisibility(node) {
 }
 
 function getSelectedObjects(node) {
+    var objects = [];
     $.each($('#project').jstree('get_selected').children().filter('a'), function () {
         objects.push($(this))
     });

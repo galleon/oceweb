@@ -17,7 +17,7 @@ class ApplicationFilters {
 import com.eads.threedviewer.co.*
 import com.eads.threedviewer.vo.*
 import com.eads.threedviewer.util.*
-import com.eads.threedviewer.enum.*"""
+import com.eads.threedviewer.enums.*"""
                 session['_grails_console_last_code_'] = session['_grails_console_last_code_'] ?: importStatements
             }
         }

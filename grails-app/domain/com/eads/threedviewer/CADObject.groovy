@@ -60,7 +60,8 @@ class CADObject {
 /* Methods */
 
     File createFile() {
-        return ShapeUtil.createBrepFile(content, "${project.name}_${name}_")
+        String prefix = "${project.name}_${name}_"
+        return isMesh() ? ShapeUtil.createUnvFile(content, prefix) : ShapeUtil.createBrepFile(content, prefix)
     }
 
     Boolean isType(ShapeType type) {

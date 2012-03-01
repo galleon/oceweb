@@ -1,5 +1,5 @@
 <%@ page import="com.eads.threedviewer.enums.ShapeType; org.jcae.mesh.cad.CADShapeEnum" %>
-<g:form action="saveMesh" controller="CADObject" name="meshForm">
+<g:form action="saveMesh" controller="CADObject" name="meshForm" class="shapeForm">
     <g:hiddenField name="project.id" value="${project?.id}"/>
     <g:hiddenField name="parent.id" id="cadObjectId" value=""/>
     <fieldset class="form">
@@ -12,12 +12,7 @@
         </div>
     </fieldset>
     <fieldset class="buttons">
-        <g:if test="${cadObject?.id}">
-            <g:submitButton name="submit" value="Update" class="save"/>
-        </g:if>
-        <g:else>
-            <g:submitButton name="submit" value="Save" class="save"/>
-        </g:else>
+        <g:submitButton name="submit" value="${cadObject?.id?'Update':'Save'}" class="save"/>
         <input type="button" value="Cancel" id="cancel" class="save closeModel"/>
     </fieldset>
 </g:form>
