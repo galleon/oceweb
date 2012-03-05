@@ -81,7 +81,7 @@ function closeModel() {
         $(".ui-icon-closethick").click();
     })
 }
-var stats, camera, renderer, containerWidth, containerHeight, scene, container, trihedra;
+var stats, camera, renderer, containerWidth, containerHeight, scene, container, trihedra, projector;
 var targetRotation = 0;
 var targetRotationY = 0;
 var targetRotationOnMouseDown = 0;
@@ -93,6 +93,8 @@ var fov = 50;
 var mouseXOnMouseDown = 0;
 var mouseYOnMouseDown = 0;
 var windowHalfX, windowHalfY;
+var objectColor = 0x545354;
+var selectionColor = 0xff0000;
 
 function showShape(id) {
     var object = group.getChildByName(id);
@@ -128,7 +130,7 @@ function createMesh(response, name) {
     var object;
     var loader = new THREE.JSONLoader();
     loader.createModel(response, function (geometry) {
-        var material = new THREE.MeshLambertMaterial({ overdraw:true, shading:THREE.FlatShading, wireframe:response.wireframe});
+        var material = new THREE.MeshLambertMaterial({ color:objectColor, overdraw:true, shading:THREE.FlatShading, wireframe:response.wireframe});
         object = new THREE.Mesh(geometry, material);
         object.updateMatrix();
     })
@@ -172,9 +174,8 @@ function initialiseCanvas(containerId) {
     var ambientColor = 2.0894;
     var ambientLight = new THREE.AmbientLight(ambientColor);
     scene.add(ambientLight);
-
-    var directionColor = 996329;
-    var directionalLight = new THREE.DirectionalLight(directionColor);
+    projector = new THREE.Projector();
+    var directionalLight = new THREE.DirectionalLight(0xffffff);
     directionalLight.position.x = 0.5;
     directionalLight.position.y = 0.75;
     directionalLight.position.z = 2;
@@ -206,6 +207,11 @@ function onDocumentMouseDown(event) {
     mouseXOnMouseDown = event.clientX - windowHalfX;
     mouseYOnMouseDown = event.clientY - windowHalfY;
     targetRotationOnMouseDown = targetRotation;
+    var object = getSelectedObject(event);
+    if (object) {
+//        repaint();
+        markAsSelected(object);
+    }
 }
 
 function onDocumentMouseMove(event) {
@@ -539,4 +545,29 @@ function reloadProjectTree() {
             enableJsTree()
         }
     })
+}
+
+function getSelectedObject(event) {
+    var vector = new THREE.Vector3(( event.clientX / containerWidth ) * 2 - 1, -( event.clientY / containerHeight ) * 2 + 1, 0.5);
+    projector.unprojectVector(vector, camera);
+    var ray = new THREE.Ray(camera.position, vector.subSelf(camera.position).normalize());
+
+    var intersects = ray.intersectScene(group);
+    var currentObject;
+    if (intersects.length > 0) {
+        currentObject = intersects[0].object;
+    }
+    return currentObject;
+
+}
+
+function markAsSelected(object) {
+    object.material.color.setHex(selectionColor)
+}
+
+function repaint() {
+    $.each(group.children, function (index, value) {
+     debugStatement(value.object)
+//     value.material.color.setHex(objectColor)
+     });
 }
