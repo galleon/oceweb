@@ -366,21 +366,16 @@ function defaultMenu(node) {
             label:"Mesh",
             "_class":"class",
             "action":function (obj) {
-                var id = $(obj).children().filter('a').attr('id');
-                $("#meshForm #cadObjectId").val(id);
-                $("#meshForm #cadProjectId").val($("#projectid").val());
-                $("#mesh").dialog();
-                $('.ui-dialog').width('340px');
-                $("#mesh #meshForm").ajaxForm(function (response) {
-                    if (response.error) {
-                        showError(response.error)
-                    }
-                    else {
-                        reloadProjectTree()
-                        removeObjects([response])
-                        showShape(response)
-                    }
-                })
+                var anchor = $(obj).children().filter('a');
+                var url = $(anchor).attr('name');
+                var checkEdit = $(anchor).attr('lang')
+                var title = checkEdit ? "Edit Mesh" : "Create Mesh"
+                $.post(url, function (response) {
+                    $("#templateHolder").html(response);
+                    $("#templateHolder").dialog({title:title});
+                    setupUI();
+                    ajaxSubmit();
+                });
             },
             "separator_before":false
         }
