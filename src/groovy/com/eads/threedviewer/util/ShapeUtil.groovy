@@ -9,8 +9,12 @@ import org.jcae.opencascade.jni.TopoDS_Shape
 @Log
 class ShapeUtil {
 
+    public static Map getDefaultData(){
+        return ['metadata': ['formatVersion': 3, 'generatedBy': 'tog'], 'scale': 10, 'materials': [], 'morphTargets': [], 'normals': [], 'colors': [], 'uvs': [[]]]
+    }
+
     public static Map getData(TopoDS_Shape shape) {
-        Map data = ['metadata': ['formatVersion': 3, 'generatedBy': 'tog'], 'scale': 10, 'materials': [], 'morphTargets': [], 'normals': [], 'colors': [], 'uvs': [[]], 'edges': []]
+        Map data = defaultData
         OCCMeshExtractor ome = new OCCMeshExtractor(shape)
         int noffset = 0
         List vertices = []
@@ -39,8 +43,10 @@ class ShapeUtil {
             }
             noffset += n / 3
         }
+        data['edges'] = [];
         data['faces'] = faces;
         data['vertices'] = vertices;
+        data['wireframe'] = false;
         return data
     }
 
@@ -48,23 +54,60 @@ class ShapeUtil {
         return getData(getShape(file))
     }
 
-    public static Map getMeshEdges(String filePath) {
-        Map data = ['metadata': ['formatVersion': 3, 'generatedBy': 'tog'], 'scale': 10, 'materials': [], 'morphTargets': [], 'normals': [], 'colors': [], 'uvs': [[]], 'edges': []]
+    public static Map getData(String filePath) {
+        Map data = defaultData
 
-        UNVParser unvParser = new UNVParser()
-        unvParser.parse(new BufferedReader(new FileReader(filePath)));
+        UNVParser parser = new UNVParser()
+        parser.parse(new BufferedReader(new FileReader(filePath)))
+        List<Integer> groupNames = parser.groupNames.collect {it.toInteger()}.toList()
         List vertices = []
+        List faces = []
+        List edges = []
 
-        unvParser.nodesCoordinates.each {nodeCoordinate ->
+        groupNames.each {Integer groupId ->
+            Integer id = groupId - 1
+            int[] triangles = parser.getTria3FromGroup(id)
+            for (int i = 0; i < triangles.length;) {
+                faces << 0
+                faces << triangles[i++]
+                faces << triangles[i++]
+                faces << triangles[i++]
+            }
+            int[] quads = parser.getQuad4FromGroup(id)
+            for (int i = 0; i < quads.length;) {
+                faces << 1
+                faces << quads[i++]
+                faces << quads[i++]
+                faces << quads[i++]
+                faces << quads[i++]
+            }
+            int[] beams = parser.getQuad4FromGroup(id)
+            for (int i = 0; i < beams.length;) {
+                edges << beams[i++]
+                edges << beams[i++]
+            }
+        }
+
+        parser.nodesCoordinates.each {nodeCoordinate ->
             vertices << nodeCoordinate
         }
+
         data['vertices'] = vertices;
+        data['faces'] = faces;
+        data['edges'] = edges;
+        data['wireframe'] = true;
         return data
     }
 
-
     public static File createBrepFile(byte[] content, String prefix = '') {
         File file = File.createTempFile("${prefix ?: 'temp'}", ".brep")
+        file.bytes = content
+        log.info "File created ${file.path}"
+        return file
+    }
+
+    public static File createUnvFile(byte[] content, String prefix = '') {
+        File file = File.createTempFile("${prefix ?: 'temp'}", ".unv")
         file.bytes = content
         log.info "File created ${file.path}"
         return file

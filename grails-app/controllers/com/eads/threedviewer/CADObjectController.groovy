@@ -58,18 +58,23 @@ class CADObjectController {
     }
 
     def saveMesh(MeshCO co) {
-        CADObject cadObject1 = co.findOrCreateCADObject()
-        byte[] content = getContent(co)
-        CADObject cadObject = co.findOrCreateCADObject()
-        cadObject.content = content
-        try {
-            cadObject.save(failOnError: true)
-        } catch (ValidationException ve) {
-            flash.error = ve.message
-            redirect(controller: 'project', action: 'index', params: [shapeId: co.parent.id])
-            return false
+        if (co.validate()) {
+            byte[] content = getContent(co)
+            CADObject cadObject = co.findOrCreateCADObject()
+            cadObject.content = content
+            try {
+                cadObject.save(failOnError: true)
+            } catch (ValidationException ve) {
+                Map result = ['error': ve.message]
+                render result as JSON
+                return false
+            }
+            render cadObject.id
+        } else {
+            Map result = ['error': co.errors]
+            render result as JSON
         }
-        redirect(controller: 'project', action: 'index', params: [shapeId: cadObject.id])
+
     }
 
 
@@ -79,12 +84,12 @@ class CADObjectController {
         try {
             cadObject = projectService.addCADObject(co)
         } catch (ValidationException ve) {
-            flash.error = ve.message
+            result = ['error': ve.message]
         }
         if (cadObject) {
             render cadObject.id
         } else {
-            result = ['error': cadObject.errors]
+            result = result ?: ['error': cadObject.errors]
             render result as JSON
         }
     }
@@ -95,7 +100,7 @@ class CADObjectController {
         if (cadObject) {
             File file = cadObject.createFile()
             try {
-                result = ShapeUtil.getData(file)
+                result = cadObject.isMesh() ? ShapeUtil.getData(file.path) : ShapeUtil.getData(file)
             } catch (RuntimeException rte) {
                 result = ['error': rte.message]
             }
