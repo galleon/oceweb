@@ -170,14 +170,6 @@ class CADObjectController {
         render result as JSON
     }
 
-    def updateName(Long id, String name) {
-        CADObject cadObject = id ? CADObject.get(id) : null
-        if (cadObject) {
-            cadObject.name = name
-        }
-        render "success"
-    }
-
     //TODO -: Refactore code and check why its not working in co classed so that project service method of creating cadobject can be used
     private byte[] getContent(MeshCO co) {
         Long id = co.findOrCreateCADObject().parent.id
