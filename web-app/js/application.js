@@ -175,8 +175,9 @@ function initialiseCanvas(containerId) {
 
     var directionColor = 996329;
     var directionalLight = new THREE.DirectionalLight(directionColor);
-    directionalLight.position.x = directionalLight.position.y = directionalLight.position.z = 1;
-    directionalLight.position.normalize();
+    directionalLight.position.x = 0.5;
+    directionalLight.position.y = 0.75;
+    directionalLight.position.z = 2;
     scene.add(directionalLight);
 
     scene.add(group);
