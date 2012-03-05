@@ -34,6 +34,8 @@ $(document).ready(function () {
     jQuery("#spinner").ajaxStop(function () {
         jQuery(this).hide();
     });
+    setupUI();
+    ajaxSubmit();
     jQuery.ajaxSetup({cache:true});
     jQuery("#spinner").ajaxComplete(function (event, xhr, options) {
         var data = httpData(xhr, options.dataType, options);
@@ -66,8 +68,6 @@ $(document).ready(function () {
             $('.ui-dialog').css('padding-top', '8px').width('340px');
         }
     })
-    removeErrorMessage();
-    removeFlashMessage();
 })
 
 function setupUI() {
@@ -87,31 +87,18 @@ var targetRotationY = 0;
 var targetRotationOnMouseDown = 0;
 var targetRotationYOnMouseDown = 0;
 var group;
-var updateTimer = 0;
 var mouseX = 0;
 var mouseY = 0;
 var fov = 50;
 var mouseXOnMouseDown = 0;
 var mouseYOnMouseDown = 0;
 var windowHalfX, windowHalfY;
-var objects = [];
-var mouse = { x:0, y:0 }, INTERSECTED;
-var objectColor, currentColor;
 
 function showShape(id) {
     var object = group.getChildByName(id);
     if (object) {
         object.visible = true;
         object.doubleSided = true;
-        var currentHex = object.material.color.getHex();
-        if (!(currentHex == 0xff0000)) {
-            objectColor = currentHex;
-            currentColor = 0xff0000;
-        }
-        else {
-            currentColor = objectColor
-        }
-        object.material.color.setHex(currentColor)
     } else {
         showShapeFromRemote(id);
     }
@@ -141,14 +128,9 @@ function createMesh(response, name) {
     var object;
     var loader = new THREE.JSONLoader();
     loader.createModel(response, function (geometry) {
-            object = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({
-                color:Math.random() * 0xffffff,
-                opacity:0.8
-            })
-            )
-            object.updateMatrix();
-        }
-    )
+        object = new THREE.Mesh(geometry, new THREE.MeshNormalMaterial({ overdraw:true, wireframe:response.wireframe}));
+        object.updateMatrix();
+    })
     object.doubleSided = true;
     object.name = name;
     return object
@@ -176,7 +158,6 @@ function initialiseCanvas(containerId) {
 
     scene = new THREE.Scene();
     scene.add(camera);
-
     renderer = new THREE.CanvasRenderer();
     renderer.setSize(containerWidth, containerHeight);
     renderer.sortObjects = false;
@@ -193,7 +174,6 @@ function initialiseCanvas(containerId) {
     stats = new Stats();
     $("#frameArea").append($(stats.domElement).find('div>div:first').css({'float':'right', 'margin-right':'13px', 'padding-top':'6px'}));
     animate();
-
 }
 
 function zoom(event, delta, deltaX, deltaY) {
@@ -213,9 +193,6 @@ function onDocumentMouseDown(event) {
     mouseXOnMouseDown = event.clientX - windowHalfX;
     mouseYOnMouseDown = event.clientY - windowHalfY;
     targetRotationOnMouseDown = targetRotation;
-    mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-    mouse.y = -( event.clientY / window.innerHeight ) * 2 + 1;
-    highlightSelectedObject(mouse.x, mouse.y)
 }
 
 function onDocumentMouseMove(event) {
@@ -250,36 +227,7 @@ function render() {
     if (renderer) {
         renderer.render(scene, camera);
     }
-}
 
-function highlightSelectedObject(x, y) {
-    var projector = new THREE.Projector();
-    var vector = new THREE.Vector3(x, y, 1);
-    var currentHex;
-    projector.unprojectVector(vector, camera);
-
-    var ray = new THREE.Ray(camera.position, vector.subSelf(camera.position).normalize());
-
-    var intersects = ray.intersectScene(scene);
-    if (intersects.length > 0) {
-
-        if (INTERSECTED != intersects[ 0 ].object) {
-
-            if (INTERSECTED) INTERSECTED.material.color.setHex(INTERSECTED.currentHex);
-
-            INTERSECTED = intersects[ 0 ].object;
-            INTERSECTED.currentHex = INTERSECTED.material.color.getHex();
-            INTERSECTED.material.color.setHex(0xff0000);
-
-        }
-
-    } else {
-
-        if (INTERSECTED) INTERSECTED.material.color.setHex(INTERSECTED.currentHex);
-
-        INTERSECTED = null;
-
-    }
 }
 
 function ajaxSubmit() {
@@ -410,6 +358,16 @@ function defaultMenu(node) {
                 $("#meshForm #cadProjectId").val($("#projectid").val());
                 $("#mesh").dialog();
                 $('.ui-dialog').width('340px');
+                $("#mesh #meshForm").ajaxForm(function (response) {
+                    if (response.error) {
+                        showError(response.error)
+                    }
+                    else {
+                        reloadProjectTree()
+                        removeObjects([response])
+                        showShape(response)
+                    }
+                })
             },
             "separator_before":false
         }
@@ -460,6 +418,7 @@ function toggleVisibility(node) {
 }
 
 function getSelectedObjects(node) {
+    var objects = [];
     $.each($('#project').jstree('get_selected').children().filter('a'), function () {
         objects.push($(this))
     });
@@ -491,12 +450,6 @@ function debugStatement(msg) {
     if (typeof(console) != 'undefined') {
         console.debug(msg);
     }
-}
-function removeErrorMessage() {
-    updateTimer = setTimeout('jQuery("#instanceErrors").remove()', 10000);
-}
-function removeFlashMessage() {
-    updateTimer = setTimeout('jQuery("#flashError").remove()', 10000);
 }
 
 function removeObjects(ids) {
