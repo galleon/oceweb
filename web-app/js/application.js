@@ -81,18 +81,16 @@ function closeModel() {
         $(".ui-icon-closethick").click();
     })
 }
-var stats, camera, renderer, containerWidth, containerHeight, scene, container, trihedra, projector;
+var group, stats, camera, renderer, containerWidth, containerHeight, scene, container, trihedra, projector, INTERSECTED, windowHalfX, windowHalfY;
 var targetRotation = 0;
 var targetRotationY = 0;
 var targetRotationOnMouseDown = 0;
 var targetRotationYOnMouseDown = 0;
-var group;
 var mouseX = 0;
 var mouseY = 0;
 var fov = 50;
 var mouseXOnMouseDown = 0;
 var mouseYOnMouseDown = 0;
-var windowHalfX, windowHalfY;
 var objectColor = 0x545354;
 var selectionColor = 0xff0000;
 
@@ -207,11 +205,7 @@ function onDocumentMouseDown(event) {
     mouseXOnMouseDown = event.clientX - windowHalfX;
     mouseYOnMouseDown = event.clientY - windowHalfY;
     targetRotationOnMouseDown = targetRotation;
-    var object = getSelectedObject(event);
-    if (object) {
-//        repaint();
-        markAsSelected(object);
-    }
+    selectObject(event)
 }
 
 function onDocumentMouseMove(event) {
@@ -542,27 +536,34 @@ function reloadProjectTree() {
     })
 }
 
-function getSelectedObject(event) {
+function selectObject(event) {
     var vector = new THREE.Vector3(( event.clientX / containerWidth ) * 2 - 1, -( event.clientY / containerHeight ) * 2 + 1, 0.5);
     projector.unprojectVector(vector, camera);
     var ray = new THREE.Ray(camera.position, vector.subSelf(camera.position).normalize());
 
     var intersects = ray.intersectScene(group);
-    var currentObject;
     if (intersects.length > 0) {
-        currentObject = intersects[0].object;
+
+        if (INTERSECTED != intersects[ 0 ].object) {
+
+            if (INTERSECTED) {
+                INTERSECTED.material.color.setHex(INTERSECTED.currentHex);
+            }
+
+            INTERSECTED = intersects[ 0 ].object;
+            INTERSECTED.currentHex = INTERSECTED.material.color.getHex();
+            INTERSECTED.material.color.setHex(selectionColor);
+
+        }
+
+    } else {
+
+        if (INTERSECTED) {
+            INTERSECTED.material.color.setHex(INTERSECTED.currentHex);
+        }
+
+        INTERSECTED = null;
+
     }
-    return currentObject;
 
-}
-
-function markAsSelected(object) {
-    object.material.color.setHex(selectionColor)
-}
-
-function repaint() {
-    $.each(group.children, function (index, value) {
-     debugStatement(value.object)
-//     value.material.color.setHex(objectColor)
-     });
 }
