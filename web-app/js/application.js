@@ -128,7 +128,7 @@ function createMesh(response, name) {
     var object;
     var loader = new THREE.JSONLoader();
     loader.createModel(response, function (geometry) {
-        var material = new THREE.MeshNormalMaterial({ overdraw:true, wireframe:response.wireframe});
+        var material = new THREE.MeshLambertMaterial({ overdraw:true, shading:THREE.FlatShading, wireframe:response.wireframe});
         object = new THREE.Mesh(geometry, material);
         object.updateMatrix();
     })
@@ -168,6 +168,17 @@ function initialiseCanvas(containerId) {
     trihedra.scale.x = trihedra.scale.y = trihedra.scale.z = 0.5;
     trihedra.rotation.y = 0;
     addToGroup(trihedra);
+
+    var ambientColor = 2.0894;
+    var ambientLight = new THREE.AmbientLight(ambientColor);
+    scene.add(ambientLight);
+
+    var directionColor = 996329;
+    var directionalLight = new THREE.DirectionalLight(directionColor);
+    directionalLight.position.x = directionalLight.position.y = directionalLight.position.z = 1;
+    directionalLight.position.normalize();
+    scene.add(directionalLight);
+
     scene.add(group);
     $(container).html(renderer.domElement);
     $(container).bind('mousedown', onDocumentMouseDown);
