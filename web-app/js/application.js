@@ -300,9 +300,24 @@ function enableJsTree() {
                         "image":"images/sphere_icon.png"
                     }
                 },
+                "explode":{
+                    "icon":{
+                        "image":"images/explode.gif"
+                    }
+                },
+                "mesh":{
+                    "icon":{
+                        "image":"images/drive.png"
+                    }
+                },
+                "file":{
+                    "icon":{
+                        "image":"images/file.png"
+                    }
+                },
                 "default":{
                     "icon":{
-                        "image":"images/folder_icon.png"
+                        "image":"images/folder.png"
                     }
                 }
             }
