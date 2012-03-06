@@ -93,12 +93,22 @@ var mouseXOnMouseDown = 0;
 var mouseYOnMouseDown = 0;
 var objectColor = 0x545354;
 var selectionColor = 0xff0000;
+var currentColor;
 
 function showShape(id) {
     var object = group.getChildByName(id);
     if (object) {
         object.visible = true;
         object.doubleSided = true;
+        var currentHex = object.material.color.getHex();
+        if (!(currentHex == selectionColor)) {
+            objectColor = currentHex;
+            currentColor = selectionColor;
+        }
+        else {
+            currentColor = objectColor
+        }
+        object.material.color.setHex(currentColor)
     } else {
         showShapeFromRemote(id);
     }
@@ -113,6 +123,7 @@ function showShapeFromRemote(id) {
                 showError(response.error)
             } else {
                 var object = createMesh(response, id);
+                object.material.color.setHex(selectionColor)
                 addToGroup(object);
             }
         });
