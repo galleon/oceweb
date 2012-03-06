@@ -81,7 +81,7 @@ function closeModel() {
         $(".ui-icon-closethick").click();
     })
 }
-var group, stats, camera, renderer, containerWidth, containerHeight, scene, container, trihedra, projector, INTERSECTED, windowHalfX, windowHalfY;
+var group, stats, camera, renderer, containerWidth, containerHeight, scene, container, trihedra, projector, windowHalfX, windowHalfY;
 var targetRotation = 0;
 var targetRotationY = 0;
 var targetRotationOnMouseDown = 0;
@@ -93,22 +93,13 @@ var mouseXOnMouseDown = 0;
 var mouseYOnMouseDown = 0;
 var objectColor = 0x545354;
 var selectionColor = 0xff0000;
-var currentColor;
 
 function showShape(id) {
     var object = group.getChildByName(id);
     if (object) {
-        object.visible = true;
+        repaint();
         object.doubleSided = true;
-        var currentHex = object.material.color.getHex();
-        if (!(currentHex == selectionColor)) {
-            objectColor = currentHex;
-            currentColor = selectionColor;
-        }
-        else {
-            currentColor = objectColor
-        }
-        object.material.color.setHex(currentColor)
+        object.material.color.setHex(selectionColor);
     } else {
         showShapeFromRemote(id);
     }
@@ -122,8 +113,8 @@ function showShapeFromRemote(id) {
             if (response.error) {
                 showError(response.error)
             } else {
+                repaint()
                 var object = createMesh(response, id);
-                object.material.color.setHex(selectionColor)
                 addToGroup(object);
             }
         });
@@ -139,7 +130,7 @@ function createMesh(response, name) {
     var object;
     var loader = new THREE.JSONLoader();
     loader.createModel(response, function (geometry) {
-        var material = new THREE.MeshLambertMaterial({ color:objectColor, overdraw:true, shading:THREE.FlatShading, wireframe:response.wireframe});
+        var material = new THREE.MeshLambertMaterial({ color:selectionColor, overdraw:true, shading:THREE.FlatShading, wireframe:response.wireframe});
         object = new THREE.Mesh(geometry, material);
         object.updateMatrix();
     })
@@ -216,7 +207,16 @@ function onDocumentMouseDown(event) {
     mouseXOnMouseDown = event.clientX - windowHalfX;
     mouseYOnMouseDown = event.clientY - windowHalfY;
     targetRotationOnMouseDown = targetRotation;
-    selectObject(event)
+
+    var vector = new THREE.Vector3(( event.clientX / containerWidth ) * 2 - 1, -( event.clientY / containerHeight ) * 2 + 1, 0.5);
+    projector.unprojectVector(vector, camera);
+    var ray = new THREE.Ray(camera.position, vector.subSelf(camera.position).normalize());
+
+    var intersects = ray.intersectScene(group);
+    if (intersects.length > 0) {
+        repaint()
+        intersects[ 0 ].object.material.color.setHex(selectionColor)
+    }
 }
 
 function onDocumentMouseMove(event) {
@@ -443,8 +443,10 @@ function toggleVisibility(node) {
     if (object) {
         if (object.visible) {
             object.visible = false;
+            object.material.color.setHex(objectColor);
         } else {
             object.visible = true;
+            object.material.color.setHex(selectionColor);
         }
     } else {
         showShape(id);
@@ -562,34 +564,12 @@ function reloadProjectTree() {
     })
 }
 
-function selectObject(event) {
-    var vector = new THREE.Vector3(( event.clientX / containerWidth ) * 2 - 1, -( event.clientY / containerHeight ) * 2 + 1, 0.5);
-    projector.unprojectVector(vector, camera);
-    var ray = new THREE.Ray(camera.position, vector.subSelf(camera.position).normalize());
-
-    var intersects = ray.intersectScene(group);
-    if (intersects.length > 0) {
-
-        if (INTERSECTED != intersects[ 0 ].object) {
-
-            if (INTERSECTED) {
-                INTERSECTED.material.color.setHex(INTERSECTED.currentHex);
-            }
-
-            INTERSECTED = intersects[ 0 ].object;
-            INTERSECTED.currentHex = INTERSECTED.material.color.getHex();
-            INTERSECTED.material.color.setHex(selectionColor);
-
+function repaint() {
+    $.each($("#phtml_1").children().find('li a'), function () {
+        var id = $(this).attr('id');
+        var object = group.getChildByName(id)
+        if (object) {
+            object.material.color.setHex(objectColor);
         }
-
-    } else {
-
-        if (INTERSECTED) {
-            INTERSECTED.material.color.setHex(INTERSECTED.currentHex);
-        }
-
-        INTERSECTED = null;
-
-    }
-
+    })
 }
