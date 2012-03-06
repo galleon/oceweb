@@ -310,6 +310,11 @@ function enableJsTree() {
                         "image":"images/drive.png"
                     }
                 },
+                "file":{
+                    "icon":{
+                        "image":"images/file.png"
+                    }
+                },
                 "default":{
                     "icon":{
                         "image":"images/folder.png"
