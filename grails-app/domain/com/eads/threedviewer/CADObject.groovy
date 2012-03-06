@@ -26,7 +26,7 @@ class CADObject {
     static transients = ['subCadObjects', 'shape']
 
 /* Relations */
-    static belongsTo = [project: Project, parent: CADObject]
+    static belongsTo = [project: Project]
 
 /* Constraints */
     static constraints = {
