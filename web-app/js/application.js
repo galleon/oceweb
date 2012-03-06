@@ -214,8 +214,10 @@ function onDocumentMouseDown(event) {
 
     var intersects = ray.intersectScene(group);
     if (intersects.length > 0) {
-        repaint()
-        intersects[ 0 ].object.material.color.setHex(selectionColor)
+        repaint();
+        var object = intersects[ 0 ].object;
+        $("#" + object.name).click();
+        object.material.color.setHex(selectionColor)
     }
 }
 
