@@ -100,6 +100,7 @@ function showShape(id) {
         repaint();
         object.doubleSided = true;
         object.material.color.setHex(selectionColor);
+        object.material.color.setHex(selectionColor);
     } else {
         showShapeFromRemote(id);
     }
@@ -538,6 +539,7 @@ function confirmDelete(node) {
                             $(node).remove();
                             removeObjects(ids);
                             $(model).dialog("close");
+                            reloadProjectTree();
                         } else {
                             $("#dialog-confirm p").html(response.error);
                         }

@@ -28,6 +28,7 @@ class CADObjectController {
 
     def projectService
     def shapeService
+    def cadObjectService
 
     def saveCube(CubeCO co) {
         sendResponse(co)
@@ -161,17 +162,9 @@ class CADObjectController {
         render(template: "/cadObject/${cadObject.type.toString().toLowerCase()}Info", model: [cadObject: cadObject])
     }
 
-    def delete() {
-        Map result = ['success': 'Deleted Successfully']
+    JSON delete() {
         Set<Long> ids = params.list('ids')
-        List<CADObject> cadObjects = ids ? CADObject.getAll(ids.toList()) : []
-        try {
-            CADObject.findAllByParentInList(cadObjects)*.delete()
-            cadObjects*.delete()
-        } catch (RuntimeException rte) {
-            result = ['error': message(code: "error.occured.while.serving.your.request")]
-        }
-
+        Map result = cadObjectService.deleteCADObject(ids, message(code: "error.occured.while.serving.your.request"))
         render result as JSON
     }
 
