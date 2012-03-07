@@ -100,7 +100,6 @@ function showShape(id) {
         repaint();
         object.doubleSided = true;
         object.material.color.setHex(selectionColor);
-        object.material.color.setHex(selectionColor);
     } else {
         showShapeFromRemote(id);
     }
@@ -397,11 +396,9 @@ function defaultMenu(node) {
             "action":function (obj) {
                 var anchor = $(obj).children().filter('a');
                 var url = $(anchor).attr('name');
-                var checkEdit = $(anchor).attr('lang')
-                var title = checkEdit ? "Edit Mesh" : "Create Mesh"
                 $.post(url, function (response) {
                     $("#templateHolder").html(response);
-                    $("#templateHolder").dialog({title:title});
+                    $("#templateHolder").dialog({title:"Create Mesh"});
                     setupUI();
                     ajaxSubmit();
                 });
@@ -535,8 +532,6 @@ function confirmDelete(node) {
                     url = url + "?" + idVars.join("&");
                     $.post(url, function (response) {
                         if (response.success) {
-                            $('#project').jstree('get_selected').remove();
-                            $(node).remove();
                             removeObjects(ids);
                             $(model).dialog("close");
                             reloadProjectTree();

@@ -25,7 +25,7 @@
                                     <g:each in="${cadObject.subCadObjects}" var="subCadObject">
                                         <g:set var="count" value="${count.toInteger() + 1}"/>
                                         <li id="${"phtml_" + (count)}" rel="${subCadObject.type}">
-                                            <a lang="edit" href="${createLink(controller: 'CADObject', action: 'show', id: subCadObject.id)}"
+                                            <a href="${createLink(controller: 'CADObject', action: 'show', id: subCadObject.id)}"
                                                class="showObject" id="${subCadObject.id}" title="Edit ${subCadObject.type.value}"
                                                rel='${createLink(controller: "CADObject", action: "create${subCadObject.type.value}", id: subCadObject.id)}' name = "${createLink(controller:
                                                     "CADObject", action: "createMesh", params: ['id':subCadObject?.id, 'type':ShapeType.MESH])}">${subCadObject.name}</a>
@@ -41,15 +41,10 @@
         </div>
 
         <a href="#explode" class="model" style="display: none" id="explodeLink">Explode</a>
-        <a href="#mesh" class="model" style="display: none" id="meshLink">Mesh</a>
-
         <div id="explode" style="display: none" title="Explode">
             <g:render template="/cadObject/explode"/>
         </div>
 
-        <div id="mesh" style="display: none" title="Create Mesh">
-            <g:render template="/cadObject/meshInfo" model="[project: project]"/>
-        </div>
         <a href="#operation" class="model" style="display: none" id="operationLink">Operation</a>
 
         <div id="operation" style="display: none" title="Boolean Operation">
