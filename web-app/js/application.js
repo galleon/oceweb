@@ -264,8 +264,10 @@ function ajaxSubmit() {
         }
         else {
             reloadProjectTree()
-            removeObjects([response])
-            showShape(response)
+            if (response.id) {
+                removeObjects([response.id])
+                showShape(response.id)
+            }
             $(".closeModel").click();
         }
     })
@@ -395,19 +397,24 @@ function defaultMenu(node) {
             label:"Mesh",
             "_class":"class",
             "action":function (obj) {
-                var anchor = $(obj).children().filter('a');
-                var url = $(anchor).attr('name');
-                $.post(url, function (response) {
-                    $("#templateHolder").html(response);
-                    $("#templateHolder").dialog({title:"Create Mesh"});
-                    setupUI();
-                    ajaxSubmit();
-                });
+                var id = $(obj).children().filter('a').attr('id');
+                $("#meshForm #cadObjectId").val(id);
+                $("#mesh").dialog();
+                $(".ui-dialog").css('width', '410px');
+                setupUI();
             },
             "separator_before":false
         }
     };
     var selectedId = $(node).attr('id');
+    var rel = $(node).attr('rel');
+    if (rel == "MESH") {
+        items = {
+            toggleVisibility:items.toggleVisibility,
+            deleteNode:items.deleteNode,
+            edit:items.edit
+        }
+    }
     if (selectedId == "phtml_1") {
         items = {deleteNode:{
             label:"Delete",
@@ -506,6 +513,7 @@ function getContext() {
     }
     return context
 }
+
 function deleteProject() {
     $("#confirmDeleteProject").show().removeClass('hidden').dialog();
 }
@@ -560,6 +568,7 @@ function reloadProjectTree() {
             $("#projectTree").html(response);
             $("#projectTree").draggable();
             enableJsTree()
+            setupUI()
         }
     })
 }
