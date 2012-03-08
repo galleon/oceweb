@@ -8,6 +8,7 @@ import groovy.transform.ToString
 import org.codehaus.groovy.grails.validation.Validateable
 import org.jcae.opencascade.jni.BRepTools
 import org.jcae.opencascade.jni.TopoDS_Shape
+import com.eads.threedviewer.dto.ShapeDTO
 
 @Validateable
 @ToString(includeNames = true, includeFields = true, excludes = 'metaClass,errors')
@@ -55,7 +56,7 @@ abstract class ShapeCO {
         return ShapeUtil.getData(shape)
     }
 
-    Map getMeshData() {
-        return ShapeUtil.getMeshEdges()
+    ShapeDTO getShapeDTO(){
+        return new ShapeDTO(shape)
     }
 }

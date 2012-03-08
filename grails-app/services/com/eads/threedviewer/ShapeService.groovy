@@ -5,15 +5,19 @@ import com.eads.threedviewer.enums.Operation
 import com.eads.threedviewer.enums.ShapeType
 import com.eads.threedviewer.util.ShapeUtil
 import org.jcae.opencascade.jni.*
+import com.eads.threedviewer.dto.ShapeDTO
 
 class ShapeService {
+
+    def projectService
 
     List<CADObject> saveSubCadObjects(CADObject cadObject, TopAbs_ShapeEnum shapeType) {
         List<CADObject> cadObjects = []
         if (cadObject) {
             explode(cadObject, shapeType).eachWithIndex {TopoDS_Shape shape, int index ->
                 File file = ShapeUtil.getFile(shape, cadObject.name)
-                CADObject currentObject = saveSubCadObjects(cadObject, "${cadObject.name}_${index}", file.bytes, shapeType)
+                ShapeDTO shapeDTO = new ShapeDTO(shape)
+                CADObject currentObject = saveSubCadObjects(cadObject, "${cadObject.name}_${index}", file.bytes, shapeDTO, shapeType)
                 file.delete()
                 if (currentObject) {
                     cadObjects.add(currentObject)
@@ -41,26 +45,30 @@ class ShapeService {
         return shapes
     }
 
-    CADObject saveSubCadObjects(CADObject cadObject, String name, byte[] content, TopAbs_ShapeEnum type) {
-        CADObject subCadObject = new CADExplodeObject(name: name, project: cadObject.project, content: content, parent: cadObject, type: ShapeType.EXPLODE, explodeType: type)
-        return subCadObject.save()
+    CADObject saveSubCadObjects(CADObject cadObject, String name, byte[] content, ShapeDTO shapeDTO, TopAbs_ShapeEnum type) {
+        CADObject subCadObject = new CADExplodeObject(name: name, project: cadObject.project, parent: cadObject, type: ShapeType.EXPLODE, explodeType: type, content: content)
+        return projectService.saveCADObject(subCadObject, shapeDTO)
     }
 
-    CADObject createBooleanObject(BooleanOperationCO co) {
+    CADObject saveCADObject(BooleanOperationCO co) {
         CADObject cadObject1 = co.CADObject1
         TopoDS_Shape shape1 = cadObject1.shape
         TopoDS_Shape shape2 = co.CADObject2.shape
         BRepAlgoAPI_BooleanOperation object = getOperationInstance(co, shape1, shape2)
+        return saveCADObject(co, object.shape(), cadObject1.project)
+    }
 
-        File file = ShapeUtil.getFile(object.shape(), co.operation)
-        CADObject cadObject = saveCADObject(co.name, file.bytes, cadObject1.project)
+    CADObject saveCADObject(BooleanOperationCO co, TopoDS_Shape shape, Project project) {
+        ShapeDTO shapeDTO = new ShapeDTO(shape)
+        File file = ShapeUtil.getFile(shape, co.operation)
+        CADObject cadObject = saveCADObject(co.name, file.bytes, shapeDTO, project)
         file.delete()
         return cadObject
     }
 
-    CADObject saveCADObject(String name, byte[] content, Project project) {
+    CADObject saveCADObject(String name, byte[] content, ShapeDTO shapeDTO, Project project) {
         CADObject cadObject = new CADObject(name: name, content: content, project: project, type: ShapeType.COMPOUND)
-        return cadObject.save(flush: true)
+        return projectService.saveCADObject(cadObject, shapeDTO)
     }
 
     private BRepAlgoAPI_BooleanOperation getOperationInstance(BooleanOperationCO co, TopoDS_Shape shape1, TopoDS_Shape shape2) {
@@ -75,53 +83,5 @@ class ShapeService {
             object = new BRepAlgoAPI_Cut(shape1, shape2)
         }
         return object
-    }
-
-    public static getCubeInfo(CADCubeObject cadObject) {
-        Map result = [:]
-        result.name = cadObject.name
-        result.type = cadObject.type.toString()
-        result.x = cadObject.x
-        result.y = cadObject.y
-        result.z = cadObject.z
-        result.x1 = cadObject.x1
-        result.y1 = cadObject.y1
-        result.z1 = cadObject.z1
-        return result
-    }
-
-    public static getConeInfo(CADConeObject cadObject) {
-        Map result = [:]
-        result.name = cadObject.name
-        result.type = cadObject.type.toString()
-        result.x = cadObject.x
-        result.y = cadObject.y
-        result.z = cadObject.z
-        result.baseRadius = cadObject.baseRadius
-        result.height = cadObject.height
-        return result
-    }
-
-    public static getCylinderInfo(CADCylinderObject cadObject) {
-        Map result = [:]
-        result.name = cadObject.name
-        result.type = cadObject.type.toString()
-        result.x = cadObject.x
-        result.y = cadObject.y
-        result.z = cadObject.z
-        result.radius = cadObject.radius
-        result.height = cadObject.height
-        return result
-    }
-
-    public static getSphereInfo(CADSphereObject cadObject) {
-        Map result = [:]
-        result.name = cadObject.name
-        result.type = cadObject.type.toString()
-        result.x = cadObject.x
-        result.y = cadObject.y
-        result.z = cadObject.z
-        result.radius = cadObject.radius
-        return result
     }
 }

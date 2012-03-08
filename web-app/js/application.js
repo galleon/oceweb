@@ -266,6 +266,7 @@ function ajaxSubmit() {
             reloadProjectTree()
             removeObjects([response])
             showShape(response)
+            $(".closeModel").click();
         }
     })
 }

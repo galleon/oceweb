@@ -5,48 +5,27 @@ import occmeshextractor.OCCMeshExtractor
 import org.jcae.opencascade.jni.BRepTools
 import org.jcae.opencascade.jni.BRep_Builder
 import org.jcae.opencascade.jni.TopoDS_Shape
+import com.eads.threedviewer.dto.ShapeDTO
 
 @Log
 class ShapeUtil {
 
-    public static Map getDefaultData(){
+    public static Map getDefaultData() {
         return ['metadata': ['formatVersion': 3, 'generatedBy': 'tog'], 'scale': 10, 'materials': [], 'morphTargets': [], 'normals': [], 'colors': [], 'uvs': [[]]]
     }
 
     public static Map getData(TopoDS_Shape shape) {
-        Map data = defaultData
-        OCCMeshExtractor ome = new OCCMeshExtractor(shape)
-        int noffset = 0
-        List vertices = []
-        List faces = []
-        ome.faces.each {
-            OCCMeshExtractor.FaceData shapeData = new OCCMeshExtractor.FaceData(it, false)
-            shapeData.load()
-            int n = 0
-            shapeData.nodes.each {
-                vertices << it
-                n++
-            }
-            int p = 0
-            def npts
-            shapeData.polys.each {
-                if (p == 0) {
-                    faces << 0
-                    npts = it
-                } else {
-                    faces << it + noffset
-                    if (p == npts) {
-                        p = -1
-                    }
-                }
-                p++
-            }
-            noffset += n / 3
-        }
-        data['edges'] = [];
-        data['faces'] = faces;
-        data['vertices'] = vertices;
+        ShapeDTO shapeDTO = new ShapeDTO(shape)
+        Map data = getData(shapeDTO)
         data['wireframe'] = false;
+        return data
+    }
+
+    public static Map getData(ShapeDTO shapeDTO) {
+        Map data = defaultData
+        data['edges'] = shapeDTO.edges
+        data['faces'] = shapeDTO.faces;
+        data['vertices'] = shapeDTO.vertices;
         return data
     }
 

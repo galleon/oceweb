@@ -23,6 +23,7 @@ import org.jcae.opencascade.jni.BRepTools
 import org.jcae.opencascade.jni.TopAbs_ShapeEnum
 import com.eads.threedviewer.co.*
 import org.jcae.mesh.amibe.algos2d.*
+import com.eads.threedviewer.dto.ShapeDTO
 
 class CADObjectController {
 
@@ -59,22 +60,26 @@ class CADObjectController {
     }
 
     def saveMesh(MeshCO co) {
+        Map result
         if (co.validate()) {
-            byte[] content = getContent(co)
-            CADObject cadObject = co.findOrCreateCADObject()
-            cadObject.content = content
-            try {
-                cadObject.save(failOnError: true)
-            } catch (ValidationException ve) {
-                Map result = ['error': ve.message]
-                render result as JSON
-                return false
+            List<ShapeDTO> shapeDTOs = getContent(co)
+            shapeDTOs.each {ShapeDTO shapeDTO ->
+                CADMeshObject cadObject = co.findOrCreateCADObject() as CADMeshObject
+                try {
+                    Integer groupName = shapeDTO.groupName
+                    cadObject.groupName = groupName
+                    cadObject.name = "${co.name}_${groupName}"
+                    projectService.saveCADObject(cadObject, shapeDTO)
+                } catch (ValidationException ve) {
+                    result = ['error': ve.message]
+                }
             }
-            render cadObject.id
+
+            result = ['success': 'Mesh created successfully']
         } else {
-            Map result = ['error': co.errors]
-            render result as JSON
+            result = ['error': co.errors]
         }
+        render result as JSON
 
     }
 
@@ -99,13 +104,7 @@ class CADObjectController {
         Map result
         CADObject cadObject = id ? CADObject.get(id) : null
         if (cadObject) {
-            File file = cadObject.createFile()
-            try {
-                result = cadObject.isMesh() ? ShapeUtil.getData(file.path) : ShapeUtil.getData(file)
-            } catch (RuntimeException rte) {
-                result = ['error': rte.message]
-            }
-            file.delete()
+            result = cadObject.data
         } else {
             result = ['error': "Object not found for id ${id}"]
         }
@@ -121,8 +120,19 @@ class CADObjectController {
     }
 
     def booleanOperation(BooleanOperationCO co) {
-        CADObject cadObject = shapeService.createBooleanObject(co)
-        redirect(controller: 'project', action: 'index', params: [name: cadObject?.project?.name, shapeId: cadObject.id])
+        CADObject cadObject
+        Map result
+        try {
+            cadObject = shapeService.saveCADObject(co)
+        } catch (ValidationException ve) {
+            result = ['error': ve.message]
+        }
+        if (cadObject) {
+            render cadObject.id
+        } else {
+            result = result ?: ['error': cadObject.errors]
+            render result as JSON
+        }
     }
 
     def createCube(CubeCO co) {
@@ -164,12 +174,17 @@ class CADObjectController {
 
     JSON delete() {
         Set<Long> ids = params.list('ids')
-        Map result = cadObjectService.deleteCADObject(ids, message(code: "error.occured.while.serving.your.request"))
+        Map result = ['success': 'Deleted Successfully']
+        try {
+            cadObjectService.deleteCADObject(ids)
+        } catch (RuntimeException rte) {
+            result = ['error': message(code: "error.occured.while.serving.your.request")]
+        }
         render result as JSON
     }
 
     //TODO -: Refactore code and check why its not working in co classed so that project service method of creating cadobject can be used
-    private byte[] getContent(MeshCO co) {
+    private List<ShapeDTO> getContent(MeshCO co) {
         Long id = co.findOrCreateCADObject().parent.id
         float size = co.size
         float deflection = co.deflection
@@ -310,8 +325,7 @@ class CADObjectController {
         }
         m2dto3d.afterProcessingAllShapes()
         file.delete()
-        byte[] unvContent = new File(unvName).bytes
 //        xmlDirF.deleteDir()
-        return unvContent
+        return ShapeDTO.getUnvGroups(unvName)
     }
 }
