@@ -160,7 +160,7 @@ fieldset{border: none}
     margin-top: 10px;
     margin-bottom: 10px;
     padding: 0;
-    width: 93%;
+    width: auto;
     float: left;
 }
 
@@ -169,5 +169,16 @@ fieldset{border: none}
     background: #ecf9ff url(../images/info.gif) 12px 12px no-repeat;
     color: #0888c3;
 }
-#spinner{width: 20%; bottom: 0; margin-left: 35%; padding-left: 33px;position: fixed; margin-bottom: 0pt;}
+.message.errormsg {
+    border: 1px solid #e9c59b;
+    background: #ffecce url(../images/error.gif) 12px 12px no-repeat;
+    color: #e3302c;
+}
+
+.message.success {
+    border: 1px solid #bfde84;
+    background: #edfbd8 url(../images/success.gif) 12px 12px no-repeat;
+    color: #508600;
+}
+#spinner{width: auto; bottom: 0; margin-left: 35%; padding-left: 33px;position: fixed; margin-bottom: 0pt;}
 

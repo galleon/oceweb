@@ -29,10 +29,10 @@ $(document).ready(function () {
     initialiseCanvas('content');
 
     jQuery("#spinner").ajaxStart(function () {
-        jQuery(this).show();
+        showFlashInfo('Please wait while you content is loading')
     });
     jQuery("#spinner").ajaxStop(function () {
-        jQuery(this).hide();
+        hideFlashMessage();
     });
     setupUI();
     ajaxSubmit();
@@ -264,6 +264,9 @@ function ajaxSubmit() {
         }
         else {
             reloadProjectTree()
+            if (response.success){
+                showFlashSuccess(response.success);
+            }
             if (response.id) {
                 removeObjects([response.id])
                 showShape(response.id)
@@ -581,4 +584,21 @@ function repaint() {
             object.material.color.setHex(objectColor);
         }
     })
+}
+
+function showMessage(message, className) {
+    $("#spinner p").text(message);
+    $("#spinner").removeClass('errormsg').removeClass('success').removeClass('info').addClass(className).show();
+}
+
+function showFlashInfo(message) {
+    showMessage(message, 'info');
+}
+
+function showFlashSuccess(message) {
+    showMessage(message, 'success');
+}
+
+function hideFlashMessage() {
+    $("#spinner").hide();
 }

@@ -58,7 +58,7 @@
     </div>
 </div>
 <g:layoutBody/>
-<div id="spinner" class="message info" style="display: ${project ? 'none' : 'block'};">
+<div id="spinner" class="${project ? 'info' : 'errormsg'} message" style="display: ${project ? 'none' : 'block'};">
     <p>
         ${project ? 'Please wait while you content is loading' : 'Project not found'}
     </p>
