@@ -35,45 +35,11 @@ class ShapeUtil {
 
     public static Map getData(String filePath) {
         Map data = defaultData
+        List<ShapeDTO> shapeDTOs = ShapeDTO.getUnvGroups(filePath)
 
-        UNVParser parser = new UNVParser()
-        parser.parse(new BufferedReader(new FileReader(filePath)))
-        List<Integer> groupNames = parser.groupNames.collect {it.toInteger()}.toList()
-        List vertices = []
-        List faces = []
-        List edges = []
-
-        groupNames.each {Integer groupId ->
-            Integer id = groupId - 1
-            int[] triangles = parser.getTria3FromGroup(id)
-            for (int i = 0; i < triangles.length;) {
-                faces << 0
-                faces << triangles[i++]
-                faces << triangles[i++]
-                faces << triangles[i++]
-            }
-            int[] quads = parser.getQuad4FromGroup(id)
-            for (int i = 0; i < quads.length;) {
-                faces << 1
-                faces << quads[i++]
-                faces << quads[i++]
-                faces << quads[i++]
-                faces << quads[i++]
-            }
-            int[] beams = parser.getQuad4FromGroup(id)
-            for (int i = 0; i < beams.length;) {
-                edges << beams[i++]
-                edges << beams[i++]
-            }
-        }
-
-        parser.nodesCoordinates.each {nodeCoordinate ->
-            vertices << nodeCoordinate
-        }
-
-        data['vertices'] = vertices;
-        data['faces'] = faces;
-        data['edges'] = edges;
+        data['vertices'] = shapeDTOs.vertices.flatten();
+        data['faces'] = shapeDTOs.faces.flatten();
+        data['edges'] = shapeDTOs.edges.flatten();
         data['wireframe'] = true;
         return data
     }
