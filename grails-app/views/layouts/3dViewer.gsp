@@ -65,6 +65,7 @@
     <p>
         ${project ? 'Please wait while you content is loading' : 'Project not found'}
     </p>
+    <a href="#" title="close" id="closeFlash"><g:img dir="images" file="close.png" alt="close" class="close-img"/></a>
 </div>
 </body>
 </html>

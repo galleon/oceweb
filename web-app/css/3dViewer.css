@@ -180,7 +180,7 @@ fieldset{border: none}
     background: #edfbd8 url(../images/success.gif) 12px 12px no-repeat;
     color: #508600;
 }
-#spinner{width: auto; bottom: 0; margin-left: 35%; padding-left: 33px;position: fixed; margin-bottom: 0pt;}
+#spinner{width: auto; bottom: 0; margin-left: 35%; padding-left: 33px;position: fixed; margin-bottom: 0pt;padding-right: 7px}
 #colorSelector {
     background: url("../images/select2.png") repeat scroll 0 0 transparent;
     height: 36px;
@@ -196,4 +196,6 @@ fieldset{border: none}
     top: 3px;
     width: 30px;
 }
+.close-img{padding-top: 5px;}
+#closeFlash{margin-left: 6px;}
 

@@ -21,6 +21,9 @@ var httpData = $.httpData || function (xhr, type, s) { // lifted from jq1.4.4
     return data;
 };
 $(document).ready(function () {
+    $("#closeFlash").click(function(){
+       hideFlashMessage();
+    });
     $("#selectProject").change(function () {
         $("#changeProject").submit();
     });
@@ -607,6 +610,10 @@ function showFlashSuccess(message) {
     showMessage(message, 'success');
 }
 
+function showFlashError(message) {
+    showMessage(message, 'errormsg');
+}
+
 function hideFlashMessage() {
     $("#spinner").hide();
 }
@@ -630,4 +637,19 @@ function changeFaceOrientation(geometry) {
     geometry.computeFaceNormals();
     geometry.computeVertexNormals();
     return geometry
+}
+
+function getDatabase() {
+    var db;
+
+    try {
+        if (window.openDatabase) {
+            db = openDatabase("3d_viewer", "1.0", "3D-Viewer Database", 200000);
+            if (!db)
+                showFlashError("Failed to open the database on disk.  This is probably because the version was bad or there is not enough space left in this domain's quota");
+        } else
+            showFlashError("Couldn't open the database.  Please try with a WebKit nightly with this feature enabled");
+    } catch (err) {
+    }
+    return db
 }
