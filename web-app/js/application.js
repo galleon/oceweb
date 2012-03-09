@@ -574,8 +574,9 @@ function reloadProjectTree() {
         } else {
             $("#projectTree").html(response);
             $("#projectTree").draggable();
-            enableJsTree()
-            setupUI()
+            enableJsTree();
+            setupUI();
+            ajaxSubmit();
         }
     })
 }
