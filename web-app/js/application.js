@@ -10,6 +10,8 @@ var mouseXOnMouseDown = 0;
 var mouseYOnMouseDown = 0;
 var objectColor = 0x545354;
 var selectionColor = 0xff0000;
+var localGroupInfo = [];
+var objectIDs;
 var httpData = $.httpData || function (xhr, type, s) { // lifted from jq1.4.4
     var ct = xhr.getResponseHeader("content-type") || "",
         xml = type === "xml" || !type && ct.indexOf("xml") >= 0,
@@ -149,9 +151,15 @@ function createMesh(response, name) {
 function addToGroup(object) {
     object.visible = true;
     group.add(object);
+    localGroupInfo.push(object.name);
+    localStorage.objectID = JSON.stringify(localGroupInfo)
 }
 
 function initialiseCanvas(containerId) {
+    objectIDs = JSON.parse(localStorage.objectID)
+    $.each(objectIDs, function (key, value) {
+        showShapeFromRemote(value)
+    })
     container = $('#' + containerId);
     containerWidth = window.innerWidth;
     containerHeight = window.innerHeight;
