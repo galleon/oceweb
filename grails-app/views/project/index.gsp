@@ -34,16 +34,12 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-        var shapeId = '${shapeId}';
         $(".showFace").click(function () {
             var url = $(this).attr('rel');
             $(".active-face").removeClass('active-face');
             $(this).addClass('active-face');
             return false;
         })
-        if (shapeId) {
-            showShape(shapeId);
-        }
     })
 </script>
 </body>
