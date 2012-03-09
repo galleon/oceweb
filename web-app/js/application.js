@@ -1,3 +1,15 @@
+var group, stats, camera, renderer, containerWidth, containerHeight, scene, container, trihedra, projector, windowHalfX, windowHalfY;
+var targetRotation = 0;
+var targetRotationY = 0;
+var targetRotationOnMouseDown = 0;
+var targetRotationYOnMouseDown = 0;
+var mouseX = 0;
+var mouseY = 0;
+var fov = 50;
+var mouseXOnMouseDown = 0;
+var mouseYOnMouseDown = 0;
+var objectColor = 0x545354;
+var selectionColor = 0xff0000;
 var httpData = $.httpData || function (xhr, type, s) { // lifted from jq1.4.4
     var ct = xhr.getResponseHeader("content-type") || "",
         xml = type === "xml" || !type && ct.indexOf("xml") >= 0,
@@ -21,8 +33,8 @@ var httpData = $.httpData || function (xhr, type, s) { // lifted from jq1.4.4
     return data;
 };
 $(document).ready(function () {
-    $("#closeFlash").click(function(){
-       hideFlashMessage();
+    $("#closeFlash").click(function () {
+        hideFlashMessage();
     });
     $("#selectProject").change(function () {
         $("#changeProject").submit();
@@ -84,18 +96,6 @@ function closeModel() {
         $(".ui-icon-closethick").click();
     })
 }
-var group, stats, camera, renderer, containerWidth, containerHeight, scene, container, trihedra, projector, windowHalfX, windowHalfY;
-var targetRotation = 0;
-var targetRotationY = 0;
-var targetRotationOnMouseDown = 0;
-var targetRotationYOnMouseDown = 0;
-var mouseX = 0;
-var mouseY = 0;
-var fov = 50;
-var mouseXOnMouseDown = 0;
-var mouseYOnMouseDown = 0;
-var objectColor = 0x545354;
-var selectionColor = 0xff0000;
 
 function showShape(id) {
     var object = group.getChildByName(id);
@@ -637,19 +637,4 @@ function changeFaceOrientation(geometry) {
     geometry.computeFaceNormals();
     geometry.computeVertexNormals();
     return geometry
-}
-
-function getDatabase() {
-    var db;
-
-    try {
-        if (window.openDatabase) {
-            db = openDatabase("3d_viewer", "1.0", "3D-Viewer Database", 200000);
-            if (!db)
-                showFlashError("Failed to open the database on disk.  This is probably because the version was bad or there is not enough space left in this domain's quota");
-        } else
-            showFlashError("Couldn't open the database.  Please try with a WebKit nightly with this feature enabled");
-    } catch (err) {
-    }
-    return db
 }
