@@ -17,6 +17,7 @@ class MeshCO extends ShapeCO {
     CADObject parent
     float size
     float deflection
+    String color
 
     static constraints = {
     }
@@ -37,6 +38,7 @@ class MeshCO extends ShapeCO {
         cadObject.parent = parent ?: cadObject.parent
         cadObject.type = type ?: cadObject.type
         cadObject.project = project ?: cadObject.project
+        cadObject.color = color ?: cadObject.color
         return cadObject
     }
 }

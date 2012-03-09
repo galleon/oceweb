@@ -7,6 +7,7 @@ import com.eads.threedviewer.util.UNVParser
 
 class ShapeDTO {
     Integer groupName
+    String color
     List vertices = []
     List faces = []
     List edges = []

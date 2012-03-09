@@ -26,6 +26,7 @@ class ShapeUtil {
         data['edges'] = shapeDTO.edges
         data['faces'] = shapeDTO.faces;
         data['vertices'] = shapeDTO.vertices;
+        data['color'] = shapeDTO.color;
         return data
     }
 

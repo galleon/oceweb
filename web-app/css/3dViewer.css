@@ -181,4 +181,19 @@ fieldset{border: none}
     color: #508600;
 }
 #spinner{width: auto; bottom: 0; margin-left: 35%; padding-left: 33px;position: fixed; margin-bottom: 0pt;}
+#colorSelector {
+    background: url("../images/select2.png") repeat scroll 0 0 transparent;
+    height: 36px;
+    margin-left: 84px;
+    position: absolute;
+    width: 36px;
+}
+.colorpicker{z-index: 10000}
+#colorSelector div {
+    height: 30px;
+    left: 3px;
+    position: absolute;
+    top: 3px;
+    width: 30px;
+}
 

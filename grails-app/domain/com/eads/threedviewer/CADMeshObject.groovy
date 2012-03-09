@@ -10,6 +10,7 @@ class CADMeshObject extends CADObject {
 
 /* Fields */
     Integer groupName
+    String color
     float size
     float deflection
 /* Transients */
@@ -35,6 +36,7 @@ class CADMeshObject extends CADObject {
     Map getData() {
         Map result = super.data
         result['wireframe'] = true
+        result['color'] = color
         return result
     }
 

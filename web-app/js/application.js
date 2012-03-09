@@ -130,10 +130,11 @@ function createMesh(response, name) {
     var object;
     var loader = new THREE.JSONLoader();
     loader.createModel(response, function (geometry) {
-        if(response.wireframe){
+        if (response.wireframe) {
             geometry = changeFaceOrientation(geometry);
         }
-        var material = new THREE.MeshLambertMaterial({ color:selectionColor, overdraw:true, shading:THREE.FlatShading, wireframe:response.wireframe});
+        var color = response.color ? '0x' + response.color : selectionColor;
+        var material = new THREE.MeshLambertMaterial({ color:color, overdraw:true, shading:THREE.FlatShading, wireframe:response.wireframe});
         object = new THREE.Mesh(geometry, material);
         object.updateMatrix();
     })
