@@ -585,7 +585,10 @@ function repaint() {
         var id = $(this).attr('id');
         var object = group.getChildByName(id)
         if (object) {
-            object.material.color.setHex(objectColor);
+            var hexColor = parseInt(object.material.color.getHex());
+            if (hexColor == 16711680) {
+                object.material.color.setHex(objectColor);
+            }
         }
     })
 }

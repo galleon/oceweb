@@ -29,6 +29,7 @@ import org.jcae.mesh.amibe.algos2d.CheckDelaunay
 import org.jcae.mesh.xmldata.MeshWriter
 import org.jcae.mesh.xmldata.MeshToMMesh3DConvert
 import grails.validation.ValidationException
+import com.eads.threedviewer.util.AppUtil
 
 class ShapeService {
 
@@ -125,6 +126,7 @@ class ShapeService {
         Integer groupName = shapeDTO.groupName
         cadMeshObject.groupName = groupName
         cadMeshObject.name = "${cadMeshObject.name}_${groupName}"
+        cadMeshObject.color = AppUtil.generateRandomHex()
         cadMeshObject = projectService.saveCADObject(cadMeshObject, shapeDTO) as CADMeshObject
         return cadMeshObject
     }
@@ -276,7 +278,8 @@ class ShapeService {
         }
         m2dto3d.afterProcessingAllShapes()
         file.delete()
-//        xmlDirF.deleteDir()
-        return ShapeDTO.getUnvGroups(unvName)
+        List<ShapeDTO> shapeDTOs = ShapeDTO.getUnvGroups(unvName)
+        xmlDirF.deleteDir()
+        return shapeDTOs
     }
 }
