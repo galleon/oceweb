@@ -130,6 +130,9 @@ function createMesh(response, name) {
     var object;
     var loader = new THREE.JSONLoader();
     loader.createModel(response, function (geometry) {
+        if(response.wireframe){
+            geometry = changeFaceOrientation(geometry);
+        }
         var material = new THREE.MeshLambertMaterial({ color:selectionColor, overdraw:true, shading:THREE.FlatShading, wireframe:response.wireframe});
         object = new THREE.Mesh(geometry, material);
         object.updateMatrix();
@@ -264,7 +267,7 @@ function ajaxSubmit() {
         }
         else {
             reloadProjectTree()
-            if (response.success){
+            if (response.success) {
                 showFlashSuccess(response.success);
             }
             if (response.id) {
@@ -601,4 +604,25 @@ function showFlashSuccess(message) {
 
 function hideFlashMessage() {
     $("#spinner").hide();
+}
+
+function changeFaceOrientation(geometry) {
+    for (var i = 0; i < geometry.faces.length; i++) {
+        var face = geometry.faces[ i ];
+        if (face instanceof THREE.Face3) {
+            var tmp = face.b;
+            face.b = face.c;
+            face.c = tmp;
+
+        } else if (face instanceof THREE.Face4) {
+            var tmp = face.b;
+            face.b = face.d;
+            face.d = tmp;
+        }
+    }
+
+    geometry.computeCentroids();
+    geometry.computeFaceNormals();
+    geometry.computeVertexNormals();
+    return geometry
 }
