@@ -468,6 +468,12 @@ function toggleVisibility(node) {
     var object = group.getChildByName(id);
     if (object) {
         if (object.visible) {
+            if ($.inArray(id, objectIDs)) {
+                objectIDs = jQuery.grep(objectIDs, function(value) {
+                    return value != id;
+                });
+            }
+            localStorage.objectID = JSON.stringify(objectIDs)
             object.visible = false;
             object.material.color.setHex(objectColor);
         } else {
