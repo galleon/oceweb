@@ -155,11 +155,17 @@ function addToGroup(object) {
     localStorage.objectID = JSON.stringify(localGroupInfo)
 }
 
-function initialiseCanvas(containerId) {
+function showShapeFromLocalStorage(){
     objectIDs = JSON.parse(localStorage.objectID)
-    $.each(objectIDs, function (key, value) {
-        showShapeFromRemote(value)
-    })
+    if(objectIDs){
+        $.each(objectIDs, function (key, value) {
+            showShapeFromRemote(value)
+        })
+    }
+}
+
+function initialiseCanvas(containerId) {
+    showShapeFromLocalStorage();
     container = $('#' + containerId);
     containerWidth = window.innerWidth;
     containerHeight = window.innerHeight;
