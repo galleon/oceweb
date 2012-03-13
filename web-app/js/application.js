@@ -10,8 +10,6 @@ var mouseXOnMouseDown = 0;
 var mouseYOnMouseDown = 0;
 var objectColor = 0x545354;
 var selectionColor = 0xff0000;
-var localGroupInfo = [];
-var objectIDs;
 var httpData = $.httpData || function (xhr, type, s) { // lifted from jq1.4.4
     var ct = xhr.getResponseHeader("content-type") || "",
         xml = type === "xml" || !type && ct.indexOf("xml") >= 0,
@@ -43,8 +41,9 @@ $(document).ready(function () {
     });
     $("#projectTree").draggable();
     $("#toolbox").draggable();
+    enableJsTree();
     initialiseCanvas('content');
-
+    showShapeFromLocalStorage();
     jQuery("#spinner").ajaxStart(function () {
         showFlashInfo('Please wait while you content is loading')
     });
@@ -65,7 +64,6 @@ $(document).ready(function () {
             window.location.href = data.substring(data.indexOf("=") + 1, data.length);
         }
     });
-    enableJsTree();
     closeModel();
     $("input:submit,input:button, button,a.modelLink").button();
     $(".model").click(function () {
@@ -100,11 +98,11 @@ function closeModel() {
 }
 
 function showShape(id) {
-    var object = group.getChildByName(id);
+    var object = group.getChildByName(id + '');
     if (object) {
         repaint();
         object.doubleSided = true;
-        object.material.color.setHex(selectionColor);
+        setColor(object, selectionColor)
     } else {
         showShapeFromRemote(id);
     }
@@ -118,12 +116,65 @@ function showShapeFromRemote(id) {
             if (response.error) {
                 showError(response.error)
             } else {
-                repaint()
+                repaint();
                 var object = createMesh(response, id);
                 addToGroup(object);
             }
         });
     }
+}
+
+function showShapeFromLocalStorage() {
+    var objectIDs = getLocalShapeIds();
+    if (objectIDs) {
+        var projectShapeIds = getProjectShapeIds();
+        $.each(objectIDs, function (key, value) {
+            $.each(projectShapeIds, function (index, shapeId) {
+                if (parseInt(value) == parseInt(shapeId)) {
+                    $("#" + value + '').click()
+                }
+            });
+        })
+    }
+}
+
+function addToGroup(object) {
+    var id = object.name;
+    var visible = localStorage["visible_" + id] != '0';
+    setVisible(object, visible);
+    group.add(object);
+    addToLocalStorage(id);
+}
+
+function addToLocalStorage(id) {
+    if (id) {
+        var currentIds = getLocalShapeIds() ? getLocalShapeIds() : [];
+        if (!(parseInt(id) in currentIds)) {
+            currentIds.push(parseInt(id))
+            localStorage.objectIDs = JSON.stringify(currentIds)
+        }
+    }
+}
+
+function getLocalShapeIds() {
+    var ids = JSON.parse(localStorage.objectIDs);
+    var shapeIds = [];
+    $(ids).each(function (index, value) {
+        shapeIds.push(parseInt(value))
+    });
+    return $.unique(shapeIds);
+}
+
+function getLocalColor(id) {
+    return localStorage["color_" + id]
+}
+
+function getProjectShapeIds() {
+    var ids = [];
+    $.each($(".showObject"), function (index, val) {
+        ids.push(parseInt($(val).attr('id')))
+    })
+    return $.unique(ids);
 }
 
 function showError(message) {
@@ -132,40 +183,28 @@ function showError(message) {
 }
 
 function createMesh(response, name) {
-    var object;
+    var object, color;
     var loader = new THREE.JSONLoader();
     loader.createModel(response, function (geometry) {
         if (response.wireframe) {
             geometry = changeFaceOrientation(geometry);
         }
-        var color = response.color ? '0x' + response.color : selectionColor;
-        var material = new THREE.MeshLambertMaterial({ color:color, overdraw:true, shading:THREE.FlatShading, wireframe:response.wireframe});
+        color = response.color ? '0x' + response.color : selectionColor;
+        var localColor = getLocalColor(name)
+        if (localColor) {
+            color = localColor
+        }
+        var material = new THREE.MeshLambertMaterial({overdraw:true, shading:THREE.FlatShading, wireframe:response.wireframe});
         object = new THREE.Mesh(geometry, material);
         object.updateMatrix();
     })
     object.doubleSided = true;
     object.name = name;
+    setColor(object, color);
     return object
 }
 
-function addToGroup(object) {
-    object.visible = true;
-    group.add(object);
-    localGroupInfo.push(object.name);
-    localStorage.objectID = JSON.stringify(localGroupInfo)
-}
-
-function showShapeFromLocalStorage(){
-    objectIDs = JSON.parse(localStorage.objectID)
-    if(objectIDs){
-        $.each(objectIDs, function (key, value) {
-            showShapeFromRemote(value)
-        })
-    }
-}
-
 function initialiseCanvas(containerId) {
-    showShapeFromLocalStorage();
     container = $('#' + containerId);
     containerWidth = window.innerWidth;
     containerHeight = window.innerHeight;
@@ -238,7 +277,6 @@ function onDocumentMouseDown(event) {
         repaint();
         var object = intersects[ 0 ].object;
         $("#" + object.name).click();
-        object.material.color.setHex(selectionColor)
     }
 }
 
@@ -473,21 +511,33 @@ function toggleVisibility(node) {
     var id = $(node).children().filter('a').attr('id');
     var object = group.getChildByName(id);
     if (object) {
+        var color = '';
+        var visible;
         if (object.visible) {
-            if ($.inArray(id, objectIDs)) {
-                objectIDs = jQuery.grep(objectIDs, function(value) {
-                    return value != id;
-                });
-            }
-            localStorage.objectID = JSON.stringify(objectIDs)
-            object.visible = false;
-            object.material.color.setHex(objectColor);
+            visible = false;
+            color = objectColor;
         } else {
-            object.visible = true;
-            object.material.color.setHex(selectionColor);
+            color = selectionColor;
+            visible = true;
         }
+        setVisible(object, visible);
+        setColor(object, color);
     } else {
         showShape(id);
+    }
+}
+
+function setColor(object, color) {
+    if (object.name) {
+        object.material.color.setHex(color);
+        localStorage["color_" + object.name] = color;
+    }
+}
+
+function setVisible(object, visible) {
+    if (object.name) {
+        object.visible = visible;
+        localStorage["visible_" + object.name] = visible ? '1' : '0';
     }
 }
 
@@ -609,10 +659,7 @@ function repaint() {
         var id = $(this).attr('id');
         var object = group.getChildByName(id)
         if (object) {
-            var hexColor = parseInt(object.material.color.getHex());
-            if (hexColor == 16711680) {
-                object.material.color.setHex(objectColor);
-            }
+            setColor(object, objectColor);
         }
     })
 }
