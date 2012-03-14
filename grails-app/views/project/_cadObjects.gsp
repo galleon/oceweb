@@ -15,6 +15,7 @@
                 <li id="${"phtml_" + (count)}" rel="root"><a href="#">${project.name}</a>
                     <ul>
                         <g:each in="${project.getParentCadObjects()}" var="cadObject">
+                            <g:set var="count" value="${count.toInteger() + 1}" scope="page"/>
                             <g:render template="cadObject" model="[cadObject:cadObject]"/>
                         </g:each>
                     </ul>
