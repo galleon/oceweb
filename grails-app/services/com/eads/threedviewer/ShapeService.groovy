@@ -109,12 +109,22 @@ class ShapeService {
         return object
     }
 
-    List<CADMeshObject> saveMeshes(MeshCO co) {
+    CADMeshObject saveMesh(MeshCO co) {
         List<ShapeDTO> shapeDTOs = getShapeDtos(co)
+        CADMeshObject cadObject = co.findOrCreateCADObject() as CADMeshObject
+        ShapeDTO shapeDTO = new ShapeDTO(shapeDTOs)
+        cadObject = saveMesh(cadObject, shapeDTO)
+        if (cadObject) {
+            saveMeshes(cadObject, shapeDTOs)
+        }
+        return cadObject
+    }
+
+    List<CADMeshObject> saveMeshes(CADMeshObject cadObject, List<ShapeDTO> shapeDTOs) {
         List<CADMeshObject> cadMeshObjects = []
         shapeDTOs.each {ShapeDTO shapeDTO ->
-            CADMeshObject cadObject = co.findOrCreateCADObject() as CADMeshObject
-            CADMeshObject cadMeshObject = saveMesh(cadObject, shapeDTO)
+            CADMeshObject cadMeshObject = cadObject.createSubMesh(shapeDTO)
+            cadMeshObject = saveMesh(cadMeshObject, shapeDTO)
             if (cadMeshObject) {
                 cadMeshObjects.add(cadMeshObject)
             }
@@ -123,9 +133,8 @@ class ShapeService {
     }
 
     CADMeshObject saveMesh(CADMeshObject cadMeshObject, ShapeDTO shapeDTO) {
-        Integer groupName = shapeDTO.groupName
-        cadMeshObject.groupName = groupName
-        cadMeshObject.name = "${cadMeshObject.name}_${groupName}"
+        Integer groupName = shapeDTO.groupName + 1
+        cadMeshObject.groupName = groupName + 1
         cadMeshObject.color = AppUtil.generateRandomHex()
         cadMeshObject = projectService.saveCADObject(cadMeshObject, shapeDTO) as CADMeshObject
         return cadMeshObject

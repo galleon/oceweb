@@ -44,13 +44,8 @@ class CADObjectController {
         Map result
         if (co.validate()) {
             try {
-                if (co.id) {
-                    CADMeshObject cadMeshObject = shapeService.updateMesh(co)
-                    result = ['id': cadMeshObject?.id]
-                } else {
-                    List<CADMeshObject> cadMeshObjects = shapeService.saveMeshes(co)
-                    result = ['success': "Created ${cadMeshObjects.size()} Mesh."]
-                }
+                CADMeshObject cadMeshObject = co.id ? shapeService.updateMesh(co) : shapeService.saveMesh(co)
+                result = ['id': cadMeshObject?.id]
             } catch (ValidationException ve) {
                 result = ['error': ve.message]
             }

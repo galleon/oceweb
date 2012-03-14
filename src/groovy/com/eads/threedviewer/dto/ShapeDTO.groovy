@@ -6,11 +6,17 @@ import com.eads.threedviewer.CADObject
 import com.eads.threedviewer.util.UNVParser
 
 class ShapeDTO {
-    Integer groupName
+    Integer groupName = 0
     String color
     List vertices = []
     List faces = []
     List edges = []
+
+    ShapeDTO(List<ShapeDTO> shapeDTOs) {
+        vertices = shapeDTOs.vertices.flatten()
+        edges = shapeDTOs.edges.flatten()
+        faces = shapeDTOs.faces.flatten()
+    }
 
     ShapeDTO(CADObject cadObject) {
         vertices = cadObject.verticesList
