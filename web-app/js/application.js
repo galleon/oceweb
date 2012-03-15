@@ -140,7 +140,7 @@ function showShapeFromLocalStorage() {
 
 function addToGroup(object) {
     var id = object.name;
-    var visible = localStorage["visible_" + id] != '0';
+    var visible = window.localStorage["visible_" + id] != '0';
     setVisible(object, visible);
     group.add(object);
     addToLocalStorage(id);
@@ -151,13 +151,13 @@ function addToLocalStorage(id) {
         var currentIds = getLocalShapeIds() ? getLocalShapeIds() : [];
         if (!(parseInt(id) in currentIds)) {
             currentIds.push(parseInt(id))
-            localStorage.objectIDs = JSON.stringify(currentIds)
+            window.localStorage.objectIDs = JSON.stringify(currentIds)
         }
     }
 }
 
 function getLocalShapeIds() {
-    var ids = JSON.parse(localStorage.objectIDs);
+    var ids = window.localStorage.objectIDs ? JSON.parse(window.localStorage.objectIDs) : [];
     var shapeIds = [];
     $(ids).each(function (index, value) {
         shapeIds.push(parseInt(value))
@@ -166,7 +166,7 @@ function getLocalShapeIds() {
 }
 
 function getLocalColor(id) {
-    return localStorage["color_" + id]
+    return window.localStorage["color_" + id]
 }
 
 function getProjectShapeIds() {
@@ -530,14 +530,14 @@ function toggleVisibility(node) {
 function setColor(object, color) {
     if (object.name) {
         object.material.color.setHex(color);
-        localStorage["color_" + object.name] = color;
+        window.localStorage["color_" + object.name] = color;
     }
 }
 
 function setVisible(object, visible) {
     if (object.name) {
         object.visible = visible;
-        localStorage["visible_" + object.name] = visible ? '1' : '0';
+        window.localStorage["visible_" + object.name] = visible ? '1' : '0';
     }
 }
 
