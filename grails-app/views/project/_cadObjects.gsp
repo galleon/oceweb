@@ -26,6 +26,9 @@
         <div id="explode" style="display: none" title="Explode">
             <g:render template="/cadObject/explode"/>
         </div>
+        <div id="compute" style="display: none;" title="Compute">
+            <g:render template="/cadObject/compute"/>
+        </div>
 
         <div id="operation" style="display: none" title="Boolean Operation">
             <g:render template="/cadObject/operation"/>

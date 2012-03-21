@@ -80,7 +80,7 @@ $(document).ready(function () {
         }
         else {
             $($(this).attr('href')).dialog();
-            $('.ui-dialog').css('padding-top', '8px').width('340px');
+            $('.ui-dialog').width('340px');
         }
     })
 })
@@ -448,7 +448,7 @@ function defaultMenu(node) {
             "_class":"class",
             "action":function (obj) {
                 var id = $(obj).children().filter('a').attr('id');
-                $("#cadObjectId").val(id);
+                $("computeForm #cadObjectId").val(id);
                 $("#explode").dialog();
 
             },
@@ -474,7 +474,19 @@ function defaultMenu(node) {
         items = {
             toggleVisibility:items.toggleVisibility,
             deleteNode:items.deleteNode,
-            edit:items.edit
+            edit:items.edit,
+            compute:{
+                label:"Compute",
+                "_class":"class",
+                "action":function (obj) {
+                    var id = $(obj).children().filter('a').attr('id');
+                    $("#computeForm #cadObjectId").val(id);
+                    $("#compute").dialog();
+                    $('.ui-dialog').width('600px');
+                },
+                "separator_before":false,
+                "separator_after":true
+            }
         }
     }
     if (selectedId == "phtml_1") {

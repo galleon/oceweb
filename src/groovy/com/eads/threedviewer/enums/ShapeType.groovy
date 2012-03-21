@@ -1,7 +1,7 @@
 package com.eads.threedviewer.enums
 
 public enum ShapeType {
-    CONE("Cone"), CYLINDER("Cylinder"), CUBE("Cube"), SPHERE("Sphere"), FILE("File"), COMPOUND("Compound"), EXPLODE("Explode"), MESH("Mesh")
+    CONE("Cone"), CYLINDER("Cylinder"), CUBE("Cube"), SPHERE("Sphere"), FILE("File"), COMPOUND("Compound"), EXPLODE("Explode"), MESH("Mesh"), COMPUTE("Compute")
 
     private final String name
 
