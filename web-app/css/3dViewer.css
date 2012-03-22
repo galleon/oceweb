@@ -201,4 +201,6 @@ fieldset{border: none}
 #closeFlash{margin-left: 6px;}
 .polarisation{text-align: right; padding-top: 10px; margin-bottom: 10px;}
 .polarisation select,.postProcessing{width: 180px;float: right;}
+.angle{float: left; width: 50%;padding-top: 3px;}
+.first{width: 30%}
 
