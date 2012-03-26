@@ -1,7 +1,9 @@
 package com.eads.threedviewer.co
 
 import com.eads.threedviewer.CADObject
+import grails.validation.Validateable
 
+@Validateable
 class BooleanOperationCO {
     int object1
     int object2

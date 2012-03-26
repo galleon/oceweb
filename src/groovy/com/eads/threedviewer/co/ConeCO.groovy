@@ -3,9 +3,9 @@ package com.eads.threedviewer.co
 import com.eads.threedviewer.CADConeObject
 import com.eads.threedviewer.CADObject
 import groovy.transform.ToString
-import org.codehaus.groovy.grails.validation.Validateable
 import org.jcae.opencascade.jni.BRepPrimAPI_MakeCone
 import org.jcae.opencascade.jni.TopoDS_Shape
+import grails.validation.Validateable
 
 @Validateable
 @ToString(includeNames = true, includeFields = true, excludes = 'metaClass,errors', includeSuper = true)

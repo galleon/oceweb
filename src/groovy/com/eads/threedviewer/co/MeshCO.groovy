@@ -6,9 +6,9 @@ import com.eads.threedviewer.enums.ShapeType
 import com.eads.threedviewer.util.ShapeUtil
 import groovy.transform.ToString
 import groovy.util.logging.Log
-import org.codehaus.groovy.grails.validation.Validateable
 import org.jcae.opencascade.jni.TopoDS_Shape
 import com.eads.threedviewer.CADCubeObject
+import grails.validation.Validateable
 
 @Log
 @Validateable

@@ -83,7 +83,7 @@ class UtilController {
         return sphere
     }
 
-    Map generateData(TopoDS_Shape shape) {
+    private Map generateData(TopoDS_Shape shape) {
         Map data = ['metadata': ['formatVersion': 3, 'generatedBy': 'tog'], 'scale': 10, 'materials': [], 'morphTargets': [], 'normals': [], 'colors': [], 'uvs': [[]], 'edges': []]
         OCCMeshExtractor ome = new OCCMeshExtractor(shape)
         int noffset = 0
