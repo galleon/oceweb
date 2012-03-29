@@ -448,7 +448,7 @@ function defaultMenu(node) {
             "_class":"class",
             "action":function (obj) {
                 var id = $(obj).children().filter('a').attr('id');
-                $("computeForm #cadObjectId").val(id);
+                $("#explodeForm #cadObjectId").val(id);
                 $("#explode").dialog();
 
             },

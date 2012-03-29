@@ -56,7 +56,7 @@ class CADObjectController {
 
     }
 
-    Closure sendResponse = {ShapeCO co ->
+    private Closure sendResponse = {ShapeCO co ->
         Map result
         CADObject cadObject
         try {
@@ -85,10 +85,15 @@ class CADObjectController {
     }
 
     def explode(Long id) {
+        Map result = ['success': 'Shape exploded successfully']
         CADObject cadObject = id ? CADObject.get(id) : null
         TopAbs_ShapeEnum shapeType = params.shape as TopAbs_ShapeEnum
-        shapeService.saveSubCadObjects(cadObject, shapeType)
-        redirect(controller: 'project', action: 'index', params: [name: cadObject?.project?.name])
+        try {
+            shapeService.saveSubCadObjects(cadObject, shapeType)
+        } catch (Exception e) {
+            result = ['error': e.message]
+        }
+        render result as JSON
     }
 
     def booleanOperation(BooleanOperationCO co) {
