@@ -63,7 +63,8 @@
 <g:layoutBody/>
 <div id="spinner" class="${project ? 'info' : 'errormsg'} message" style="display: ${project ? 'none' : 'block'};">
     <p>
-        ${project ? 'Please wait while you content is loading' : 'Project not found'}
+        ${project ? 'Please wait while you content is loading' :
+            (projects ? 'Project not found' : 'You do not have any project. Please create one by typing the project name at the end of address bar.')}
     </p>
     <a href="#" title="close" id="closeFlash"><g:img dir="images" file="close.png" alt="close" class="close-img"/></a>
 </div>
