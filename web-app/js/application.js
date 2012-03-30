@@ -283,9 +283,11 @@ function onDocumentMouseDown(event) {
 
     var intersects = ray.intersectScene(group);
     if (intersects.length > 0) {
-        repaint();
         var object = intersects[ 0 ].object;
-        $("#" + object.name).click();
+        if (object.visible) {
+            repaint();
+            $("#" + object.name).click();
+        }
     }
 }
 
