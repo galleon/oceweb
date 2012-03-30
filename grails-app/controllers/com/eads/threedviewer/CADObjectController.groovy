@@ -1,6 +1,5 @@
 package com.eads.threedviewer
 
-import com.eads.threedviewer.dto.ShapeDTO
 import grails.converters.JSON
 import grails.validation.ValidationException
 import org.jcae.opencascade.jni.TopAbs_ShapeEnum
