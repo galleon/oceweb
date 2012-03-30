@@ -86,7 +86,7 @@ $(document).ready(function () {
 })
 
 function setupUI() {
-    $('.ui-dialog').css('padding-top', '8px').width('340px');
+    $('.ui-dialog').width('340px');
     $("input:submit,input:button, button,a.modelLink").button();
     closeModel();
 }
@@ -98,13 +98,17 @@ function closeModel() {
 }
 
 function showShape(id) {
-    var object = group.getChildByName(id + '');
-    if (object) {
-        repaint();
-        object.doubleSided = true;
-        setColor(object, selectionColor)
-    } else {
-        showShapeFromRemote(id);
+    if (id) {
+        var object = group.getChildByName(id + '');
+        if (object) {
+            debugStatement("Object found in group -: " + id)
+            repaint();
+            object.doubleSided = true;
+            setColor(object, selectionColor)
+        } else {
+            debugStatement("Object not found in group -: " + id)
+            showShapeFromRemote(id);
+        }
     }
     animate();
 }
@@ -112,6 +116,7 @@ function showShape(id) {
 function showShapeFromRemote(id) {
     if (id) {
         var url = createLink('CADObject', 'show');
+        debugStatement("Fetching  object from remote -: " + id);
         $.getJSON(url, {id:id}, function (response) {
             if (response.error) {
                 showError(response.error)
@@ -121,7 +126,10 @@ function showShapeFromRemote(id) {
                 addToGroup(object);
             }
         });
+    } else {
+        debugStatement("No id passed");
     }
+
 }
 
 function showShapeFromLocalStorage() {
@@ -217,10 +225,11 @@ function initialiseCanvas(containerId) {
     camera.position.y = 0;
     camera.position.z = 500;
 
-    group = new THREE.Object3D();
-
     scene = new THREE.Scene();
     scene.add(camera);
+
+    group = new THREE.Object3D();
+    group.parent = scene;
     renderer = new THREE.CanvasRenderer();
     renderer.setSize(containerWidth, containerHeight);
     renderer.sortObjects = false;
@@ -541,6 +550,7 @@ function toggleVisibility(node) {
 
 function setColor(object, color) {
     if (object.name) {
+        debugStatement("Setting color -: " + color + " of id -: " + object.name);
         object.material.color.setHex(color);
         window.localStorage["color_" + object.name] = color;
     }
@@ -589,12 +599,22 @@ function debugStatement(msg) {
 }
 
 function removeObjects(ids) {
+    debugStatement("Removing objects with ids -: " + ids)
     $.each(ids, function (index, value) {
-        var object = group.getChildByName(value);
+        var object = scene.getChildByName(parseInt(value), true);
         if (object) {
-            group.remove(object)
+            debugStatement("Removing object -: " + value);
+            group.remove(object);
+            removeFromLocalStorage(value);
+        } else {
+            debugStatement("Object not found -: " + value);
         }
     })
+}
+
+function removeFromLocalStorage(value) {
+    localStorage.removeItem("color_" + value);
+    localStorage.removeItem("visible_" + value);
 }
 
 function getContext() {
@@ -667,8 +687,10 @@ function reloadProjectTree() {
 }
 
 function repaint() {
+    debugStatement("Repainting the group");
     $.each($("#phtml_1").children().find('li a'), function () {
         var id = $(this).attr('id');
+        debugStatement("Repainting " + id + " to color " + objectColor)
         var object = group.getChildByName(id)
         if (object) {
             setColor(object, objectColor);
