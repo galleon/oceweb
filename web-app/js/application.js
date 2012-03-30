@@ -207,7 +207,7 @@ function createMesh(response, name) {
         object.updateMatrix();
     })
     object.doubleSided = true;
-    object.name = name;
+    object.name = name + '';
     setColor(object, color);
     return object
 }
@@ -601,7 +601,7 @@ function debugStatement(msg) {
 function removeObjects(ids) {
     debugStatement("Removing objects with ids -: " + ids)
     $.each(ids, function (index, value) {
-        var object = scene.getChildByName(parseInt(value), true);
+        var object = scene.getChildByName(value + '', true);
         if (object) {
             debugStatement("Removing object -: " + value);
             group.remove(object);
@@ -653,8 +653,8 @@ function confirmDelete(node) {
                     url = url + "?" + idVars.join("&");
                     $.post(url, function (response) {
                         if (response.success) {
-                            removeObjects(ids);
                             $(model).dialog("close");
+                            removeObjects(ids);
                             reloadProjectTree();
                         } else {
                             $("#dialog-confirm p").html(response.error);
@@ -691,9 +691,11 @@ function repaint() {
     $.each($("#phtml_1").children().find('li a'), function () {
         var id = $(this).attr('id');
         debugStatement("Repainting " + id + " to color " + objectColor)
-        var object = group.getChildByName(id)
+        var object = scene.getChildByName(id + '', true)
         if (object) {
             setColor(object, objectColor);
+        } else {
+            debugStatement("object not found for coloring -: " + id)
         }
     })
 }
