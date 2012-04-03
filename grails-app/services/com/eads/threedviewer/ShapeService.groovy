@@ -190,8 +190,6 @@ class ShapeService {
 
             MMesh1D mesh1d = new MMesh1D(outputDir + File.separator + brepfile)
             CADShape shape = mesh1d.getGeometry();
-            OCCShape occShape = mesh1d.getGeometry() as OCCShape
-            println "--------------" + ShapeUtil.getData(occShape.getShape())
             HashMap<String, String> options1d = new HashMap<String, String>()
             options1d.put("size", "" + size)
 
