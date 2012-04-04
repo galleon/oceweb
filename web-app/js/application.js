@@ -168,7 +168,9 @@ function getLocalShapeIds() {
     var ids = window.localStorage.objectIDs ? JSON.parse(window.localStorage.objectIDs) : [];
     var shapeIds = [];
     $(ids).each(function (index, value) {
-        shapeIds.push(parseInt(value))
+        if ($.inArray(parseInt(value), shapeIds) == -1) {
+            shapeIds.push(parseInt(value))
+        }
     });
     return $.unique(shapeIds);
 }
@@ -560,6 +562,7 @@ function setColor(object, color) {
 
 function setVisible(object, visible) {
     if (object.name) {
+        debugStatement("Setting visible " + visible + "for -: " + object.name)
         object.visible = visible;
         window.localStorage["visible_" + object.name] = visible ? '1' : '0';
     }
