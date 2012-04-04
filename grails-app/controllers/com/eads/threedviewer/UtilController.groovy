@@ -121,12 +121,13 @@ class UtilController {
 
     def testUnv() {
         CADObject cadObject = CADObject.get(59)
-        String result = '       -1\n       2411\n'
+        String spaces = ' ' * 7
+        String result = "${spaces}-1\n${spaces}2411\n"
 
         getTriangularList(cadObject.verticesList).eachWithIndex {List val, int index ->
-            result += "       ${index + 1}       1       1       1\n       ${val.collect{it.toString().replace('E','D')}.join('       ')}\n"
+            result += "${spaces}${index + 1}${spaces}1${spaces}1${spaces}1\n${spaces}${val.collect {it.toString().replace('E', 'D')}.join(spaces)}\n"
         }
-        result += '       -1\n       -1\n       2412\n'
+        result += "${spaces}-1\n${spaces}-1\n${spaces}2412\n"
 
         List faces = []
         cadObject.facesList.eachWithIndex {val, index ->
@@ -135,9 +136,9 @@ class UtilController {
             }
         }
         getTriangularList(faces).eachWithIndex {List val, int index ->
-            result += "       ${index + 1}       91       1       1       1       3\n       ${val.collect {it + 1}.toList().join('       ')}\n"
+            result += "${spaces}${index + 1}${spaces}91${spaces}1${spaces}1${spaces}1${spaces}3\n${spaces}${val.collect {it + 1}.toList().join(spaces)}\n"
         }
-        result += '      -1'
+        result += "${spaces}-1"
         File file = File.createTempFile("result", ".unv")
         file.text = result
         response.contentType = "text/plain"
