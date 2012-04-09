@@ -7,6 +7,7 @@ import occmeshextractor.OCCMeshExtractor
 import org.jcae.opencascade.jni.*
 import org.jcae.mesh.xmldata.MeshExporter
 import java.text.NumberFormat
+import com.eads.threedviewer.util.AppUtil
 
 class UtilController {
 
@@ -122,45 +123,10 @@ class UtilController {
     }
 
     def testUnv() {
-        CADObject cadObject = CADObject.get(65)
-        String ls = System.getProperty("line.separator");
-        NumberFormat formatterI10 = new MeshExporter.FormatI10()
-        NumberFormat formatterI25 = new MeshExporter.FormatD25_16()
-        String spaces = ' ' * 9
-        String result = "${' ' * 4}-1${ls}${' ' * 2}2411${ls}"
-
-        getTriangularList(cadObject.verticesList).eachWithIndex {List val, int index ->
-            result += "${[formatterI10.format(index + 1), 1, 1, 1].join(spaces)}${ls}${val.collect {formatterI25.format(it)}.join('')}${ls}"
-        }
-        result += "${' ' * 4}-1${ls}${' ' * 4}-1${ls}${' ' * 2}2412${ls}"
-
-        List faces = []
-        cadObject.facesList.eachWithIndex {val, index ->
-            if (index % 4) {
-                faces.add(val)
-            }
-        }
-        getTriangularList(faces).eachWithIndex {List val, int index ->
-            result += "${[index + 1, 91, 1, 1, 1, 3].collect {formatterI10.format(it)}.join('')}${ls}${val.collect{formatterI10.format(it + 1)}.toList().join('')}${ls}"
-        }
-        result += "${' ' * 4}-1"
-        File file = File.createTempFile("result", ".unv")
-        file.text = result
+        CADMeshObject cadObject = CADMeshObject.get(65)
+        File file = cadObject.createUnvFile()
         response.contentType = "text/plain"
         response.outputStream << file.bytes
-    }
-
-    private getTriangularList(List list) {
-        List triangularList = []
-        List temp = []
-        list.eachWithIndex {val, index ->
-            temp.add(val)
-            if ((index % 3 == 2)) {
-                triangularList.add(temp)
-                temp = []
-            }
-        }
-        return triangularList
     }
 
 }
