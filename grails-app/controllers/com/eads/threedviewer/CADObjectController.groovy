@@ -159,4 +159,16 @@ class CADObjectController {
         render result as JSON
     }
 
+    def generateUnv(Long id){
+        CADMeshObject cadMeshObject = CADMeshObject.get(id)
+        if (cadMeshObject){
+            File file = cadMeshObject.createUnvFile()
+            response.setHeader('Content-disposition', "attachment;filename=${cadMeshObject.name}.unv")
+            response.setHeader('Content-length', "${file.size()}")
+            response.contentType = "unv/plain"
+            response.outputStream << file.bytes
+        }else{
+            response.sendError(404,"Object not found for id ${id}")
+        }
+    }
 }

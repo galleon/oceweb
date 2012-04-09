@@ -1,5 +1,5 @@
 <%@ page import="com.eads.threedviewer.enums.ShapeType" %>
-<g:form action="explode" controller="CADObject" name="computeForm" class="shapeForm">
+<g:form action="generateUnv" controller="CADObject" name="computeForm">
     <fieldset class="form">
         <g:hiddenField name="id" id="cadObjectId" value=""/>
         <g:hiddenField name="type" value="${ShapeType.COMPUTE}"/>
@@ -57,7 +57,7 @@
         </div>
     </fieldset>
     <fieldset class="buttons">
-        <input type="button" name="create" value="Run" class="save"/>
+        <g:actionSubmit value="Run" id="submit" action="generateUnv" class="save"/>
         <input type="button" value="Cancel" id="cancel" class="save closeModel"/>
     </fieldset>
 </g:form>
