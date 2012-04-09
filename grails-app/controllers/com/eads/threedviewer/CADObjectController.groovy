@@ -45,8 +45,8 @@ class CADObjectController {
             try {
                 CADMeshObject cadMeshObject = co.id ? shapeService.updateMesh(co) : shapeService.saveMesh(co)
                 result = ['id': cadMeshObject?.id]
-            } catch (ValidationException ve) {
-                result = ['error': ve.message]
+            } catch (RuntimeException rte) {
+                result = ['error': rte.message]
             }
         } else {
             result = ['error': co.errors]

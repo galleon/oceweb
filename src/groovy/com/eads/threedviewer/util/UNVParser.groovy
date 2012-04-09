@@ -187,7 +187,6 @@ public class UNVParser {
 
     private void readFace(BufferedReader rd) throws IOException {
         String line;
-
         while (!(line = rd.readLine().trim()).equals("-1")) {
             // first line: type of object
             StringTokenizer st = new StringTokenizer(line);
@@ -195,7 +194,6 @@ public class UNVParser {
             int type = Integer.parseInt(st.nextToken());
 
             line = rd.readLine(); //RECORD 2
-
             switch (type) {
                 case 21: // Linear beam
                     st = new StringTokenizer(line);
