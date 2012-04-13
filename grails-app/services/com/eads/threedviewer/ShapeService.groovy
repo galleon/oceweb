@@ -72,7 +72,7 @@ class ShapeService {
 
     CADObject saveSubCadObjects(CADObject cadObject, String name, File file, ShapeDTO shapeDTO, TopAbs_ShapeEnum type) {
         CADObject subCadObject = new CADExplodeObject(name: name, project: cadObject.project, parent: cadObject, type: ShapeType.EXPLODE, explodeType: type)
-        return projectService.saveCADObject(subCadObject, shapeDTO)
+        return projectService.saveCADObject(subCadObject, shapeDTO, file)
     }
 
     CADObject saveCADObject(BooleanOperationCO co) {
@@ -93,7 +93,7 @@ class ShapeService {
 
     CADObject saveCADObject(String name, File file, ShapeDTO shapeDTO, Project project) {
         CADObject cadObject = new CADObject(name: name, project: project, type: ShapeType.COMPOUND)
-        return projectService.saveCADObject(cadObject, shapeDTO)
+        return projectService.saveCADObject(cadObject, shapeDTO, file)
     }
 
     private BRepAlgoAPI_BooleanOperation getOperationInstance(BooleanOperationCO co, TopoDS_Shape shape1, TopoDS_Shape shape2) {

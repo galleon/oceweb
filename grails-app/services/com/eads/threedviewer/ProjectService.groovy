@@ -11,7 +11,7 @@ class ProjectService {
             cadObject = co.findOrCreateCADObject()
             Project project = co.project
             ShapeDTO shapeDTO = co.shapeDTO
-            cadObject = saveCADObject(cadObject, shapeDTO)
+            cadObject = saveCADObject(cadObject, shapeDTO, co.file)
             project.addToCadObjects(cadObject)
             project.save()
 
@@ -21,11 +21,36 @@ class ProjectService {
         return cadObject
     }
 
-    CADObject saveCADObject(CADObject cadObject, ShapeDTO shapeDTO) {
+    CADObject saveCADObject(CADObject cadObject, ShapeDTO shapeDTO, File file = null) {
         cadObject.vertices = shapeDTO.vertices.join(",")
         cadObject.edges = shapeDTO.edges.join(",")
         cadObject.faces = shapeDTO.faces.join(",")
         cadObject.save()
+        saveBrepFileOnFileSystem(cadObject, file)
+        return cadObject
+    }
+
+    File saveBrepFileOnFileSystem(CADObject cadObject, File file) {
+        File brepFile
+        if (cadObject && file) {
+            brepFile = saveFileOnFileSystem(file, cadObject.brepFilePath)
+            if (!brepFile.exists()) {
+                throw new RuntimeException("Not able to create brep file")
+            }
+        }
+        return brepFile
+    }
+
+    File saveFileOnFileSystem(File file, String filePath) {
+        File newFile = new File(filePath)
+        if (!newFile.parentFile.exists()) {
+            log.info "creating parent file ${newFile.parentFile}"
+            newFile.parentFile.mkdirs()
+        }
+        file.renameTo(newFile)
+        log.info "Renaming file ${file.path} to ${filePath}"
+        file.delete()
+        return newFile
     }
 
 }

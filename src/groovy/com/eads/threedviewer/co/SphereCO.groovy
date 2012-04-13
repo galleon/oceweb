@@ -19,7 +19,6 @@ class SphereCO extends ShapeCO {
     @Override
     TopoDS_Shape getShape() {
         double[] axes = [x, y, z]
-
         BRepPrimAPI_MakeSphere sphere = new BRepPrimAPI_MakeSphere(axes, radius)
         return sphere.shape()
     }

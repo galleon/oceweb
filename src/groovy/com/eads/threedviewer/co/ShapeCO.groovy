@@ -41,13 +41,17 @@ abstract class ShapeCO {
         return cadObject
     }
 
-    byte[] getContent() {
-        byte[] bytes
+    File getFile() {
         BRepTools.write(shape, "temp.brep")
         File file = new File("temp.brep")
+        file.deleteOnExit()
+        return file
+    }
+
+    byte[] getContent() {
+        byte[] bytes
         if (file.exists()) {
             bytes = file.bytes
-            file.delete()
         }
         return bytes
     }
@@ -56,7 +60,7 @@ abstract class ShapeCO {
         return ShapeUtil.getData(shape)
     }
 
-    ShapeDTO getShapeDTO(){
+    ShapeDTO getShapeDTO() {
         return new ShapeDTO(shape)
     }
 }

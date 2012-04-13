@@ -60,7 +60,7 @@ class CADObjectController {
         CADObject cadObject
         try {
             cadObject = projectService.addCADObject(co)
-        } catch (ValidationException ve) {
+        } catch (RuntimeException ve) {
             result = ['error': ve.message]
         }
         if (cadObject) {

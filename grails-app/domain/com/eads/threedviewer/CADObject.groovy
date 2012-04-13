@@ -27,7 +27,8 @@ class CADObject {
     Date lastUpdated
 
 /* Transients */
-    static transients = ['subCadObjects', 'shape', 'verticesList', 'edgesList', 'facesList', 'shapeDTO', 'data']
+    static transients = ['subCadObjects', 'shape', 'verticesList', 'edgesList', 'facesList', 'shapeDTO', 'data', 'projectFolderPath', 'filesFolderPath', 'filePath', 'brepFilePath',
+            'unvFilePath']
 
 /* Relations */
     static belongsTo = [project: Project]
@@ -85,14 +86,34 @@ class CADObject {
         return ShapeUtil.getData(shapeDTO)
     }
 
+    String getProjectFolderPath() {
+        return "${folderPath}${project.id}/"
+    }
+
+    String getFilesFolderPath() {
+        return "${projectFolderPath}${id}/"
+    }
+
+    String getFilePath() {
+        return "${filesFolderPath}${id}"
+    }
+
+    String getBrepFilePath() {
+        return "${filePath}.brep"
+    }
+
+    String getUnvFilePath() {
+        return "${filePath}.unv"
+    }
+
 /* Methods */
 
     File findBrepFile() {
-        return new File(folderPath + "${project.id}/${id}.brep")
+        return new File(brepFilePath)
     }
 
     File findUnvFile() {
-        return new File(folderPath + "${project.id}/${id}.unv")
+        return new File(unvFilePath)
     }
 
     Boolean isType(ShapeType type) {
