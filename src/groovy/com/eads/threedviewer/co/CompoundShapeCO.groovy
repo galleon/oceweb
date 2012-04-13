@@ -14,7 +14,7 @@ class CompoundShapeCO extends ShapeCO {
 
     byte[] getContent() {
         CADObject cadObject = super.findOrCreateCADObject()
-        return cadObject?.content
+        return cadObject?.fetchContent()
     }
 
 }

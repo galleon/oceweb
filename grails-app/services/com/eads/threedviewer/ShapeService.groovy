@@ -42,7 +42,7 @@ class ShapeService {
             explode(cadObject, shapeType).eachWithIndex {TopoDS_Shape shape, int index ->
                 File file = ShapeUtil.getFile(shape, cadObject.name)
                 ShapeDTO shapeDTO = new ShapeDTO(shape)
-                CADObject currentObject = saveSubCadObjects(cadObject, "${cadObject.name}_${index}", file.bytes, shapeDTO, shapeType)
+                CADObject currentObject = saveSubCadObjects(cadObject, "${cadObject.name}_${index}", file, shapeDTO, shapeType)
                 file.delete()
                 if (currentObject) {
                     cadObjects.add(currentObject)
@@ -54,7 +54,7 @@ class ShapeService {
     }
 
     List<TopoDS_Shape> explode(CADObject cadObject, TopAbs_ShapeEnum shapeType) {
-        TopoDS_Shape shape = ShapeUtil.getShape(cadObject.content)
+        TopoDS_Shape shape = ShapeUtil.getShape(cadObject.findBrepFile())
         return explode(shape, shapeType)
     }
 
@@ -70,8 +70,8 @@ class ShapeService {
         return shapes
     }
 
-    CADObject saveSubCadObjects(CADObject cadObject, String name, byte[] content, ShapeDTO shapeDTO, TopAbs_ShapeEnum type) {
-        CADObject subCadObject = new CADExplodeObject(name: name, project: cadObject.project, parent: cadObject, type: ShapeType.EXPLODE, explodeType: type, content: content)
+    CADObject saveSubCadObjects(CADObject cadObject, String name, File file, ShapeDTO shapeDTO, TopAbs_ShapeEnum type) {
+        CADObject subCadObject = new CADExplodeObject(name: name, project: cadObject.project, parent: cadObject, type: ShapeType.EXPLODE, explodeType: type)
         return projectService.saveCADObject(subCadObject, shapeDTO)
     }
 
@@ -86,13 +86,13 @@ class ShapeService {
     CADObject saveCADObject(BooleanOperationCO co, TopoDS_Shape shape, Project project) {
         ShapeDTO shapeDTO = new ShapeDTO(shape)
         File file = ShapeUtil.getFile(shape, co.operation)
-        CADObject cadObject = saveCADObject(co.name, file.bytes, shapeDTO, project)
+        CADObject cadObject = saveCADObject(co.name, file, shapeDTO, project)
         file.delete()
         return cadObject
     }
 
-    CADObject saveCADObject(String name, byte[] content, ShapeDTO shapeDTO, Project project) {
-        CADObject cadObject = new CADObject(name: name, content: content, project: project, type: ShapeType.COMPOUND)
+    CADObject saveCADObject(String name, File file, ShapeDTO shapeDTO, Project project) {
+        CADObject cadObject = new CADObject(name: name, project: project, type: ShapeType.COMPOUND)
         return projectService.saveCADObject(cadObject, shapeDTO)
     }
 
@@ -152,7 +152,7 @@ class ShapeService {
         Long id = co.findOrCreateCADObject().parent.id
         float size = co.size
         float deflection = co.deflection
-        File file = co.findOrCreateCADObject().parent.createFile()
+        File file = co.findOrCreateCADObject().parent.findBrepFile()
         String brepfile = file.name
         String outputDir = "/tmp/${id}"
         String brepdir = file.parent

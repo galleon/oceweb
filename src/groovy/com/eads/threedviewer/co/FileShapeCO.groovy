@@ -35,7 +35,7 @@ class FileShapeCO extends ShapeCO {
 
     byte[] getContent() {
         CADObject cadObject = super.findOrCreateCADObject()
-        byte[] content = (id && !file) ? cadObject?.content : file?.bytes
+        byte[] content = (id && !file) ? cadObject?.fetchContent() : file?.bytes
         return content
     }
 }

@@ -1,7 +1,7 @@
 package com.eads.threedviewer.util
 
 import groovy.util.logging.Log
-import occmeshextractor.OCCMeshExtractor
+
 import org.jcae.opencascade.jni.BRepTools
 import org.jcae.opencascade.jni.BRep_Builder
 import org.jcae.opencascade.jni.TopoDS_Shape
@@ -45,22 +45,16 @@ class ShapeUtil {
         return data
     }
 
-    public static File createBrepFile(byte[] content, String prefix = '') {
-        File file = File.createTempFile("${prefix ?: 'temp'}", ".brep")
+    public static File createTempBrepFile(byte[] content) {
+        File file = File.createTempFile("temp", ".brep")
         file.bytes = content
-        log.info "File created ${file.path}"
-        return file
-    }
-
-    public static File createUnvFile(byte[] content, String prefix = '') {
-        File file = File.createTempFile("${prefix ?: 'temp'}", ".unv")
-        file.bytes = content
-        log.info "File created ${file.path}"
+        file.deleteOnExit()
+        log.info "File created ${file.path} and it will be deleted on exit"
         return file
     }
 
     public static TopoDS_Shape getShape(byte[] content) {
-        return getShape(createBrepFile(content))
+        return getShape(createTempBrepFile(content))
     }
 
     public static TopoDS_Shape getShape(File file) {

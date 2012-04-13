@@ -19,7 +19,6 @@ class CADObject {
     double y = 0
     double z = 0
     CADObject parent
-    byte[] content
     ShapeType type
     String vertices
     String edges
@@ -36,14 +35,12 @@ class CADObject {
 /* Constraints */
     static constraints = {
         name(blank: false)
-        content(maxSize: 1200000000)
         x(nullable: true)
         y(nullable: true)
         z(nullable: true)
         vertices(nullable: true, blank: true)
         faces(nullable: true, blank: true)
         edges(nullable: true, blank: true)
-        content(nullable: true)
         parent(nullable: true)
     }
 
@@ -65,7 +62,7 @@ class CADObject {
     }
 
     TopoDS_Shape getShape() {
-        return ShapeUtil.getShape(this.content)
+        return ShapeUtil.getShape(findBrepFile())
     }
 
     List<Integer> getVerticesList() {
@@ -90,9 +87,12 @@ class CADObject {
 
 /* Methods */
 
-    File createFile() {
-        String prefix = "${project.name}_${name}_"
-        return isMesh() ? ShapeUtil.createUnvFile(content, prefix) : ShapeUtil.createBrepFile(content, prefix)
+    File findBrepFile() {
+        return new File(folderPath + "${project.id}/${id}.brep")
+    }
+
+    File findUnvFile() {
+        return new File(folderPath + "${project.id}/${id}.unv")
     }
 
     Boolean isType(ShapeType type) {
@@ -101,6 +101,10 @@ class CADObject {
 
     Boolean isMesh() {
         return isType(ShapeType.MESH)
+    }
+
+    byte[] fetchContent() {
+        findBrepFile()?.bytes
     }
 
 /* Static Methods */

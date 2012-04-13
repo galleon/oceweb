@@ -9,7 +9,6 @@ class ProjectService {
         CADObject cadObject
         if (co.validate()) {
             cadObject = co.findOrCreateCADObject()
-            cadObject.content = co.content
             Project project = co.project
             ShapeDTO shapeDTO = co.shapeDTO
             cadObject = saveCADObject(cadObject, shapeDTO)
