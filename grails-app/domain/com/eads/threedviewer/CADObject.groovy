@@ -6,6 +6,7 @@ import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
 import org.jcae.opencascade.jni.TopoDS_Shape
 import com.eads.threedviewer.dto.ShapeDTO
+import com.eads.threedviewer.util.ApplicationContextHolder
 
 @ToString(includeNames = true, includeFields = true, excludes = 'dateCreated,lastUpdated,metaClass,content')
 @EqualsAndHashCode
@@ -103,5 +104,17 @@ class CADObject {
     }
 
 /* Static Methods */
+
+    public static String getFolderPath() {
+        return ApplicationContextHolder.config.cadobject.folder.path
+    }
+
+    public static File findOrCreateFolder() {
+        File file = new File(folderPath)
+        if (!file.exists()) {
+            file.mkdirs()
+        }
+        return file
+    }
 }
 
