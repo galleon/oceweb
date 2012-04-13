@@ -77,8 +77,8 @@ class ShapeService {
 
     CADObject saveCADObject(BooleanOperationCO co) {
         CADObject cadObject1 = co.CADObject1
-        TopoDS_Shape shape1 = cadObject1.shape
-        TopoDS_Shape shape2 = co.CADObject2.shape
+        TopoDS_Shape shape1 = cadObject1.findShape()
+        TopoDS_Shape shape2 = co.CADObject2.findShape()
         BRepAlgoAPI_BooleanOperation object = getOperationInstance(co, shape1, shape2)
         return saveCADObject(co, object.shape(), cadObject1.project)
     }

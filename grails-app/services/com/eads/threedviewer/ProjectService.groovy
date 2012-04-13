@@ -22,9 +22,6 @@ class ProjectService {
     }
 
     CADObject saveCADObject(CADObject cadObject, ShapeDTO shapeDTO, File file = null) {
-        cadObject.vertices = shapeDTO.vertices.join(",")
-        cadObject.edges = shapeDTO.edges.join(",")
-        cadObject.faces = shapeDTO.faces.join(",")
         cadObject.save()
         saveBrepFileOnFileSystem(cadObject, file)
         return cadObject

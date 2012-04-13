@@ -18,17 +18,12 @@ class ShapeDTO {
         faces = shapeDTOs.faces.flatten()
     }
 
-    ShapeDTO(CADObject cadObject) {
-        vertices = cadObject.verticesList
-        faces = cadObject.facesList
-        edges = cadObject.edgesList
-    }
-
     ShapeDTO(TopoDS_Shape shape) {
-        OCCMeshExtractor ome = new OCCMeshExtractor(shape)
-        int noffset = 0
         List vertices = []
         List faces = []
+
+        OCCMeshExtractor ome = new OCCMeshExtractor(shape)
+        int noffset = 0
         ome.faces.each {
             OCCMeshExtractor.FaceData shapeData = new OCCMeshExtractor.FaceData(it, false)
             shapeData.load()

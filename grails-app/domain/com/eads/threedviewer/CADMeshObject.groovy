@@ -17,7 +17,6 @@ class CADMeshObject extends CADObject {
     float deflection
 
 /* Transients */
-    static transients = ['triangularFaces', 'triangularVertices']
 
 /* Relations */
 
@@ -38,25 +37,11 @@ class CADMeshObject extends CADObject {
 
 /* Transient Methods */
 
-    Map getData() {
-        Map result = super.data
+    Map readData() {
+        Map result = super.readData()
         result['wireframe'] = true
         result['color'] = color
         return result
-    }
-
-    List getTriangularVertices() {
-        return AppUtil.getTriangularList(verticesList)
-    }
-
-    List getTriangularFaces() {
-        List faces = []
-        facesList.eachWithIndex {val, index ->
-            if (index % 4) {
-                faces.add(val)
-            }
-        }
-        return AppUtil.getTriangularList(faces)
     }
 
 /* Methods */
@@ -75,32 +60,50 @@ class CADMeshObject extends CADObject {
     }
 
     String createFormattedUnv() {
-        String ls = System.getProperty("line.separator");
-        String result = createFormattedVertices() + ls
-        result += createFormattedFaces()
+        return createFormattedUnv(readCoordinates())
+    }
+
+    String createFormattedUnv(ShapeDTO shapeDTO) {
+        String ls = System.getProperty("line.separator")
+        String result = createFormattedVertices(shapeDTO.vertices) + ls
+        result += createFormattedFaces(shapeDTO.faces)
         return result
     }
 
-    String createFormattedVertices() {
+    String createFormattedVertices(List vertices) {
         String ls = System.getProperty("line.separator")
         String result = "${' ' * 4}-1${ls}${' ' * 2}2411${ls}"
 
-        triangularVertices.eachWithIndex {List val, int index ->
+        readTriangularVertices(vertices).eachWithIndex {List val, int index ->
             result += "${AppUtil.createFormatI10List([index + 1, 1, 1, 1]).join('')}${ls}${AppUtil.createFormatI25List(val).join('')}${ls}"
         }
         result += "${' ' * 4}-1"
         return result
     }
 
-    String createFormattedFaces() {
+    String createFormattedFaces(List faces) {
         String ls = System.getProperty("line.separator")
         String result = "${' ' * 4}-1${ls}${' ' * 2}2412${ls}"
 
-        triangularFaces.eachWithIndex {List val, int index ->
+        readTriangularFaces(faces).eachWithIndex {List val, int index ->
             result += "${AppUtil.createFormatI10List([index + 1, 91, 1, 1, 1, 3]).join('')}${ls}${AppUtil.createFormatI10List(val.collect {it + 1}).join('')}${ls}"
         }
         result += "${' ' * 4}-1"
         return result
+    }
+
+    List readTriangularVertices(List vertices) {
+        return AppUtil.getTriangularList(vertices)
+    }
+
+    List readTriangularFaces(List faces) {
+        List modifiedFaces = []
+        faces.eachWithIndex {val, index ->
+            if (index % 4) {
+                modifiedFaces.add(val)
+            }
+        }
+        return AppUtil.getTriangularList(modifiedFaces)
     }
 
 /* Static Methods */

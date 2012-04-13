@@ -75,7 +75,7 @@ class CADObjectController {
         Map result
         CADObject cadObject = id ? CADObject.get(id) : null
         if (cadObject) {
-            result = cadObject.data
+            result = cadObject.readData()
         } else {
             result = ['error': "Object not found for id ${id}"]
         }

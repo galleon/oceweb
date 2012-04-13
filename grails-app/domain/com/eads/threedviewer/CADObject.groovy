@@ -20,15 +20,11 @@ class CADObject {
     double z = 0
     CADObject parent
     ShapeType type
-    String vertices
-    String edges
-    String faces
     Date dateCreated
     Date lastUpdated
 
 /* Transients */
-    static transients = ['subCadObjects', 'shape', 'verticesList', 'edgesList', 'facesList', 'shapeDTO', 'data', 'projectFolderPath', 'filesFolderPath', 'filePath', 'brepFilePath',
-            'unvFilePath']
+    static transients = ['subCadObjects', 'projectFolderPath', 'filesFolderPath', 'filePath', 'brepFilePath', 'unvFilePath']
 
 /* Relations */
     static belongsTo = [project: Project]
@@ -39,17 +35,11 @@ class CADObject {
         x(nullable: true)
         y(nullable: true)
         z(nullable: true)
-        vertices(nullable: true, blank: true)
-        faces(nullable: true, blank: true)
-        edges(nullable: true, blank: true)
         parent(nullable: true)
     }
 
 /* Mappings */
     static mapping = {
-        vertices type: 'text'
-        edges type: 'text'
-        faces type: 'text'
     }
 
 /* Hooks */
@@ -60,30 +50,6 @@ class CADObject {
 
     List<CADObject> getSubCadObjects() {
         return CADObject.findAllByParent(this)
-    }
-
-    TopoDS_Shape getShape() {
-        return ShapeUtil.getShape(findBrepFile())
-    }
-
-    List<Integer> getVerticesList() {
-        return vertices ? vertices.tokenize(',').collect {it.toFloat()}.toList() : []
-    }
-
-    List<Integer> getEdgesList() {
-        return edges ? edges.tokenize(',').collect {it.toFloat()}.toList() : []
-    }
-
-    List<Integer> getFacesList() {
-        return faces ? faces.tokenize(',').collect {it.toFloat()}.toList() : []
-    }
-
-    ShapeDTO getShapeDTO() {
-        return new ShapeDTO(this)
-    }
-
-    Map getData() {
-        return ShapeUtil.getData(shapeDTO)
     }
 
     String getProjectFolderPath() {
@@ -108,6 +74,18 @@ class CADObject {
 
 /* Methods */
 
+    TopoDS_Shape findShape() {
+        return ShapeUtil.getShape(findBrepFile())
+    }
+
+    ShapeDTO readCoordinates() {
+        return new ShapeDTO(findShape())
+    }
+
+    Map readData() {
+        return ShapeUtil.getData(readCoordinates())
+    }
+
     File findBrepFile() {
         return new File(brepFilePath)
     }
@@ -124,7 +102,7 @@ class CADObject {
         return isType(ShapeType.MESH)
     }
 
-    byte[] fetchContent() {
+    byte[] readBytes() {
         findBrepFile()?.bytes
     }
 
