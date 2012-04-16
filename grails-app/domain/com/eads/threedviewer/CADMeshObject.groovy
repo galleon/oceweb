@@ -98,6 +98,10 @@ class CADMeshObject extends CADObject {
         return AppUtil.getTriangularList(modifiedFaces)
     }
 
+    ShapeDTO readCoordinates() {
+        return new ShapeDTO(ShapeDTO.getUnvGroups(unvFilePath))
+    }
+
 /* Static Methods */
 }
 

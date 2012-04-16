@@ -1,39 +1,34 @@
 package com.eads.threedviewer
 
 import com.eads.threedviewer.co.BooleanOperationCO
+import com.eads.threedviewer.co.MeshCO
 import com.eads.threedviewer.enums.Operation
 import com.eads.threedviewer.enums.ShapeType
+import com.eads.threedviewer.util.AppUtil
 import com.eads.threedviewer.util.ShapeUtil
-import org.jcae.opencascade.jni.*
-
-import com.eads.threedviewer.co.MeshCO
-import org.jcae.mesh.cad.CADShapeFactory
 import java.nio.channels.FileChannel
-import org.jcae.mesh.amibe.ds.MMesh1D
-import org.jcae.mesh.cad.CADShape
+import org.jcae.mesh.amibe.algos1d.Compat1D2D
 import org.jcae.mesh.amibe.algos1d.UniformLength
 import org.jcae.mesh.amibe.algos1d.UniformLengthDeflection
-import org.jcae.mesh.amibe.algos1d.Compat1D2D
-import org.jcae.mesh.xmldata.MMesh1DWriter
+import org.jcae.mesh.amibe.ds.MMesh1D
+import org.jcae.mesh.amibe.ds.MeshParameters
+import org.jcae.mesh.amibe.patch.InvalidFaceException
+import org.jcae.mesh.amibe.patch.Mesh2D
 import org.jcae.mesh.amibe.traits.MeshTraitsBuilder
 import org.jcae.mesh.cad.CADExplorer
+import org.jcae.mesh.cad.CADShape
 import org.jcae.mesh.cad.CADShapeEnum
-import org.jcae.mesh.amibe.ds.MeshParameters
-import org.jcae.mesh.amibe.patch.Mesh2D
-import org.jcae.mesh.amibe.algos2d.Initial
-import org.jcae.mesh.amibe.patch.InvalidFaceException
-import org.jcae.mesh.amibe.algos2d.BasicMesh
-import org.jcae.mesh.amibe.algos2d.SmoothNodes2D
-import org.jcae.mesh.amibe.algos2d.ConstraintNormal3D
-import org.jcae.mesh.amibe.algos2d.CheckDelaunay
-import org.jcae.mesh.xmldata.MeshWriter
+import org.jcae.mesh.cad.CADShapeFactory
+import org.jcae.mesh.xmldata.MMesh1DWriter
 import org.jcae.mesh.xmldata.MeshToMMesh3DConvert
-
-import com.eads.threedviewer.util.AppUtil
+import org.jcae.mesh.xmldata.MeshWriter
+import org.jcae.mesh.amibe.algos2d.*
+import org.jcae.opencascade.jni.*
 
 class ShapeService {
 
     def projectService
+    def fileService
 
     List<CADObject> saveSubCadObjects(CADObject cadObject, TopAbs_ShapeEnum shapeType) {
         List<CADObject> cadObjects = []
@@ -70,7 +65,7 @@ class ShapeService {
 
     CADObject saveSubCadObjects(CADObject cadObject, String name, File file, TopAbs_ShapeEnum type) {
         CADObject subCadObject = new CADExplodeObject(name: name, project: cadObject.project, parent: cadObject, type: ShapeType.EXPLODE, explodeType: type)
-        return projectService.saveCADObject(subCadObject, file)
+        return projectService.saveCADObjectAndBrepFile(subCadObject, file)
     }
 
     CADObject saveCADObject(BooleanOperationCO co) {
@@ -90,7 +85,7 @@ class ShapeService {
 
     CADObject saveCADObject(Project project, String name, File file) {
         CADObject cadObject = new CADObject(name: name, project: project, type: ShapeType.COMPOUND)
-        return projectService.saveCADObject(cadObject, file)
+        return projectService.saveCADObjectAndBrepFile(cadObject, file)
     }
 
     private BRepAlgoAPI_BooleanOperation getOperationInstance(BooleanOperationCO co, TopoDS_Shape shape1, TopoDS_Shape shape2) {
@@ -108,16 +103,19 @@ class ShapeService {
     }
 
     CADMeshObject saveMesh(MeshCO co) {
-        File file = generateMeshFolder(co)
-        CADMeshObject cadObject = co.findOrCreateCADObject() as CADMeshObject
+        CADMeshObject cadObject
+        cadObject = co.findOrCreateCADObject() as CADMeshObject
         cadObject.color = AppUtil.generateRandomHex()
-        saveMesh(cadObject)
+        cadObject = projectService.addCADObject(co.project, cadObject as CADObject)
+        if (cadObject) {
+            File file = generateMeshFolder(co, cadObject.id)
+            log.info "CadMeshObject saved successfuly. Moving ${file.path} to ${cadObject.filesFolderPath}"
+            fileService.renameFolder(file, cadObject.filesFolderPath)
+        }
+        else {
+            logErrors(cadObject)
+        }
         return cadObject
-    }
-
-    CADMeshObject saveMesh(CADMeshObject cadMeshObject) {
-        cadMeshObject.color = AppUtil.generateRandomHex()
-        return cadMeshObject.save()
     }
 
     CADMeshObject updateMesh(MeshCO co) {
@@ -125,9 +123,15 @@ class ShapeService {
         cadObject.save()
     }
 
+    void logErrors(CADObject cadObject) {
+        log.info "Error while saving Mesh -:"
+        cadObject.errors.allErrors.each {
+            log.info "${it}"
+        }
+    }
+
     //TODO -: Refactore code and check why its not working in co class so that project service method of creating cadobject can be used
-    File generateMeshFolder(MeshCO co) {
-        Long id = co.findOrCreateCADObject().parent.id
+    File generateMeshFolder(MeshCO co, Long id) {
         float size = co.size
         float deflection = co.deflection
         File file = co.findOrCreateCADObject().parent.findBrepFile()
@@ -265,7 +269,6 @@ class ShapeService {
                 m2dto3d.processOneShape(iface, "" + iface, iface)
             }
             m2dto3d.afterProcessingAllShapes()
-            file.delete()
         }
         return xmlDirF
     }

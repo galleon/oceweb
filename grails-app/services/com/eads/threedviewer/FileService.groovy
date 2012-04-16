@@ -23,4 +23,8 @@ class FileService {
             log.info "Folder ${folderPath} not found for deletion"
         }
     }
+
+    boolean renameFolder(File file,String folderPath){
+        return file.renameTo(folderPath)
+    }
 }
