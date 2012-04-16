@@ -16,7 +16,7 @@
                     <ul>
                         <g:each in="${project.getParentCadObjects()}" var="cadObject">
                             <g:set var="count" value="${count.toInteger() + 1}" scope="page"/>
-                            <g:render template="cadObject" model="[cadObject:cadObject]"/>
+                            <g:render template="cadObject" model="[cadObject:cadObject.createVO()]"/>
                         </g:each>
                     </ul>
                 </li>
