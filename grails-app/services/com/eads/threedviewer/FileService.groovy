@@ -17,10 +17,10 @@ class FileService {
     void removeFolder(String folderPath) {
         File file = new File(folderPath)
         if (file.exists()) {
-            log.info "Deleting file ${file.path}"
+            log.info "Deleting file ${folderPath}"
             file.deleteDir()
         } else {
-            log.info "Folder ${file.path} not found for deletion"
+            log.info "Folder ${folderPath} not found for deletion"
         }
     }
 }
