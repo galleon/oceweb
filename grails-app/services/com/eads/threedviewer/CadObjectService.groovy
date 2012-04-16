@@ -24,7 +24,7 @@ class CadObjectService {
         if (cadObject && file) {
             brepFile = fileService.saveFileOnFileSystem(file, cadObject.brepFilePath)
             if (!brepFile.exists()) {
-                throw new RuntimeException("Not able to create brep file")
+                throw new RuntimeException("Not able to create brep file at ${cadObject.brepFilePath}")
             }
         }
         return brepFile
