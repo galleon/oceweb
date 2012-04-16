@@ -5,7 +5,7 @@ import com.eads.threedviewer.enums.Operation
 import com.eads.threedviewer.enums.ShapeType
 import com.eads.threedviewer.util.ShapeUtil
 import org.jcae.opencascade.jni.*
-import com.eads.threedviewer.dto.ShapeDTO
+
 import com.eads.threedviewer.co.MeshCO
 import org.jcae.mesh.cad.CADShapeFactory
 import java.nio.channels.FileChannel
@@ -28,9 +28,8 @@ import org.jcae.mesh.amibe.algos2d.ConstraintNormal3D
 import org.jcae.mesh.amibe.algos2d.CheckDelaunay
 import org.jcae.mesh.xmldata.MeshWriter
 import org.jcae.mesh.xmldata.MeshToMMesh3DConvert
-import grails.validation.ValidationException
+
 import com.eads.threedviewer.util.AppUtil
-import org.jcae.mesh.cad.occ.OCCShape
 
 class ShapeService {
 
@@ -41,8 +40,7 @@ class ShapeService {
         if (cadObject) {
             explode(cadObject, shapeType).eachWithIndex {TopoDS_Shape shape, int index ->
                 File file = ShapeUtil.getFile(shape, cadObject.name)
-                ShapeDTO shapeDTO = new ShapeDTO(shape)
-                CADObject currentObject = saveSubCadObjects(cadObject, "${cadObject.name}_${index}", file, shapeDTO, shapeType)
+                CADObject currentObject = saveSubCadObjects(cadObject, "${cadObject.name}_${index}", file, shapeType)
                 file.delete()
                 if (currentObject) {
                     cadObjects.add(currentObject)
@@ -70,9 +68,9 @@ class ShapeService {
         return shapes
     }
 
-    CADObject saveSubCadObjects(CADObject cadObject, String name, File file, ShapeDTO shapeDTO, TopAbs_ShapeEnum type) {
+    CADObject saveSubCadObjects(CADObject cadObject, String name, File file, TopAbs_ShapeEnum type) {
         CADObject subCadObject = new CADExplodeObject(name: name, project: cadObject.project, parent: cadObject, type: ShapeType.EXPLODE, explodeType: type)
-        return projectService.saveCADObject(subCadObject, shapeDTO, file)
+        return projectService.saveCADObject(subCadObject, file)
     }
 
     CADObject saveCADObject(BooleanOperationCO co) {
@@ -84,16 +82,15 @@ class ShapeService {
     }
 
     CADObject saveCADObject(BooleanOperationCO co, TopoDS_Shape shape, Project project) {
-        ShapeDTO shapeDTO = new ShapeDTO(shape)
         File file = ShapeUtil.getFile(shape, co.operation)
-        CADObject cadObject = saveCADObject(co.name, file, shapeDTO, project)
+        CADObject cadObject = saveCADObject(project, co.name, file)
         file.delete()
         return cadObject
     }
 
-    CADObject saveCADObject(String name, File file, ShapeDTO shapeDTO, Project project) {
+    CADObject saveCADObject(Project project, String name, File file) {
         CADObject cadObject = new CADObject(name: name, project: project, type: ShapeType.COMPOUND)
-        return projectService.saveCADObject(cadObject, shapeDTO, file)
+        return projectService.saveCADObject(cadObject, file)
     }
 
     private BRepAlgoAPI_BooleanOperation getOperationInstance(BooleanOperationCO co, TopoDS_Shape shape1, TopoDS_Shape shape2) {
@@ -111,34 +108,16 @@ class ShapeService {
     }
 
     CADMeshObject saveMesh(MeshCO co) {
-        List<ShapeDTO> shapeDTOs = getShapeDtos(co)
+        File file = generateMeshFolder(co)
         CADMeshObject cadObject = co.findOrCreateCADObject() as CADMeshObject
-        ShapeDTO shapeDTO = new ShapeDTO(shapeDTOs)
-        cadObject = saveMesh(cadObject, shapeDTO)
-        if (cadObject) {
-            saveMeshes(cadObject, shapeDTOs)
-        }
+        cadObject.color = AppUtil.generateRandomHex()
+        saveMesh(cadObject)
         return cadObject
     }
 
-    List<CADMeshObject> saveMeshes(CADMeshObject cadObject, List<ShapeDTO> shapeDTOs) {
-        List<CADMeshObject> cadMeshObjects = []
-        shapeDTOs.each {ShapeDTO shapeDTO ->
-            CADMeshObject cadMeshObject = cadObject.createSubMesh(shapeDTO)
-            cadMeshObject = saveMesh(cadMeshObject, shapeDTO)
-            if (cadMeshObject) {
-                cadMeshObjects.add(cadMeshObject)
-            }
-        }
-        return cadMeshObjects
-    }
-
-    CADMeshObject saveMesh(CADMeshObject cadMeshObject, ShapeDTO shapeDTO) {
-        Integer groupName = shapeDTO.groupName + 1
-        cadMeshObject.groupName = groupName + 1
+    CADMeshObject saveMesh(CADMeshObject cadMeshObject) {
         cadMeshObject.color = AppUtil.generateRandomHex()
-        cadMeshObject = projectService.saveCADObject(cadMeshObject, shapeDTO) as CADMeshObject
-        return cadMeshObject
+        return cadMeshObject.save()
     }
 
     CADMeshObject updateMesh(MeshCO co) {
@@ -147,8 +126,7 @@ class ShapeService {
     }
 
     //TODO -: Refactore code and check why its not working in co class so that project service method of creating cadobject can be used
-    List<ShapeDTO> getShapeDtos(MeshCO co) {
-        List<ShapeDTO> shapeDTOs = []
+    File generateMeshFolder(MeshCO co) {
         Long id = co.findOrCreateCADObject().parent.id
         float size = co.size
         float deflection = co.deflection
@@ -288,9 +266,7 @@ class ShapeService {
             }
             m2dto3d.afterProcessingAllShapes()
             file.delete()
-            shapeDTOs = ShapeDTO.getUnvGroups(unvName)
-            xmlDirF.deleteDir()
         }
-        return shapeDTOs
+        return xmlDirF
     }
 }

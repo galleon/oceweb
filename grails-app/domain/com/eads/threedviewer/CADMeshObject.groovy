@@ -11,7 +11,6 @@ class CADMeshObject extends CADObject {
 /* Dependency Injections (e.g. Services) */
 
 /* Fields */
-    Integer groupName
     String color
     float size
     float deflection
@@ -22,7 +21,6 @@ class CADMeshObject extends CADObject {
 
 /* Constraints */
     static constraints = {
-        groupName(nullable: false)
         size(nullable: false)
         deflection(nullable: false)
     }
@@ -45,12 +43,6 @@ class CADMeshObject extends CADObject {
     }
 
 /* Methods */
-
-    CADMeshObject createSubMesh(ShapeDTO shapeDTO) {
-        CADMeshObject cadMeshObject = new CADMeshObject(project: project, name: "${name}_${shapeDTO.groupName}", groupName: shapeDTO.groupName, parent: this,
-                deflection: deflection, size: size, type: type)
-        return cadMeshObject
-    }
 
     File createUnvFile() {
         String result = createFormattedUnv()

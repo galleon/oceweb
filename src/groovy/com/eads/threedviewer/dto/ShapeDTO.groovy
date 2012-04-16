@@ -12,12 +12,6 @@ class ShapeDTO {
     List faces = []
     List edges = []
 
-    ShapeDTO(List<ShapeDTO> shapeDTOs) {
-        vertices = shapeDTOs.vertices.flatten()
-        edges = shapeDTOs.edges.flatten()
-        faces = shapeDTOs.faces.flatten()
-    }
-
     ShapeDTO(TopoDS_Shape shape) {
         List vertices = []
         List faces = []

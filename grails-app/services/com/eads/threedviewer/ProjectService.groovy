@@ -12,8 +12,7 @@ class ProjectService {
         if (co.validate()) {
             cadObject = co.findOrCreateCADObject()
             Project project = co.project
-            ShapeDTO shapeDTO = co.shapeDTO
-            cadObject = saveCADObject(cadObject, shapeDTO, co.file)
+            cadObject = saveCADObject(cadObject, co.file)
             project.addToCadObjects(cadObject)
             project.save()
 
@@ -23,7 +22,7 @@ class ProjectService {
         return cadObject
     }
 
-    CADObject saveCADObject(CADObject cadObject, ShapeDTO shapeDTO, File file = null) {
+    CADObject saveCADObject(CADObject cadObject, File file) {
         cadObject.save()
         cadObjectService.saveBrepFileOnFileSystem(cadObject, file)
         return cadObject
