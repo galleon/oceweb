@@ -45,6 +45,7 @@ abstract class ShapeCO {
         BRepTools.write(shape, "temp.brep")
         File file = new File("temp.brep")
         file.deleteOnExit()
+        log.info "File created ${file.path} and it will be deleted on exit"
         return file
     }
 

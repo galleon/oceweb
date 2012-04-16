@@ -156,8 +156,17 @@ function addToGroup(object) {
 
 function addToLocalStorage(id) {
     if (id) {
+        debugStatement("Found id to add to local storage -: " + id)
         var currentIds = getLocalShapeIds() ? getLocalShapeIds() : [];
-        if (!(parseInt(id) in currentIds)) {
+        var found = false;
+        $.each(currentIds, function (key, value) {
+            if ((parseInt(id) == value)) {
+                found = true;
+            }
+        })
+        debugStatement("Value of found after reading from local storage is -: " + found)
+        if (found == false) {
+            debugStatement("Id -: " + id + " not in local storage so adding it")
             currentIds.push(parseInt(id))
             window.localStorage.objectIDs = JSON.stringify(currentIds)
         }
@@ -172,6 +181,7 @@ function getLocalShapeIds() {
             shapeIds.push(parseInt(value))
         }
     });
+    debugStatement("Ids on local storage are -: " + $.unique(shapeIds))
     return $.unique(shapeIds);
 }
 
@@ -184,6 +194,7 @@ function getProjectShapeIds() {
     $.each($(".showObject"), function (index, val) {
         ids.push(parseInt($(val).attr('id')))
     })
+    debugStatement("Ids on Project tree are -: " + $.unique(ids))
     return $.unique(ids);
 }
 
@@ -562,7 +573,7 @@ function setColor(object, color) {
 
 function setVisible(object, visible) {
     if (object.name) {
-        debugStatement("Setting visible " + visible + "for -: " + object.name)
+        debugStatement("Setting visible " + visible + " for -: " + object.name)
         object.visible = visible;
         window.localStorage["visible_" + object.name] = visible ? '1' : '0';
     }

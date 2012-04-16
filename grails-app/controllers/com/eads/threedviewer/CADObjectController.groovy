@@ -60,8 +60,9 @@ class CADObjectController {
         CADObject cadObject
         try {
             cadObject = projectService.addCADObject(co)
-        } catch (RuntimeException ve) {
-            result = ['error': ve.message]
+        } catch (RuntimeException rte) {
+            rte.printStackTrace()
+            result = ['error': rte.message]
         }
         if (cadObject) {
             result = ['id': cadObject?.id]
@@ -152,7 +153,7 @@ class CADObjectController {
         Set<Long> ids = params.list('ids')
         Map result = ['success': 'Deleted Successfully']
         try {
-            cadObjectService.deleteCADObject(ids)
+            cadObjectService.delete(ids)
         } catch (RuntimeException rte) {
             result = ['error': message(code: "error.occured.while.serving.your.request")]
         }

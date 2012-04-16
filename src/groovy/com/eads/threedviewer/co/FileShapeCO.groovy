@@ -10,10 +10,10 @@ import grails.validation.Validateable
 @Validateable
 @ToString(includeNames = true, includeFields = true, excludes = 'metaClass,errors', includeSuper = true)
 class FileShapeCO extends ShapeCO {
-    MultipartFile file
+    MultipartFile brepFile
 
     static constraints = {
-        file(nullable: true, validator: {var, obj ->
+        brepFile(nullable: true, validator: {var, obj ->
             boolean isValid = true
             boolean isBrep = var?.originalFilename?.toLowerCase()?.endsWith(".brep")
             if (!obj.id && !isBrep) {
@@ -35,7 +35,7 @@ class FileShapeCO extends ShapeCO {
 
     byte[] getContent() {
         CADObject cadObject = super.findOrCreateCADObject()
-        byte[] content = (id && !file) ? cadObject?.readBytes() : file?.bytes
+        byte[] content = (id && !brepFile) ? cadObject?.readBytes() : brepFile?.bytes
         return content
     }
 }

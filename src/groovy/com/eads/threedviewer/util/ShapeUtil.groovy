@@ -58,9 +58,7 @@ class ShapeUtil {
     }
 
     public static TopoDS_Shape getShape(File file) {
-        TopoDS_Shape shape = getShape(file.path)
-        file.delete()
-        return shape
+        return getShape(file.path)
     }
 
     public static TopoDS_Shape getShape(String filePath) {
