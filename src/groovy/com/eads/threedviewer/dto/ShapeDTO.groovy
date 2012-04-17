@@ -4,13 +4,20 @@ import org.jcae.opencascade.jni.TopoDS_Shape
 import occmeshextractor.OCCMeshExtractor
 import com.eads.threedviewer.CADObject
 import com.eads.threedviewer.util.UNVParser
+import com.eads.threedviewer.util.AppUtil
+import groovy.transform.ToString
 
+@ToString(includeNames = true, includeFields = true, excludes = 'metaClass')
 class ShapeDTO {
     Integer groupName = 0
     String color
     List vertices = []
     List faces = []
     List edges = []
+
+    Integer getEntitiesCount() {
+        return faces ? (faces.size()/4) : 0
+    }
 
     ShapeDTO(List<ShapeDTO> shapeDTOs) {
         vertices = shapeDTOs.vertices.flatten()
@@ -86,6 +93,67 @@ class ShapeDTO {
         this.vertices = vertices
         this.edges = edges
         this.faces = faces
+    }
+
+    File createUnvFile() {
+        String result = createFormattedUnv()
+        File file = File.createTempFile("result", ".unv")
+        file.text = result
+        return file
+    }
+
+    String createFormattedUnv() {
+        String ls = System.getProperty("line.separator")
+        String result = createFormattedVertices() + ls
+        result += createFormattedFaces()
+        result += createFormattedEntityInfo()
+        return result
+    }
+
+    String createFormattedVertices() {
+        String ls = System.getProperty("line.separator")
+        String result = "${' ' * 4}-1${ls}${' ' * 2}2411${ls}"
+
+        readTriangularVertices(vertices).eachWithIndex {List val, int index ->
+            result += "${AppUtil.createFormatI10List([index + 1, 1, 1, 1]).join('')}${ls}${AppUtil.createFormatI25List(val).join('')}${ls}"
+        }
+        result += "${' ' * 4}-1"
+        return result
+    }
+
+    String createFormattedFaces() {
+        String ls = System.getProperty("line.separator")
+        String result = "${' ' * 4}-1${ls}${' ' * 2}2412${ls}"
+
+        readTriangularFaces(faces).eachWithIndex {List val, int index ->
+            result += "${AppUtil.createFormatI10List([index + 1, 91, 1, 1, 1, 3]).join('')}${ls}${AppUtil.createFormatI10List(val.collect {it + 1}).join('')}${ls}"
+        }
+        result += "${' ' * 4}-1"
+        return result
+    }
+
+    String createFormattedEntityInfo() {
+        String ls = System.getProperty("line.separator")
+        String result = "${ls}${' ' * 4}-1${ls}${' ' * 2}2435${ls}"
+        result += AppUtil.createFormatI10List([1, 0, 0, 0, 0, 0, 0, entitiesCount]).join('') + "${ls}1${ls}"
+        result += (0..((entitiesCount / 2) - 1).toInteger()).collect {[8, ((2 * it) + 1), 0, 0, 8, ((2 * it) + 2), 0, 0]}.collect {List row -> AppUtil.createFormatI10List(row).join('')}
+                .join(ls) + "${ls}"
+        result += "${' ' * 4}-1"
+        return result
+    }
+
+    List readTriangularVertices(List vertices) {
+        return AppUtil.getTriangularList(vertices)
+    }
+
+    List readTriangularFaces(List faces) {
+        List modifiedFaces = []
+        faces.eachWithIndex {val, index ->
+            if (index % 4) {
+                modifiedFaces.add(val)
+            }
+        }
+        return AppUtil.getTriangularList(modifiedFaces)
     }
 
     public static List<ShapeDTO> getUnvGroups(String unvFilePath) {

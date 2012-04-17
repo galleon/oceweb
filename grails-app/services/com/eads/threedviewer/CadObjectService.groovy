@@ -14,18 +14,28 @@ class CadObjectService {
     void delete(CADObject cadObject) {
         List childrenList = CADObject.findAllByParent(cadObject)
         String folderPath = cadObject.filesFolderPath
-        childrenList*.parent = null
+        if (cadObject.isMesh()) {
+            List<String> folderPaths = childrenList*.filesFolderPath
+            childrenList*.delete()
+            folderPaths.each {
+                fileService.removeFolder(it)
+            }
+        } else {
+            childrenList*.parent = null
+        }
         cadObject.delete()
         fileService.removeFolder(folderPath)
     }
 
-    File saveBrepFileOnFileSystem(CADObject cadObject, File file) {
+    File saveFileOnFileSystem(String filePath, File file) {
         File brepFile
-        if (cadObject && file) {
-            brepFile = fileService.saveFileOnFileSystem(file, cadObject.brepFilePath)
+        if (filePath && file) {
+            brepFile = fileService.saveFileOnFileSystem(file, filePath)
             if (!brepFile.exists()) {
-                throw new RuntimeException("Not able to create brep file at ${cadObject.brepFilePath}")
+                throw new RuntimeException("Not able to create brep file at ${filePath}")
             }
+        } else {
+            log.info "Not able to save file ${file.path} to ${filePath}"
         }
         return brepFile
     }

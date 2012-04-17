@@ -24,6 +24,7 @@ import org.jcae.mesh.xmldata.MeshToMMesh3DConvert
 import org.jcae.mesh.xmldata.MeshWriter
 import org.jcae.mesh.amibe.algos2d.*
 import org.jcae.opencascade.jni.*
+import com.eads.threedviewer.dto.ShapeDTO
 
 class ShapeService {
 
@@ -111,6 +112,7 @@ class ShapeService {
             File file = generateMeshFolder(co, cadObject.id)
             log.info "CadMeshObject saved successfuly. Moving ${file.path} to ${cadObject.filesFolderPath}"
             fileService.renameFolder(file, cadObject.filesFolderPath)
+            saveSubMeshes(cadObject)
         }
         else {
             logErrors(cadObject)
@@ -124,10 +126,35 @@ class ShapeService {
     }
 
     void logErrors(CADObject cadObject) {
-        log.info "Error while saving Mesh -:"
+        log.info "Error while saving ${cadObject} -:"
         cadObject.errors.allErrors.each {
             log.info "${it}"
         }
+    }
+
+    List<CADMeshObject> saveSubMeshes(CADMeshObject cadMeshObject) {
+        List<CADMeshObject> cadMeshObjects = []
+        List<ShapeDTO> shapeDTOs = ShapeDTO.getUnvGroups(cadMeshObject.unvFilePath)
+        shapeDTOs.each {ShapeDTO shapeDTO ->
+            log.info "creating mesh sub object for entitycount ${shapeDTO.entitiesCount}"
+            CADMeshObject subCadMeshObject = saveSubMesh(cadMeshObject, shapeDTO)
+            if (subCadMeshObject) {
+                cadMeshObjects.add(subCadMeshObject)
+            }
+        }
+        return cadMeshObjects
+    }
+
+    CADMeshObject saveSubMesh(CADMeshObject cadMeshObject, ShapeDTO shapeDTO) {
+        CADMeshObject subCadMeshObject = createSubCADMesh(cadMeshObject, shapeDTO)
+        projectService.saveCADObjectAndUnvFile(subCadMeshObject, shapeDTO.createUnvFile())
+        return subCadMeshObject
+    }
+
+    CADMeshObject createSubCADMesh(CADMeshObject cadMeshObject, ShapeDTO shapeDTO) {
+        CADMeshObject subCadMeshObject = new CADMeshObject(parent: cadMeshObject, project: cadMeshObject.project, name: "${cadMeshObject.name}_${shapeDTO.groupName}",
+                size: cadMeshObject.size, deflection: cadMeshObject.deflection, color: AppUtil.generateRandomHex(), type: cadMeshObject.type, groupName: shapeDTO.groupName)
+        return subCadMeshObject
     }
 
     //TODO -: Refactore code and check why its not working in co class so that project service method of creating cadobject can be used

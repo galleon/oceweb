@@ -8,9 +8,8 @@ class FileService {
             log.info "creating parent file ${newFile.parentFile}"
             newFile.parentFile.mkdirs()
         }
-        newFile.bytes = file?.bytes
         log.info "Moving file ${file?.path} to ${filePath} file size is ${file?.bytes?.size()}"
-        file.delete()
+        file.renameTo(filePath)
         return newFile
     }
 

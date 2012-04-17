@@ -122,11 +122,4 @@ class UtilController {
         return data
     }
 
-    def testUnv() {
-        CADMeshObject cadObject = CADMeshObject.get(65)
-        File file = cadObject.createUnvFile()
-        response.contentType = "text/plain"
-        response.outputStream << file.bytes
-    }
-
 }

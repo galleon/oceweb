@@ -1,13 +1,12 @@
 package com.eads.threedviewer
 
+import com.eads.threedviewer.dto.ShapeDTO
 import com.eads.threedviewer.enums.ShapeType
+import com.eads.threedviewer.util.ApplicationContextHolder
 import com.eads.threedviewer.util.ShapeUtil
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
 import org.jcae.opencascade.jni.TopoDS_Shape
-import com.eads.threedviewer.dto.ShapeDTO
-import com.eads.threedviewer.util.ApplicationContextHolder
-import com.eads.threedviewer.vo.CADObjectVO
 
 @ToString(includeNames = true, includeFields = true, excludes = 'dateCreated,lastUpdated,metaClass,content')
 @EqualsAndHashCode
@@ -105,20 +104,6 @@ class CADObject {
 
     byte[] readBytes() {
         findBrepFile()?.bytes
-    }
-
-    CADObjectVO createVO() {
-        CADObjectVO cadObjectVO = new CADObjectVO()
-        cadObjectVO.id = id
-        cadObjectVO.name = name
-        cadObjectVO.type = type
-        if (parent) {
-            cadObjectVO.parentType = parent.type
-        }
-        if (subCadObjects) {
-            cadObjectVO.subCadObjects = subCadObjects.collect {it.createVO()}
-        }
-        return cadObjectVO
     }
 
 /* Static Methods */
