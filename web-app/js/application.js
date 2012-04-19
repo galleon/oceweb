@@ -564,7 +564,6 @@ function defaultMenu(node) {
                     $.each($('#project').jstree('get_selected').children().filter('a'), function (index, val) {
                         ids.push('ids=' + $(val).attr('id'))
                     })
-                    alert(ids);
                     window.location = url + "/?" + ids.join('&');
                 }
             }

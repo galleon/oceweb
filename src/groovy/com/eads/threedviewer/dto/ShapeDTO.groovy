@@ -180,10 +180,10 @@ class ShapeDTO {
             result += shapeDTOs.first().createFormattedVertices() + ls
             result += facesBeginning
             shapeDTOs.each {ShapeDTO shapeDTO ->
-                result += shapeDTO.readFormattedVertices()
+                result += shapeDTO.readFormattedFaces()
             }
-            result += end
-            result += facesBeginning
+            result += end + ls
+            result += entitiesBeginning
             shapeDTOs.eachWithIndex {ShapeDTO shapeDTO, int index ->
                 result += shapeDTO.readFormattedEntities(index + 1)
             }

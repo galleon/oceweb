@@ -165,19 +165,23 @@ class CADObjectController {
         CADMeshObject cadMeshObject = CADMeshObject.get(id)
         if (cadMeshObject) {
             File file = cadMeshObject.findUnvFile()
-            response.setHeader('Content-disposition', "attachment;filename=${cadMeshObject.name}.unv")
-            response.setHeader('Content-length', "${file.size()}")
-            response.contentType = "unv/plain"
-            response.outputStream << file.bytes
+            renderUnvFile(file, cadMeshObject.name)
         } else {
             response.sendError(404, "Object not found for id ${id}")
         }
     }
 
     def merge() {
-        Set<Long> ids = params.list('ids')
-        List<CADMeshObject> cadMeshObjects = ids ? CADMeshObject.findAllByIdInList(ids) : []
-        List<ShapeDTO> shapeDTOs = cadMeshObjects*.readCoordinates()
-        render "Hello = ${ids}"
+        Set ids = params.list('ids')*.toLong()
+        List<CADMeshObject> cadMeshObjects = ids ? CADMeshObject.findAllByIdInList(ids.toList()) : []
+        File file = ShapeDTO.createUnvFile(cadMeshObjects*.readCoordinates())
+        renderUnvFile(file, "Merged")
+    }
+
+    private renderUnvFile(File file, String fileName) {
+        response.setHeader('Content-disposition', "attachment;filename=${fileName}.unv")
+        response.setHeader('Content-length', "${file.size()}")
+        response.contentType = "unv/plain"
+        response.outputStream << file.bytes
     }
 }
