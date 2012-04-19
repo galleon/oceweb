@@ -157,6 +157,10 @@ class ShapeService {
         return subCadMeshObject
     }
 
+    File merge(List<ShapeDTO> shapeDTOs){
+
+    }
+
     //TODO -: Refactore code and check why its not working in co class so that project service method of creating cadobject can be used
     File generateMeshFolder(MeshCO co, Long id) {
         float size = co.size

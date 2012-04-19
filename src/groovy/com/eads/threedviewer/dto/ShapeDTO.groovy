@@ -2,13 +2,15 @@ package com.eads.threedviewer.dto
 
 import org.jcae.opencascade.jni.TopoDS_Shape
 import occmeshextractor.OCCMeshExtractor
-import com.eads.threedviewer.CADObject
+
 import com.eads.threedviewer.util.UNVParser
 import com.eads.threedviewer.util.AppUtil
 import groovy.transform.ToString
 
 @ToString(includeNames = true, includeFields = true, excludes = 'metaClass')
 class ShapeDTO {
+    public static String ls = System.getProperty("line.separator")
+
     Integer groupName = 0
     String color
     List vertices = []
@@ -16,7 +18,7 @@ class ShapeDTO {
     List edges = []
 
     Integer getEntitiesCount() {
-        return faces ? (faces.size()/4) : 0
+        return faces ? (faces.size() / 4) : 0
     }
 
     ShapeDTO(List<ShapeDTO> shapeDTOs) {
@@ -96,49 +98,58 @@ class ShapeDTO {
     }
 
     File createUnvFile() {
-        String result = createFormattedUnv()
-        File file = File.createTempFile("result", ".unv")
-        file.text = result
-        return file
+        String result = createFormattedContent()
+        return createUnvFile(result)
     }
 
-    String createFormattedUnv() {
-        String ls = System.getProperty("line.separator")
+    String createFormattedContent() {
         String result = createFormattedVertices() + ls
-        result += createFormattedFaces()
+        result += createFormattedFaces() + ls
         result += createFormattedEntityInfo()
         return result
     }
 
     String createFormattedVertices() {
-        String ls = System.getProperty("line.separator")
-        String result = "${' ' * 4}-1${ls}${' ' * 2}2411${ls}"
+        String result = verticesBeginning
+        result += readFormattedVertices()
+        result += end
+        return result
+    }
 
+    String readFormattedVertices() {
+        String result = ""
         readTriangularVertices(vertices).eachWithIndex {List val, int index ->
             result += "${AppUtil.createFormatI10List([index + 1, 1, 1, 1]).join('')}${ls}${AppUtil.createFormatI25List(val).join('')}${ls}"
         }
-        result += "${' ' * 4}-1"
         return result
     }
 
     String createFormattedFaces() {
-        String ls = System.getProperty("line.separator")
-        String result = "${' ' * 4}-1${ls}${' ' * 2}2412${ls}"
+        String result = facesBeginning
+        result += readFormattedFaces()
+        result += end
+        return result
+    }
 
+    String readFormattedFaces() {
+        String result = ""
         readTriangularFaces(faces).eachWithIndex {List val, int index ->
             result += "${AppUtil.createFormatI10List([index + 1, 91, 1, 1, 1, 3]).join('')}${ls}${AppUtil.createFormatI10List(val.collect {it + 1}).join('')}${ls}"
         }
-        result += "${' ' * 4}-1"
         return result
     }
 
     String createFormattedEntityInfo() {
-        String ls = System.getProperty("line.separator")
-        String result = "${ls}${' ' * 4}-1${ls}${' ' * 2}2435${ls}"
-        result += AppUtil.createFormatI10List([1, 0, 0, 0, 0, 0, 0, entitiesCount]).join('') + "${ls}1${ls}"
+        String result = entitiesBeginning
+        result += readFormattedEntities()
+        result += end
+        return result
+    }
+
+    String readFormattedEntities(Integer groupId = 1) {
+        String result = AppUtil.createFormatI10List([1, 0, 0, 0, 0, 0, 0, entitiesCount]).join('') + "${ls}${groupId}${ls}"
         result += (0..((entitiesCount / 2) - 1).toInteger()).collect {[8, ((2 * it) + 1), 0, 0, 8, ((2 * it) + 2), 0, 0]}.collect {List row -> AppUtil.createFormatI10List(row).join('')}
                 .join(ls) + "${ls}"
-        result += "${' ' * 4}-1"
         return result
     }
 
@@ -161,6 +172,50 @@ class ShapeDTO {
         parser.parse(new BufferedReader(new FileReader(unvFilePath)))
         List<Integer> groupNames = parser.groupNames.collect {it.toInteger()}.toList()
         return groupNames.collect {Integer groupId -> new ShapeDTO(parser, groupId)}
+    }
+
+    public static File createUnvFile(List<ShapeDTO> shapeDTOs) {
+        String result = ''
+        if (shapeDTOs) {
+            result += shapeDTOs.first().createFormattedVertices() + ls
+            result += facesBeginning
+            shapeDTOs.each {ShapeDTO shapeDTO ->
+                result += shapeDTO.readFormattedVertices()
+            }
+            result += end
+            result += facesBeginning
+            shapeDTOs.eachWithIndex {ShapeDTO shapeDTO, int index ->
+                result += shapeDTO.readFormattedEntities(index + 1)
+            }
+            result += end
+        }
+        return createUnvFile(result)
+    }
+
+    public static File createUnvFile(String result) {
+        File file = File.createTempFile("result", ".unv")
+        file.text = result
+        return file
+    }
+
+    public static String getVerticesBeginning() {
+        return getBeginning('2411')
+    }
+
+    public static String getFacesBeginning() {
+        return getBeginning('2412')
+    }
+
+    public static String getEntitiesBeginning() {
+        return getBeginning('2435')
+    }
+
+    public static String getBeginning(String code) {
+        return "${end}${ls}${' ' * 2}${code}${ls}"
+    }
+
+    public static String getEnd() {
+        return "${' ' * 4}-1"
     }
 
 }

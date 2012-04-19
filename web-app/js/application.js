@@ -498,8 +498,11 @@ function defaultMenu(node) {
         items = {
             toggleVisibility:items.toggleVisibility,
             deleteNode:items.deleteNode,
-            edit:items.edit,
-            compute:{
+            edit:items.edit
+        }
+        var parentMesh = $(node).children().filter('a').hasClass('parent_MESH');
+        if (!parentMesh) {
+            items['compute'] = {
                 label:"Compute",
                 "_class":"class",
                 "action":function (obj) {
@@ -522,23 +525,50 @@ function defaultMenu(node) {
             "separator_after":true
         } }
     }
-    if ($('#project').jstree('get_selected').size() == 2) {
-        items = {
-            toggleVisibility:items.toggleVisibility,
-            deleteNode:items.deleteNode,
-            booleanOperation:{
-                label:"Boolean operation",
-                "action":operation
-            }
-        };
-
-    }
-    if ($('#project').jstree('get_selected').size() > 2) {
+    if ($('#project').jstree('get_selected').size() >= 2) {
         items = {
             toggleVisibility:items.toggleVisibility,
             deleteNode:items.deleteNode
         };
+        if ($('#project').jstree('get_selected').size() == 2) {
+            var hasMesh = false;
+            $.each($('#project').jstree('get_selected'), function (index, val) {
+                var rel = $(val).attr('rel');
+                debugStatement("index " + index + " rel -: " + rel);
+                if (!hasMesh && rel == "MESH") {
 
+                    hasMesh = true
+                }
+            });
+            if (!hasMesh) {
+                items['booleanOperation'] = {
+                    label:"Boolean operation",
+                    "action":operation
+                }
+            }
+        }
+        var allParentMesh = true;
+        $.each($('#project').jstree('get_selected').children().filter('a'), function (index, val) {
+            var hasParentMesh = $(val).hasClass('parent_MESH')
+            debugStatement("index " + index + " hasParentMesh -: " + hasParentMesh)
+            if (allParentMesh && !hasParentMesh) {
+                allParentMesh = false
+            }
+        });
+        if (allParentMesh) {
+            var url = createLink('CADObject', 'merge');
+            items['merge'] = {
+                label:"Merge",
+                "action":function (obj) {
+                    var ids = [];
+                    $.each($('#project').jstree('get_selected').children().filter('a'), function (index, val) {
+                        ids.push('ids=' + $(val).attr('id'))
+                    })
+                    alert(ids);
+                    window.location = url + "/?" + ids.join('&');
+                }
+            }
+        }
     }
     return items;
 }
