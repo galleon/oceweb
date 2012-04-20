@@ -2,9 +2,9 @@ package com.eads.threedviewer
 
 import com.eads.threedviewer.co.BooleanOperationCO
 import com.eads.threedviewer.co.MeshCO
+import com.eads.threedviewer.dto.ShapeDTO
 import com.eads.threedviewer.enums.Operation
 import com.eads.threedviewer.enums.ShapeType
-import com.eads.threedviewer.util.AppUtil
 import com.eads.threedviewer.util.ShapeUtil
 import java.nio.channels.FileChannel
 import org.jcae.mesh.amibe.algos1d.Compat1D2D
@@ -24,7 +24,6 @@ import org.jcae.mesh.xmldata.MeshToMMesh3DConvert
 import org.jcae.mesh.xmldata.MeshWriter
 import org.jcae.mesh.amibe.algos2d.*
 import org.jcae.opencascade.jni.*
-import com.eads.threedviewer.dto.ShapeDTO
 
 class ShapeService {
 
@@ -106,7 +105,6 @@ class ShapeService {
     CADMeshObject saveMesh(MeshCO co) {
         CADMeshObject cadObject
         cadObject = co.findOrCreateCADObject() as CADMeshObject
-        cadObject.color = AppUtil.generateRandomHex()
         cadObject = projectService.addCADObject(co.project, cadObject as CADObject)
         if (cadObject) {
             File file = generateMeshFolder(co, cadObject.id)
@@ -153,11 +151,11 @@ class ShapeService {
 
     CADMeshObject createSubCADMesh(CADMeshObject cadMeshObject, ShapeDTO shapeDTO) {
         CADMeshObject subCadMeshObject = new CADMeshObject(parent: cadMeshObject, project: cadMeshObject.project, name: "${cadMeshObject.name}_${shapeDTO.groupName}",
-                size: cadMeshObject.size, deflection: cadMeshObject.deflection, color: AppUtil.generateRandomHex(), type: cadMeshObject.type, groupName: shapeDTO.groupName)
+                size: cadMeshObject.size, deflection: cadMeshObject.deflection, type: cadMeshObject.type, groupName: shapeDTO.groupName)
         return subCadMeshObject
     }
 
-    File merge(List<ShapeDTO> shapeDTOs){
+    File merge(List<ShapeDTO> shapeDTOs) {
 
     }
 

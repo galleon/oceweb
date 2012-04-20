@@ -2,10 +2,10 @@ package com.eads.threedviewer.co
 
 import com.eads.threedviewer.CADObject
 import com.eads.threedviewer.CADSphereObject
+import grails.validation.Validateable
 import groovy.transform.ToString
 import org.jcae.opencascade.jni.BRepPrimAPI_MakeSphere
 import org.jcae.opencascade.jni.TopoDS_Shape
-import grails.validation.Validateable
 
 @Validateable
 @ToString(includeNames = true, includeFields = true, excludes = 'metaClass,errors', includeSuper = true)

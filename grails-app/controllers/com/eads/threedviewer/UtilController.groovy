@@ -5,9 +5,6 @@ import com.eads.threedviewer.vo.ShapeVO
 import grails.converters.JSON
 import occmeshextractor.OCCMeshExtractor
 import org.jcae.opencascade.jni.*
-import org.jcae.mesh.xmldata.MeshExporter
-import java.text.NumberFormat
-import com.eads.threedviewer.util.AppUtil
 
 class UtilController {
 

@@ -1,9 +1,9 @@
 package com.eads.threedviewer.co
 
-import org.jcae.opencascade.jni.TopoDS_Shape
-import com.eads.threedviewer.util.ShapeUtil
 import com.eads.threedviewer.CADObject
+import com.eads.threedviewer.util.ShapeUtil
 import grails.validation.Validateable
+import org.jcae.opencascade.jni.TopoDS_Shape
 
 @Validateable
 class ExplodeShapeCO extends ShapeCO{

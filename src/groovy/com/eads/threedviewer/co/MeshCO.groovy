@@ -2,13 +2,11 @@ package com.eads.threedviewer.co
 
 import com.eads.threedviewer.CADMeshObject
 import com.eads.threedviewer.CADObject
-import com.eads.threedviewer.enums.ShapeType
 import com.eads.threedviewer.util.ShapeUtil
+import grails.validation.Validateable
 import groovy.transform.ToString
 import groovy.util.logging.Log
 import org.jcae.opencascade.jni.TopoDS_Shape
-import com.eads.threedviewer.CADCubeObject
-import grails.validation.Validateable
 
 @Log
 @Validateable
@@ -38,7 +36,6 @@ class MeshCO extends ShapeCO {
         cadObject.parent = parent ?: cadObject.parent
         cadObject.type = type ?: cadObject.type
         cadObject.project = project ?: cadObject.project
-        cadObject.color = color ?: cadObject.color
         return cadObject
     }
 }

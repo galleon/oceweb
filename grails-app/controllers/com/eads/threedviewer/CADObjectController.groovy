@@ -1,10 +1,10 @@
 package com.eads.threedviewer
 
+import com.eads.threedviewer.dto.ShapeDTO
 import grails.converters.JSON
 import grails.validation.ValidationException
 import org.jcae.opencascade.jni.TopAbs_ShapeEnum
 import com.eads.threedviewer.co.*
-import com.eads.threedviewer.dto.ShapeDTO
 
 class CADObjectController {
 

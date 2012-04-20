@@ -2,13 +2,13 @@ package com.eads.threedviewer.co
 
 import com.eads.threedviewer.CADObject
 import com.eads.threedviewer.Project
+import com.eads.threedviewer.dto.ShapeDTO
 import com.eads.threedviewer.enums.ShapeType
 import com.eads.threedviewer.util.ShapeUtil
 import groovy.transform.ToString
 import org.codehaus.groovy.grails.validation.Validateable
 import org.jcae.opencascade.jni.BRepTools
 import org.jcae.opencascade.jni.TopoDS_Shape
-import com.eads.threedviewer.dto.ShapeDTO
 
 @Validateable
 @ToString(includeNames = true, includeFields = true, excludes = 'metaClass,errors')

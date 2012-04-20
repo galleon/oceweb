@@ -210,7 +210,7 @@ function createMesh(response, name) {
         if (response.wireframe) {
             geometry = changeFaceOrientation(geometry);
         }
-        color = response.color ? '0x' + response.color : selectionColor;
+        color = selectionColor;
         var localColor = getLocalColor(name)
         if (localColor) {
             color = localColor

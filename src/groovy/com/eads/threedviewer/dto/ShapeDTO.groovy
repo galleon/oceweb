@@ -1,11 +1,10 @@
 package com.eads.threedviewer.dto
 
-import org.jcae.opencascade.jni.TopoDS_Shape
-import occmeshextractor.OCCMeshExtractor
-
-import com.eads.threedviewer.util.UNVParser
 import com.eads.threedviewer.util.AppUtil
+import com.eads.threedviewer.util.UNVParser
 import groovy.transform.ToString
+import occmeshextractor.OCCMeshExtractor
+import org.jcae.opencascade.jni.TopoDS_Shape
 
 @ToString(includeNames = true, includeFields = true, excludes = 'metaClass')
 class ShapeDTO {

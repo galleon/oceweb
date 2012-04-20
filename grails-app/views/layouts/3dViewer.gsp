@@ -15,7 +15,6 @@
     <link rel="stylesheet" href="${resource(dir: 'css', file: '3dViewer.css')}" type="text/css">
     <link rel="stylesheet" href="${resource(dir: 'css', file: 'style.css')}" type="text/css">
     <link rel="stylesheet" href="${resource(dir: 'css', file: 'mobile.css')}" type="text/css">
-    <link rel="stylesheet" href="${resource(dir: 'css', file: 'colorpicker.css')}" type="text/css">
     <link rel="stylesheet" href="${resource(dir: 'css', file: 'jquery.ui.all.css')}" type="text/css">
     <jq:resources/>
     <script src="${resource(dir: 'js', file: 'jquery.ui.core.js')}"></script>
@@ -31,7 +30,6 @@
     <script src="${resource(dir: 'js', file: 'jquery.hotkeys.js')}"></script>
     <script src="${resource(dir: 'js', file: 'jquery.jstree.js')}"></script>
     <script src="${resource(dir: 'js', file: 'jquery.form.js')}"></script>
-    <script src="${resource(dir: 'js', file: 'colorpicker.js')}"></script>
     <script src="${resource(dir: 'js', file: 'eye.js')}"></script>
     <script src="${resource(dir: 'js', file: 'Stats.js')}"></script>
     <script src="${resource(dir: 'js', file: 'application.js')}"></script>

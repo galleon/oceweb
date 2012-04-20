@@ -1,11 +1,10 @@
 package com.eads.threedviewer.util
 
+import com.eads.threedviewer.dto.ShapeDTO
 import groovy.util.logging.Log
-
 import org.jcae.opencascade.jni.BRepTools
 import org.jcae.opencascade.jni.BRep_Builder
 import org.jcae.opencascade.jni.TopoDS_Shape
-import com.eads.threedviewer.dto.ShapeDTO
 
 @Log
 class ShapeUtil {

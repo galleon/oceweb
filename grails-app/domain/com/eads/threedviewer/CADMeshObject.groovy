@@ -1,9 +1,8 @@
 package com.eads.threedviewer
 
+import com.eads.threedviewer.dto.ShapeDTO
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
-import com.eads.threedviewer.dto.ShapeDTO
-import com.eads.threedviewer.util.AppUtil
 
 @ToString(includeNames = true, includeFields = true, excludes = 'dateCreated,lastUpdated,metaClass,content')
 @EqualsAndHashCode
@@ -12,7 +11,6 @@ class CADMeshObject extends CADObject {
 
 /* Fields */
     Integer groupName
-    String color
     float size
     float deflection
 
@@ -40,7 +38,6 @@ class CADMeshObject extends CADObject {
     Map readData() {
         Map result = super.readData()
         result['wireframe'] = true
-        result['color'] = color
         return result
     }
 

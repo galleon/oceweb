@@ -5,12 +5,6 @@ import org.jcae.mesh.xmldata.MeshExporter
 
 class AppUtil {
 
-    static String generateRandomHex() {
-        Random random = new Random()
-        Integer number = random.nextInt(AppConstants.MIN_HEX) + AppConstants.MIN_HEX
-        return Integer.toHexString(number)
-    }
-
     static List getTriangularList(List list) {
         List triangularList = []
         List temp = []
