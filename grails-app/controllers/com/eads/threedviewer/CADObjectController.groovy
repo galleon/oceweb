@@ -184,4 +184,21 @@ class CADObjectController {
         response.contentType = "unv/plain"
         response.outputStream << file.bytes
     }
+
+    def rename(Long id, String name) {
+        CADObject cadObject = id ? CADObject.get(id) : null
+        Map result = [:]
+        if (cadObject) {
+            cadObject.name = name
+            try {
+                cadObject.save()
+                result['success'] = "Name updated successfuly"
+            } catch (RuntimeException rte) {
+                result['error'] = rte.message
+            }
+        } else {
+            result['error'] = "Object not found for id ${id}"
+        }
+        render result as JSON
+    }
 }

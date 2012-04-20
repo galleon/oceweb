@@ -424,13 +424,23 @@ function enableJsTree() {
                 }
             }
         }
-    }).
-        bind("select_node.jstree",
+    }).bind("select_node.jstree",
         function (event, data) {
             if ($('#project').jstree('get_selected').size() == 1) {
                 showShape(data.rslt.obj.children().filter('a').attr('id'))
             }
 
+        }).bind("rename.jstree", function (e, data) {
+            var id = data.rslt.obj.children().filter('a').attr("id")
+            var name = data.rslt.new_name;
+            $.post(createLink('CADObject', 'rename'), {id:id, name:name}, function (response) {
+                if (response.success) {
+                    showFlashSuccess(response.success)
+                }
+                if (response.error) {
+                    showFlashError(response.error)
+                }
+            })
         })
 }
 
@@ -498,7 +508,15 @@ function defaultMenu(node) {
         items = {
             toggleVisibility:items.toggleVisibility,
             deleteNode:items.deleteNode,
-            edit:items.edit
+            edit:{
+                label:"Edit",
+                "_class":"class",
+                "action":function (obj) {
+                    $("#project").jstree("rename", '#' + $(obj).attr('id'));
+                },
+                "separator_before":false,
+                "separator_after":true
+            }
         }
         var parentMesh = $(node).children().filter('a').hasClass('parent_MESH');
         if (!parentMesh) {
