@@ -34,18 +34,26 @@ class CadObjectService {
     CADObject save(Project project, CADObject cadObject) {
         project.addToCadObjects(cadObject)
         project.save()
-        return cadObject.save()
-    }
-
-    CADObject saveCADObjectAndBrepFile(CADObject cadObject, File file) {
         cadObject = cadObject.save()
-        saveFileOnFileSystem(cadObject?.brepFilePath, file)
+        if (!cadObject) {
+            logErrors(cadObject)
+        }
         return cadObject
     }
 
-    CADObject saveCADObjectAndUnvFile(CADObject cadObject, File file) {
-        cadObject = cadObject.save()
-        saveFileOnFileSystem(cadObject?.unvFilePath, file)
+    CADObject saveCADObjectAndBrepFile(CADObject cadObject, File file) {
+        cadObject = save(cadObject)
+        if (cadObject) {
+            saveFileOnFileSystem(cadObject?.brepFilePath, file)
+        }
+        return cadObject
+    }
+
+    CADMeshObject saveCADObjectAndUnvFile(CADMeshObject cadObject, File file) {
+        cadObject = save(cadObject) as CADMeshObject
+        if (cadObject) {
+            saveFileOnFileSystem(cadObject?.unvFilePath, file)
+        }
         return cadObject
     }
 
@@ -137,13 +145,6 @@ class CadObjectService {
         cadObject.save()
     }
 
-    void logErrors(CADObject cadObject) {
-        log.info "Error while saving ${cadObject} -:"
-        cadObject.errors.allErrors.each {
-            log.info "${it}"
-        }
-    }
-
     void delete(Set<Long> ids) {
         List<CADObject> cadObjects = ids ? CADObject.getAll(ids.toList()) : []
         cadObjects.each {CADObject cadObject ->
@@ -152,19 +153,32 @@ class CadObjectService {
     }
 
     void delete(CADObject cadObject) {
+        Project project = cadObject.project
         List childrenList = CADObject.findAllByParent(cadObject)
         String folderPath = cadObject.filesFolderPath
         if (cadObject.isMesh()) {
-            List<String> folderPaths = childrenList*.filesFolderPath
-            childrenList*.delete()
-            folderPaths.each {
-                fileService.removeFolder(it)
+            if (childrenList) {
+                log.info "Deleting child objects"
+                List<String> folderPaths = childrenList*.filesFolderPath
+                childrenList.each {CADObject child ->
+                    deleteAndRemoveFromProject(project, child)
+                }
+                folderPaths.each {
+                    fileService.removeFolder(it)
+                }
             }
         } else {
+            log.info "Setting parents to null"
             childrenList*.parent = null
         }
-        cadObject.delete()
+        deleteAndRemoveFromProject(project, cadObject)
         fileService.removeFolder(folderPath)
+    }
+
+    void deleteAndRemoveFromProject(Project project, CADObject cadObject) {
+        log.info "Deleting cadObject ${cadObject.id}"
+        project.removeFromCadObjects(cadObject)
+        cadObject.delete()
     }
 
     File saveFileOnFileSystem(String filePath, File file) {
@@ -180,7 +194,29 @@ class CadObjectService {
         return brepFile
     }
 
-    File merge(List<CADMeshObject> cadMeshObjects) {
-        return ShapeDTO.createUnvFile(cadMeshObjects*.readCoordinates())
+    CADMeshObject merge(List<CADMeshObject> cadMeshObjects) {
+        CADMeshObject cadMeshObject
+        if (cadMeshObjects) {
+            File file = ShapeDTO.createUnvFile(cadMeshObjects*.readCoordinates())
+            Project project = cadMeshObjects.first().project
+            cadMeshObject = new CADMeshObject(name: "Merge", project: project, type: ShapeType.MESH, deflection: 0, size: 0)
+            if (cadMeshObject) {
+                log.info "CADMesh Object created successfuly"
+                cadMeshObjects.each {CADObject cadObject ->
+                    delete(cadObject)
+                }
+            }
+            cadMeshObject = saveCADObjectAndUnvFile(cadMeshObject, file)
+        }
+        return cadMeshObject
     }
+
+    void logErrors(CADObject cadObject) {
+        log.info "Error while saving ${cadObject} -:"
+        cadObject.errors.allErrors.each {
+            log.info "${it}"
+        }
+    }
+
+
 }

@@ -579,10 +579,21 @@ function defaultMenu(node) {
                 label:"Merge",
                 "action":function (obj) {
                     var ids = [];
+                    var objectIds = [];
                     $.each($('#project').jstree('get_selected').children().filter('a'), function (index, val) {
-                        ids.push('ids=' + $(val).attr('id'))
+                        var id = $(val).attr('id')
+                        ids.push('ids=' + id);
+                        objectIds.push(id);
                     })
-                    window.location = url + "/?" + ids.join('&');
+                    url = url + "/?" + ids.join('&');
+                    $.post(url, function (response) {
+                        if (response.success) {
+                            removeObjects(objectIds);
+                            reloadProjectTree();
+                        } else {
+                           showError(response.error);
+                        }
+                    });
                 }
             }
         }
@@ -720,7 +731,7 @@ function confirmDelete(node) {
                             removeObjects(ids);
                             reloadProjectTree();
                         } else {
-                            $("#dialog-confirm p").html(response.error);
+                            showError(response.error);
                         }
                     });
                 }

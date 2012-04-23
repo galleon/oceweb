@@ -111,7 +111,11 @@ class CADObjectController {
         Map result
         CADObject cadObject = id ? CADObject.get(id) : null
         if (cadObject) {
-            result = cadObject.readData()
+            try {
+                result = cadObject.readData()
+            } catch (RuntimeException rte) {
+                result = ['error': rte.message]
+            }
         } else {
             result = ['error': "Object not found for id ${id}"]
         }
@@ -153,7 +157,7 @@ class CADObjectController {
         try {
             cadObjectService.delete(ids)
         } catch (RuntimeException rte) {
-            result = ['error': message(code: "error.occured.while.serving.your.request")]
+            result = ['error': "Error Occured while serving your request"]
         }
         render result as JSON
     }
@@ -169,10 +173,15 @@ class CADObjectController {
     }
 
     def merge() {
+        Map result = ['success': 'Deleted Successfully']
         Set ids = params.list('ids')*.toLong()
         List<CADMeshObject> cadMeshObjects = ids ? CADMeshObject.findAllByIdInList(ids.toList()) : []
-        File file = cadObjectService.merge(cadMeshObjects)
-        renderUnvFile(file, "Merged")
+        try {
+            cadObjectService.merge(cadMeshObjects)
+        } catch (RuntimeException rte) {
+            result = ['error': rte.message]
+        }
+        render result as JSON
     }
 
     private renderUnvFile(File file, String fileName) {
