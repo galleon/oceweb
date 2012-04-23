@@ -8,6 +8,7 @@ import com.eads.threedviewer.co.*
 class CADObjectController {
 
     def cadObjectService
+    def shapeService
 
     def saveCube(CubeCO co) {
         sendResponse(co)
@@ -162,14 +163,15 @@ class CADObjectController {
         render result as JSON
     }
 
-    def generateUnv(Long id) {
-        CADMeshObject cadMeshObject = CADMeshObject.get(id)
+    def runSimulation(SimulationCO co) {
+        CADMeshObject cadMeshObject = co.id ? CADMeshObject.get(co.id) : null
+        Map result = ["success": "Simulation completed"]
         if (cadMeshObject) {
-            File file = cadMeshObject.findUnvFile()
-            renderUnvFile(file, cadMeshObject.name)
+            File file = shapeService.runSimulation(cadMeshObject.findUnvFile(), co)
         } else {
-            response.sendError(404, "Object not found for id ${id}")
+            result = ['error': "Object not found for id ${co.id}"]
         }
+        result as JSON
     }
 
     def merge() {
@@ -182,13 +184,6 @@ class CADObjectController {
             result = ['error': rte.message]
         }
         render result as JSON
-    }
-
-    private renderUnvFile(File file, String fileName) {
-        response.setHeader('Content-disposition', "attachment;filename=${fileName}.unv")
-        response.setHeader('Content-length', "${file.size()}")
-        response.contentType = "unv/plain"
-        response.outputStream << file.bytes
     }
 
     def rename(Long id, String name) {

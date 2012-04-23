@@ -199,8 +199,8 @@ fieldset{border: none}
 }
 .close-img{padding-top: 5px;}
 #closeFlash{margin-left: 6px;}
-.polarisation{text-align: right; padding-top: 10px; margin-bottom: 10px;}
-.polarisation select,.postProcessing{width: 180px;float: right;}
+.polarisationType{text-align: right; padding-top: 10px; margin-bottom: 10px;}
+.polarisationType select,.processingType{width: 180px;float: right;}
 .angle{float: left; width: 50%;padding-top: 3px;}
 .first{width: 30%}
 

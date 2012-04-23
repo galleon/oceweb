@@ -24,6 +24,7 @@ import org.jcae.mesh.xmldata.MeshToMMesh3DConvert
 import org.jcae.mesh.xmldata.MeshWriter
 import org.jcae.mesh.amibe.algos2d.*
 import org.jcae.opencascade.jni.*
+import com.eads.threedviewer.co.SimulationCO
 
 class ShapeService {
 
@@ -56,6 +57,11 @@ class ShapeService {
             object = new BRepAlgoAPI_Cut(shape1, shape2)
         }
         return object
+    }
+
+    File runSimulation(File unvFile, SimulationCO co) {
+        log.info "Simulation started for ${co}"
+        return unvFile
     }
 
     //TODO -: Refactore code and check why its not working in co class so that project service method of creating cadobject can be used
