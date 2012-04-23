@@ -2,7 +2,6 @@
 <g:form action="generateUnv" controller="CADObject" name="computeForm">
     <fieldset class="form">
         <g:hiddenField name="id" id="cadObjectId" value=""/>
-        <g:hiddenField name="type" value="${ShapeType.COMPUTE}"/>
         <td:textField name="frequecy" label="Frequency (MHZ)"/>
         <div style="border-bottom: 1px solid #2C2C2C">
             <div class="angle">

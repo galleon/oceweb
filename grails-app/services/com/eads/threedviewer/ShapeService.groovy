@@ -27,25 +27,6 @@ import org.jcae.opencascade.jni.*
 
 class ShapeService {
 
-    def projectService
-    def fileService
-
-    List<CADObject> saveSubCadObjects(CADObject cadObject, TopAbs_ShapeEnum shapeType) {
-        List<CADObject> cadObjects = []
-        if (cadObject) {
-            explode(cadObject, shapeType).eachWithIndex {TopoDS_Shape shape, int index ->
-                File file = ShapeUtil.getFile(shape, cadObject.name)
-                CADObject currentObject = saveSubCadObjects(cadObject, "${cadObject.name}_${index}", file, shapeType)
-                file.delete()
-                if (currentObject) {
-                    cadObjects.add(currentObject)
-                }
-            }
-        }
-
-        return cadObjects
-    }
-
     List<TopoDS_Shape> explode(CADObject cadObject, TopAbs_ShapeEnum shapeType) {
         TopoDS_Shape shape = ShapeUtil.getShape(cadObject.findBrepFile())
         return explode(shape, shapeType)
@@ -63,32 +44,7 @@ class ShapeService {
         return shapes
     }
 
-    CADObject saveSubCadObjects(CADObject cadObject, String name, File file, TopAbs_ShapeEnum type) {
-        CADObject subCadObject = new CADExplodeObject(name: name, project: cadObject.project, parent: cadObject, type: ShapeType.EXPLODE, explodeType: type)
-        return projectService.saveCADObjectAndBrepFile(subCadObject, file)
-    }
-
-    CADObject saveCADObject(BooleanOperationCO co) {
-        CADObject cadObject1 = co.CADObject1
-        TopoDS_Shape shape1 = cadObject1.findShape()
-        TopoDS_Shape shape2 = co.CADObject2.findShape()
-        BRepAlgoAPI_BooleanOperation object = getOperationInstance(co, shape1, shape2)
-        return saveCADObject(co, object.shape(), cadObject1.project)
-    }
-
-    CADObject saveCADObject(BooleanOperationCO co, TopoDS_Shape shape, Project project) {
-        File file = ShapeUtil.getFile(shape, co.operation)
-        CADObject cadObject = saveCADObject(project, co.name, file)
-        file.delete()
-        return cadObject
-    }
-
-    CADObject saveCADObject(Project project, String name, File file) {
-        CADObject cadObject = new CADObject(name: name, project: project, type: ShapeType.COMPOUND)
-        return projectService.saveCADObjectAndBrepFile(cadObject, file)
-    }
-
-    private BRepAlgoAPI_BooleanOperation getOperationInstance(BooleanOperationCO co, TopoDS_Shape shape1, TopoDS_Shape shape2) {
+    BRepAlgoAPI_BooleanOperation getOperationInstance(BooleanOperationCO co, TopoDS_Shape shape1, TopoDS_Shape shape2) {
         def object
         if (co.operation == Operation.FUSE.toString()) {
             object = new BRepAlgoAPI_Fuse(shape1, shape2);
@@ -100,63 +56,6 @@ class ShapeService {
             object = new BRepAlgoAPI_Cut(shape1, shape2)
         }
         return object
-    }
-
-    CADMeshObject saveMesh(MeshCO co) {
-        CADMeshObject cadObject
-        cadObject = co.findOrCreateCADObject() as CADMeshObject
-        cadObject = projectService.addCADObject(co.project, cadObject as CADObject)
-        if (cadObject) {
-            File file = generateMeshFolder(co, cadObject.id)
-            log.info "CadMeshObject saved successfuly. Moving ${file.path} to ${cadObject.filesFolderPath}"
-            fileService.renameFolder(file, cadObject.filesFolderPath)
-            saveSubMeshes(cadObject)
-        }
-        else {
-            logErrors(cadObject)
-        }
-        return cadObject
-    }
-
-    CADMeshObject updateMesh(MeshCO co) {
-        CADMeshObject cadObject = co.findOrCreateCADObject() as CADMeshObject
-        cadObject.save()
-    }
-
-    void logErrors(CADObject cadObject) {
-        log.info "Error while saving ${cadObject} -:"
-        cadObject.errors.allErrors.each {
-            log.info "${it}"
-        }
-    }
-
-    List<CADMeshObject> saveSubMeshes(CADMeshObject cadMeshObject) {
-        List<CADMeshObject> cadMeshObjects = []
-        List<ShapeDTO> shapeDTOs = ShapeDTO.getUnvGroups(cadMeshObject.unvFilePath)
-        shapeDTOs.each {ShapeDTO shapeDTO ->
-            log.info "creating mesh sub object for entitycount ${shapeDTO.entitiesCount}"
-            CADMeshObject subCadMeshObject = saveSubMesh(cadMeshObject, shapeDTO)
-            if (subCadMeshObject) {
-                cadMeshObjects.add(subCadMeshObject)
-            }
-        }
-        return cadMeshObjects
-    }
-
-    CADMeshObject saveSubMesh(CADMeshObject cadMeshObject, ShapeDTO shapeDTO) {
-        CADMeshObject subCadMeshObject = createSubCADMesh(cadMeshObject, shapeDTO)
-        projectService.saveCADObjectAndUnvFile(subCadMeshObject, shapeDTO.createUnvFile())
-        return subCadMeshObject
-    }
-
-    CADMeshObject createSubCADMesh(CADMeshObject cadMeshObject, ShapeDTO shapeDTO) {
-        CADMeshObject subCadMeshObject = new CADMeshObject(parent: cadMeshObject, project: cadMeshObject.project, name: "${cadMeshObject.name}_${shapeDTO.groupName}",
-                size: cadMeshObject.size, deflection: cadMeshObject.deflection, type: cadMeshObject.type, groupName: shapeDTO.groupName)
-        return subCadMeshObject
-    }
-
-    File merge(List<ShapeDTO> shapeDTOs) {
-
     }
 
     //TODO -: Refactore code and check why its not working in co class so that project service method of creating cadobject can be used
