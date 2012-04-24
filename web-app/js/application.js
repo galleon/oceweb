@@ -532,6 +532,16 @@ function defaultMenu(node) {
                 "separator_before":false,
                 "separator_after":true
             }
+            items['export'] = {
+                label:"Export",
+                "_class":"class",
+                "action":function (obj) {
+                    var id = $(obj).children().filter('a').attr('id');
+                    window.location = createLink('CADObject', 'export') + "/" + id;
+                },
+                "separator_before":false,
+                "separator_after":true
+            }
         }
     }
     if (selectedId == "phtml_1") {
@@ -591,7 +601,7 @@ function defaultMenu(node) {
                             removeObjects(objectIds);
                             reloadProjectTree();
                         } else {
-                           showError(response.error);
+                            showError(response.error);
                         }
                     });
                 }

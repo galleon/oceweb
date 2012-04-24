@@ -186,6 +186,16 @@ class CADObjectController {
         render result as JSON
     }
 
+    def export(Long id) {
+        CADMeshObject cadMeshObject = id ? CADMeshObject.get(id) : null
+        if (cadMeshObject) {
+            File file = cadMeshObject.findUnvFile()
+            renderUnvFile(file, cadMeshObject.name)
+        } else {
+            response.sendError(404, "Object not found for id ${id}")
+        }
+    }
+
     def rename(Long id, String name) {
         CADObject cadObject = id ? CADObject.get(id) : null
         Map result = [:]
@@ -201,5 +211,12 @@ class CADObjectController {
             result['error'] = "Object not found for id ${id}"
         }
         render result as JSON
+    }
+
+    private renderUnvFile(File file, String fileName) {
+        response.setHeader('Content-disposition', "attachment;filename=${fileName}.unv")
+        response.setHeader('Content-length', "${file.size()}")
+        response.contentType = "unv/plain"
+        response.outputStream << file.bytes
     }
 }
