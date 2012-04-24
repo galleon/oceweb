@@ -130,10 +130,10 @@ class ShapeDTO {
         return result
     }
 
-    String readFormattedFaces() {
+    String readFormattedFaces(Integer startPoint = 0) {
         String result = ""
         readTriangularFaces(faces).eachWithIndex {List val, int index ->
-            result += "${AppUtil.createFormatI10List([index + 1, 91, 1, 1, 1, 3]).join('')}${ls}${AppUtil.createFormatI10List(val.collect {it + 1}).join('')}${ls}"
+            result += "${AppUtil.createFormatI10List([index + startPoint + 1, 91, 1, 1, 1, 3]).join('')}${ls}${AppUtil.createFormatI10List(val.collect {it + 1}).join('')}${ls}"
         }
         return result
     }
@@ -145,10 +145,11 @@ class ShapeDTO {
         return result
     }
 
-    String readFormattedEntities(Integer groupId = 1) {
-        String result = AppUtil.createFormatI10List([1, 0, 0, 0, 0, 0, 0, entitiesCount]).join('') + "${ls}${groupId}${ls}"
-        result += (0..((entitiesCount / 2) - 1).toInteger()).collect {[8, ((2 * it) + 1), 0, 0, 8, ((2 * it) + 2), 0, 0]}.collect {List row -> AppUtil.createFormatI10List(row).join('')}
-                .join(ls) + "${ls}"
+    String readFormattedEntities(Integer groupId = 1, Integer startPoint = 0) {
+        String result = AppUtil.createFormatI10List([groupId, 0, 0, 0, 0, 0, 0, entitiesCount]).join('') + "${ls}${groupId}${ls}"
+        result += (0..((entitiesCount / 2) - 1).toInteger()).collect {[8, ((2 * it) + 1 + startPoint), 0, 0, 8, ((2 * it) + 2 + startPoint), 0, 0]}.collect {List row ->
+            AppUtil.createFormatI10List(row).join('')
+        }.join(ls) + "${ls}"
         return result
     }
 
@@ -178,13 +179,16 @@ class ShapeDTO {
         if (shapeDTOs) {
             result += shapeDTOs.first().createFormattedVertices() + ls
             result += facesBeginning
-            shapeDTOs.each {ShapeDTO shapeDTO ->
-                result += shapeDTO.readFormattedFaces()
+            List<Integer> entityCounts = shapeDTOs*.entitiesCount
+            shapeDTOs.eachWithIndex {ShapeDTO shapeDTO, int index ->
+                Integer startPoint = entityCounts.take(index).sum() ?: 0
+                result += shapeDTO.readFormattedFaces(startPoint)
             }
             result += end + ls
             result += entitiesBeginning
             shapeDTOs.eachWithIndex {ShapeDTO shapeDTO, int index ->
-                result += shapeDTO.readFormattedEntities(index + 1)
+                Integer startPoint = entityCounts.take(index).sum() ?: 0
+                result += shapeDTO.readFormattedEntities(index + 1, startPoint)
             }
             result += end
         }
