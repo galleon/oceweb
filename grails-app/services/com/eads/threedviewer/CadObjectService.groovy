@@ -198,8 +198,10 @@ class CadObjectService {
         CADMeshObject cadMeshObject
         if (cadMeshObjects) {
             File file = ShapeDTO.createUnvFile(cadMeshObjects*.readCoordinates())
-            Project project = cadMeshObjects.first().project
-            cadMeshObject = new CADMeshObject(name: "Merge", project: project, type: ShapeType.MESH, deflection: 0, size: 0)
+            CADMeshObject firstObject = cadMeshObjects.first()
+            Project project = firstObject.project
+            CADObject parentCadObject = firstObject.parent
+            cadMeshObject = new CADMeshObject(name: "Merge", project: project, type: ShapeType.MESH, deflection: 0, size: 0, parent: parentCadObject)
             if (cadMeshObject) {
                 log.info "CADMesh Object created successfuly"
                 cadMeshObjects.each {CADObject cadObject ->
