@@ -33,17 +33,6 @@ class ShapeUtil {
         return getData(getShape(file))
     }
 
-    public static Map getData(String filePath) {
-        Map data = defaultData
-        List<ShapeDTO> shapeDTOs = ShapeDTO.getUnvGroups(filePath)
-
-        data['vertices'] = shapeDTOs.vertices.flatten();
-        data['faces'] = shapeDTOs.faces.flatten();
-        data['edges'] = shapeDTOs.edges.flatten();
-        data['wireframe'] = true;
-        return data
-    }
-
     public static File createTempBrepFile(byte[] content) {
         File file = File.createTempFile("temp", ".brep")
         file.bytes = content
@@ -68,6 +57,48 @@ class ShapeUtil {
         File file = File.createTempFile(prefix, ".brep")
         BRepTools.write(shape, file.path)
         return file
+    }
+
+    public static List<ShapeDTO> getUnvGroups(String unvFilePath) {
+        UNVParser parser = new UNVParser()
+        parser.parse(new BufferedReader(new FileReader(unvFilePath)))
+        List<Integer> groupNames = parser.groupNames.collect {it.toInteger()}.toList()
+        return groupNames.collect {Integer groupId -> new ShapeDTO(parser, groupId)}
+    }
+
+    public static File createUnvFile(List<ShapeDTO> shapeDTOs) {
+        return createUnvFile(new ShapeDTO(shapeDTOs))
+    }
+
+    public static File createUnvFile(ShapeDTO shapeDTO) {
+        return shapeDTO.createUnvFile()
+    }
+
+    public static File createUnvFile(String result) {
+        File file = File.createTempFile("result", ".unv")
+        file.text = result
+        return file
+    }
+
+    public static String getVerticesBeginning() {
+        return getBeginning('2411')
+    }
+
+    public static String getFacesBeginning() {
+        return getBeginning('2412')
+    }
+
+    public static String getEntitiesBeginning() {
+        return getBeginning('2435')
+    }
+
+    public static String getBeginning(String code) {
+        String ls = System.getProperty("line.separator")
+        return "${end}${ls}${' ' * 2}${code}${ls}"
+    }
+
+    public static String getEnd() {
+        return "${' ' * 4}-1"
     }
 
 }

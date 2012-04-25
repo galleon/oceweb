@@ -5,6 +5,7 @@ import com.eads.threedviewer.util.UNVParser
 import groovy.transform.ToString
 import occmeshextractor.OCCMeshExtractor
 import org.jcae.opencascade.jni.TopoDS_Shape
+import com.eads.threedviewer.util.ShapeUtil
 
 @ToString(includeNames = true, includeFields = true, excludes = 'metaClass')
 class ShapeDTO {
@@ -90,7 +91,7 @@ class ShapeDTO {
         parser.nodesCoordinates.each {nodeCoordinate ->
             vertices << nodeCoordinate
         }
-        this.groupName = id
+        this.groupName = groupId
         this.vertices = vertices
         this.edges = edges
         this.faces = faces
@@ -98,7 +99,7 @@ class ShapeDTO {
 
     File createUnvFile() {
         String result = createFormattedContent()
-        return createUnvFile(result)
+        return ShapeUtil.createUnvFile(result)
     }
 
     String createFormattedContent() {
@@ -109,9 +110,9 @@ class ShapeDTO {
     }
 
     String createFormattedVertices() {
-        String result = verticesBeginning
+        String result = ShapeUtil.verticesBeginning
         result += readFormattedVertices()
-        result += end
+        result += ShapeUtil.end
         return result
     }
 
@@ -124,9 +125,9 @@ class ShapeDTO {
     }
 
     String createFormattedFaces() {
-        String result = facesBeginning
+        String result = ShapeUtil.facesBeginning
         result += readFormattedFaces()
-        result += end
+        result += ShapeUtil.end
         return result
     }
 
@@ -139,9 +140,9 @@ class ShapeDTO {
     }
 
     String createFormattedEntityInfo() {
-        String result = entitiesBeginning
+        String result = ShapeUtil.entitiesBeginning
         result += readFormattedEntities()
-        result += end
+        result += ShapeUtil.end
         return result
     }
 
@@ -165,60 +166,6 @@ class ShapeDTO {
             }
         }
         return AppUtil.getTriangularList(modifiedFaces)
-    }
-
-    public static List<ShapeDTO> getUnvGroups(String unvFilePath) {
-        UNVParser parser = new UNVParser()
-        parser.parse(new BufferedReader(new FileReader(unvFilePath)))
-        List<Integer> groupNames = parser.groupNames.collect {it.toInteger()}.toList()
-        return groupNames.collect {Integer groupId -> new ShapeDTO(parser, groupId)}
-    }
-
-    public static File createUnvFile(List<ShapeDTO> shapeDTOs) {
-        String result = ''
-        if (shapeDTOs) {
-            result += shapeDTOs.first().createFormattedVertices() + ls
-            result += facesBeginning
-            List<Integer> entityCounts = shapeDTOs*.entitiesCount
-            shapeDTOs.eachWithIndex {ShapeDTO shapeDTO, int index ->
-                Integer startPoint = entityCounts.take(index).sum() ?: 0
-                result += shapeDTO.readFormattedFaces(startPoint)
-            }
-            result += end + ls
-            result += entitiesBeginning
-            shapeDTOs.eachWithIndex {ShapeDTO shapeDTO, int index ->
-                Integer startPoint = entityCounts.take(index).sum() ?: 0
-                result += shapeDTO.readFormattedEntities(index + 1, startPoint)
-            }
-            result += end
-        }
-        return createUnvFile(result)
-    }
-
-    public static File createUnvFile(String result) {
-        File file = File.createTempFile("result", ".unv")
-        file.text = result
-        return file
-    }
-
-    public static String getVerticesBeginning() {
-        return getBeginning('2411')
-    }
-
-    public static String getFacesBeginning() {
-        return getBeginning('2412')
-    }
-
-    public static String getEntitiesBeginning() {
-        return getBeginning('2435')
-    }
-
-    public static String getBeginning(String code) {
-        return "${end}${ls}${' ' * 2}${code}${ls}"
-    }
-
-    public static String getEnd() {
-        return "${' ' * 4}-1"
     }
 
 }

@@ -116,9 +116,9 @@ class CadObjectService {
 
     List<CADMeshObject> saveSubMeshes(CADMeshObject cadMeshObject) {
         List<CADMeshObject> cadMeshObjects = []
-        List<ShapeDTO> shapeDTOs = ShapeDTO.getUnvGroups(cadMeshObject.unvFilePath)
+        List<ShapeDTO> shapeDTOs = ShapeUtil.getUnvGroups(cadMeshObject.unvFilePath)
         shapeDTOs.each {ShapeDTO shapeDTO ->
-            log.info "creating mesh sub object for entitycount ${shapeDTO.entitiesCount}"
+            log.info "creating mesh sub object for groupId ${shapeDTO.groupName} entitycount ${shapeDTO.entitiesCount}"
             CADMeshObject subCadMeshObject = saveSubMesh(cadMeshObject, shapeDTO)
             if (subCadMeshObject) {
                 cadMeshObjects.add(subCadMeshObject)
@@ -134,7 +134,7 @@ class CadObjectService {
     }
 
     CADMeshObject createSubCADMesh(CADMeshObject cadMeshObject, ShapeDTO shapeDTO) {
-        CADMeshObject subCadMeshObject = new CADMeshObject(parent: cadMeshObject, project: cadMeshObject.project, name: "${cadMeshObject.name}_${shapeDTO.groupName}",
+        CADMeshObject subCadMeshObject = new CADMeshObject(parent: cadMeshObject, project: cadMeshObject.project, name: "${shapeDTO.groupName}",
                 size: cadMeshObject.size, deflection: cadMeshObject.deflection, type: cadMeshObject.type, groupName: shapeDTO.groupName)
         return subCadMeshObject
     }
@@ -197,11 +197,11 @@ class CadObjectService {
     CADMeshObject merge(List<CADMeshObject> cadMeshObjects) {
         CADMeshObject cadMeshObject
         if (cadMeshObjects) {
-            File file = ShapeDTO.createUnvFile(cadMeshObjects*.readCoordinates())
+            File file = ShapeUtil.createUnvFile(cadMeshObjects*.readCoordinates())
             CADMeshObject firstObject = cadMeshObjects.first()
             Project project = firstObject.project
             CADObject parentCadObject = firstObject.parent
-            cadMeshObject = new CADMeshObject(name: "Merge", project: project, type: ShapeType.MESH, deflection: 0, size: 0, parent: parentCadObject)
+            cadMeshObject = new CADMeshObject(name: cadMeshObjects*.groupName.join("_"), project: project, type: ShapeType.MESH, deflection: 0, size: 0, parent: parentCadObject)
             if (cadMeshObject) {
                 log.info "CADMesh Object created successfuly"
                 cadMeshObjects.each {CADObject cadObject ->
@@ -219,6 +219,5 @@ class CadObjectService {
             log.info "${it}"
         }
     }
-
 
 }

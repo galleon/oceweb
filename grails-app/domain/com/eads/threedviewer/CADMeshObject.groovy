@@ -3,6 +3,7 @@ package com.eads.threedviewer
 import com.eads.threedviewer.dto.ShapeDTO
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
+import com.eads.threedviewer.util.ShapeUtil
 
 @ToString(includeNames = true, includeFields = true, excludes = 'dateCreated,lastUpdated,metaClass,content')
 @EqualsAndHashCode
@@ -44,7 +45,7 @@ class CADMeshObject extends CADObject {
 /* Methods */
 
     ShapeDTO readCoordinates() {
-        return new ShapeDTO(ShapeDTO.getUnvGroups(unvFilePath))
+        return new ShapeDTO(ShapeUtil.getUnvGroups(unvFilePath))
     }
 
 /* Static Methods */
