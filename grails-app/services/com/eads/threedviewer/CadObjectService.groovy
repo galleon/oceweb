@@ -197,7 +197,7 @@ class CadObjectService {
     CADMeshObject merge(List<CADMeshObject> cadMeshObjects) {
         CADMeshObject cadMeshObject
         if (cadMeshObjects) {
-            File file = ShapeUtil.createUnvFile(cadMeshObjects*.readCoordinates())
+            File file = ShapeUtil.createUnvFile(new ShapeDTO(cadMeshObjects*.readCoordinates()))
             CADMeshObject firstObject = cadMeshObjects.first()
             Project project = firstObject.project
             CADObject parentCadObject = firstObject.parent

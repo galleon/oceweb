@@ -9,6 +9,8 @@ import org.jcae.opencascade.jni.TopoDS_Shape
 @Log
 class ShapeUtil {
 
+    public static String ls = System.getProperty("line.separator")
+
     public static Map getDefaultData() {
         return ['metadata': ['formatVersion': 3, 'generatedBy': 'tog'], 'scale': 10, 'materials': [], 'morphTargets': [], 'normals': [], 'colors': [], 'uvs': [[]]]
     }
@@ -67,7 +69,24 @@ class ShapeUtil {
     }
 
     public static File createUnvFile(List<ShapeDTO> shapeDTOs) {
-        return createUnvFile(new ShapeDTO(shapeDTOs))
+        String result = ''
+        if (shapeDTOs) {
+            result += shapeDTOs.first().createFormattedVertices() + ls
+            result += facesBeginning
+            List<Integer> entityCounts = shapeDTOs*.entitiesCount
+            shapeDTOs.eachWithIndex {ShapeDTO shapeDTO, int index ->
+                Integer startPoint = entityCounts.take(index).sum() ?: 0
+                result += shapeDTO.readFormattedFaces(startPoint)
+            }
+            result += end + ls
+            result += entitiesBeginning
+            shapeDTOs.eachWithIndex {ShapeDTO shapeDTO, int index ->
+                Integer startPoint = entityCounts.take(index).sum() ?: 0
+                result += shapeDTO.readFormattedEntities(index + 1, startPoint)
+            }
+            result += end
+        }
+        return createUnvFile(result)
     }
 
     public static File createUnvFile(ShapeDTO shapeDTO) {
@@ -93,7 +112,6 @@ class ShapeUtil {
     }
 
     public static String getBeginning(String code) {
-        String ls = System.getProperty("line.separator")
         return "${end}${ls}${' ' * 2}${code}${ls}"
     }
 
