@@ -5,6 +5,7 @@ import grails.validation.ValidationException
 import org.jcae.opencascade.jni.TopAbs_ShapeEnum
 import com.eads.threedviewer.co.*
 import com.eads.threedviewer.util.ShapeUtil
+import com.eads.threedviewer.dto.ShapeDTO
 
 class CADObjectController {
 
@@ -193,7 +194,9 @@ class CADObjectController {
             List<CADMeshObject> cadMeshObjects = cadMeshObject.subCadObjects
             File file
             if (cadMeshObjects) {
-                file = ShapeUtil.createUnvFile(cadMeshObjects*.readCoordinates())
+                ShapeDTO shapeDTO = cadMeshObject.readCoordinates()
+                List<ShapeDTO> shapeDTOs = cadObjectService.setVertices(cadMeshObjects*.readCoordinates(), shapeDTO.vertices)
+                file = ShapeUtil.createUnvFile(shapeDTOs)
             } else {
                 file = cadMeshObject.findUnvFile()
             }

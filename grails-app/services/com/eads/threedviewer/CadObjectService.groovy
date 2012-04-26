@@ -197,10 +197,13 @@ class CadObjectService {
     CADMeshObject merge(List<CADMeshObject> cadMeshObjects) {
         CADMeshObject cadMeshObject
         if (cadMeshObjects) {
-            File file = ShapeUtil.createUnvFile(new ShapeDTO(cadMeshObjects*.readCoordinates()))
             CADMeshObject firstObject = cadMeshObjects.first()
-            Project project = firstObject.project
             CADObject parentCadObject = firstObject.parent
+            Project project = firstObject.project
+
+            List<ShapeDTO> shapeDTOs = cadMeshObjects*.readCoordinates()
+            ShapeDTO shapeDTO = parentCadObject.readCoordinates()
+            File file = ShapeUtil.createUnvFile(new ShapeDTO(setVertices(shapeDTOs, shapeDTO.vertices)))
             cadMeshObject = new CADMeshObject(name: cadMeshObjects*.groupName.join("_"), project: project, type: ShapeType.MESH, deflection: 0, size: 0, parent: parentCadObject)
             if (cadMeshObject) {
                 log.info "CADMesh Object created successfuly"
@@ -218,6 +221,13 @@ class CadObjectService {
         cadObject.errors.allErrors.each {
             log.info "${it}"
         }
+    }
+
+    List<ShapeDTO> setVertices(List<ShapeDTO> shapeDTOs, List vertices) {
+        shapeDTOs.each {ShapeDTO shapeDTO ->
+            shapeDTO.vertices = vertices
+        }
+        return shapeDTOs
     }
 
 }
