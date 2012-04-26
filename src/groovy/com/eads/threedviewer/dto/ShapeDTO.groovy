@@ -6,7 +6,9 @@ import groovy.transform.ToString
 import occmeshextractor.OCCMeshExtractor
 import org.jcae.opencascade.jni.TopoDS_Shape
 import com.eads.threedviewer.util.ShapeUtil
+import groovy.util.logging.Log
 
+@Log
 @ToString(includeNames = true, includeFields = true, excludes = 'metaClass')
 class ShapeDTO {
     public static String ls = System.getProperty("line.separator")
@@ -121,6 +123,7 @@ class ShapeDTO {
         readTriangularVertices(vertices).eachWithIndex {List val, int index ->
             result += "${AppUtil.createFormatI10List([index + 1, 1, 1, 1]).join('')}${ls}${AppUtil.createFormatI25List(val).join('')}${ls}"
         }
+        log.info "Created formatted vertices"
         return result
     }
 
@@ -136,6 +139,7 @@ class ShapeDTO {
         readTriangularFaces(faces).eachWithIndex {List val, int index ->
             result += "${AppUtil.createFormatI10List([index + startPoint + 1, 91, 1, 1, 1, 3]).join('')}${ls}${AppUtil.createFormatI10List(val.collect {it + 1}).join('')}${ls}"
         }
+        log.info "Created formatted faces"
         return result
     }
 
@@ -151,6 +155,7 @@ class ShapeDTO {
         result += (0..((entitiesCount / 2) - 1).toInteger()).collect {[8, ((2 * it) + 1 + startPoint), 0, 0, 8, ((2 * it) + 2 + startPoint), 0, 0]}.collect {List row ->
             AppUtil.createFormatI10List(row).join('')
         }.join(ls) + "${ls}"
+        log.info "Created formatted entities info"
         return result
     }
 
