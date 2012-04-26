@@ -223,6 +223,19 @@ class CadObjectService {
         }
     }
 
+    File generateUnv(CADMeshObject cadMeshObject) {
+        File file
+        List<CADMeshObject> cadMeshObjects = cadMeshObject.subCadObjects
+        if (cadMeshObjects) {
+            ShapeDTO shapeDTO = cadMeshObject.readCoordinates()
+            List<ShapeDTO> shapeDTOs = setVertices(cadMeshObjects*.readCoordinates(), shapeDTO.vertices)
+            file = ShapeUtil.createUnvFile(shapeDTOs)
+        } else {
+            file = cadMeshObject.findUnvFile()
+        }
+        return file
+    }
+
     List<ShapeDTO> setVertices(List<ShapeDTO> shapeDTOs, List vertices) {
         shapeDTOs.each {ShapeDTO shapeDTO ->
             shapeDTO.vertices = vertices

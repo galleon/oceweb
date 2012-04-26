@@ -191,15 +191,7 @@ class CADObjectController {
     def export(Long id) {
         CADMeshObject cadMeshObject = id ? CADMeshObject.get(id) : null
         if (cadMeshObject) {
-            List<CADMeshObject> cadMeshObjects = cadMeshObject.subCadObjects
-            File file
-            if (cadMeshObjects) {
-                ShapeDTO shapeDTO = cadMeshObject.readCoordinates()
-                List<ShapeDTO> shapeDTOs = cadObjectService.setVertices(cadMeshObjects*.readCoordinates(), shapeDTO.vertices)
-                file = ShapeUtil.createUnvFile(shapeDTOs)
-            } else {
-                file = cadMeshObject.findUnvFile()
-            }
+            File file = cadObjectService.generateUnv(cadMeshObject)
             renderUnvFile(file, cadMeshObject.name)
         } else {
             response.sendError(404, "Object not found for id ${id}")
