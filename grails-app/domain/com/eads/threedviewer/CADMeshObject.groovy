@@ -11,7 +11,6 @@ class CADMeshObject extends CADObject {
 /* Dependency Injections (e.g. Services) */
 
 /* Fields */
-    Integer groupName
     float size
     float deflection
 
@@ -21,7 +20,6 @@ class CADMeshObject extends CADObject {
 
 /* Constraints */
     static constraints = {
-        groupName(nullable: true)
         size(nullable: false)
         deflection(nullable: false)
     }
@@ -45,7 +43,7 @@ class CADMeshObject extends CADObject {
 /* Methods */
 
     ShapeDTO readCoordinates() {
-        return new ShapeDTO(ShapeUtil.getUnvGroups(unvFilePath))
+        return new ShapeDTO(ShapeUtil.getUnvGroups(unvFilePath), name)
     }
 
 /* Static Methods */

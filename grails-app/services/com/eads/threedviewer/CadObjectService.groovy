@@ -118,7 +118,7 @@ class CadObjectService {
         List<CADMeshObject> cadMeshObjects = []
         List<ShapeDTO> shapeDTOs = ShapeUtil.getUnvGroups(cadMeshObject.unvFilePath)
         shapeDTOs.each {ShapeDTO shapeDTO ->
-            log.info "creating mesh sub object for groupId ${shapeDTO.groupName} entitycount ${shapeDTO.entitiesCount}"
+            log.info "creating mesh sub object for groupName ${shapeDTO.groupName} entitycount ${shapeDTO.entitiesCount}"
             CADMeshObject subCadMeshObject = saveSubMesh(cadMeshObject, shapeDTO)
             if (subCadMeshObject) {
                 cadMeshObjects.add(subCadMeshObject)
@@ -134,8 +134,8 @@ class CadObjectService {
     }
 
     CADMeshObject createSubCADMesh(CADMeshObject cadMeshObject, ShapeDTO shapeDTO) {
-        CADMeshObject subCadMeshObject = new CADMeshObject(parent: cadMeshObject, project: cadMeshObject.project, name: "${shapeDTO.groupName}",
-                size: cadMeshObject.size, deflection: cadMeshObject.deflection, type: cadMeshObject.type, groupName: shapeDTO.groupName)
+        CADMeshObject subCadMeshObject = new CADMeshObject(parent: cadMeshObject, project: cadMeshObject.project, name: "${shapeDTO.groupName}", size: cadMeshObject.size,
+                deflection: cadMeshObject.deflection, type: cadMeshObject.type)
         return subCadMeshObject
     }
 
@@ -200,11 +200,12 @@ class CadObjectService {
             CADMeshObject firstObject = cadMeshObjects.first()
             CADObject parentCadObject = firstObject.parent
             Project project = firstObject.project
+            String name = cadMeshObjects*.name.join("_")
 
             List<ShapeDTO> shapeDTOs = cadMeshObjects*.readCoordinates()
             ShapeDTO shapeDTO = parentCadObject.readCoordinates()
-            File file = ShapeUtil.createUnvFile(new ShapeDTO(setVertices(shapeDTOs, shapeDTO.vertices)))
-            cadMeshObject = new CADMeshObject(name: cadMeshObjects*.groupName.join("_"), project: project, type: ShapeType.MESH, deflection: 0, size: 0, parent: parentCadObject)
+            File file = ShapeUtil.createUnvFile(new ShapeDTO(setVertices(shapeDTOs, shapeDTO.vertices), name))
+            cadMeshObject = new CADMeshObject(name: name, project: project, type: ShapeType.MESH, deflection: 0, size: 0, parent: parentCadObject)
             if (cadMeshObject) {
                 log.info "CADMesh Object created successfuly"
                 cadMeshObjects.each {CADObject cadObject ->

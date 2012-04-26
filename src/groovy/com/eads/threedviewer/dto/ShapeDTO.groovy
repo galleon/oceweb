@@ -11,7 +11,7 @@ import com.eads.threedviewer.util.ShapeUtil
 class ShapeDTO {
     public static String ls = System.getProperty("line.separator")
 
-    Integer groupName = 0
+    String groupName
     String color
     List vertices = []
     List faces = []
@@ -21,10 +21,11 @@ class ShapeDTO {
         return faces ? (faces.size() / 4) : 0
     }
 
-    ShapeDTO(List<ShapeDTO> shapeDTOs) {
+    ShapeDTO(List<ShapeDTO> shapeDTOs, String name) {
         vertices = shapeDTOs.vertices.flatten()
         edges = shapeDTOs.edges.flatten()
         faces = shapeDTOs.faces.flatten()
+        groupName = name
     }
 
     ShapeDTO(TopoDS_Shape shape) {
@@ -61,20 +62,19 @@ class ShapeDTO {
         this.vertices = vertices
     }
 
-    ShapeDTO(UNVParser parser, Integer groupId) {
+    ShapeDTO(UNVParser parser, String groupName) {
         List vertices = []
         List faces = []
         List edges = []
 
-        Integer id = groupId - 1
-        int[] triangles = parser.getTria3FromGroup(id)
+        int[] triangles = parser.getTria3FromGroup(groupName)
         for (int i = 0; i < triangles.length;) {
             faces << 0
             faces << triangles[i++]
             faces << triangles[i++]
             faces << triangles[i++]
         }
-        int[] quads = parser.getQuad4FromGroup(id)
+        int[] quads = parser.getQuad4FromGroup(groupName)
         for (int i = 0; i < quads.length;) {
             faces << 1
             faces << quads[i++]
@@ -82,7 +82,7 @@ class ShapeDTO {
             faces << quads[i++]
             faces << quads[i++]
         }
-        int[] beams = parser.getQuad4FromGroup(id)
+        int[] beams = parser.getQuad4FromGroup(groupName)
         for (int i = 0; i < beams.length;) {
             edges << beams[i++]
             edges << beams[i++]
@@ -91,7 +91,7 @@ class ShapeDTO {
         parser.nodesCoordinates.each {nodeCoordinate ->
             vertices << nodeCoordinate
         }
-        this.groupName = groupId
+        this.groupName = groupName
         this.vertices = vertices
         this.edges = edges
         this.faces = faces
@@ -146,8 +146,8 @@ class ShapeDTO {
         return result
     }
 
-    String readFormattedEntities(Integer groupId = 1, Integer startPoint = 0) {
-        String result = AppUtil.createFormatI10List([groupId, 0, 0, 0, 0, 0, 0, entitiesCount]).join('') + "${ls}${groupId}${ls}"
+    String readFormattedEntities(Integer groupNumber = 1, String groupName = '1', Integer startPoint = 0) {
+        String result = AppUtil.createFormatI10List([groupNumber, 0, 0, 0, 0, 0, 0, entitiesCount]).join('') + "${ls}${groupName}${ls}"
         result += (0..((entitiesCount / 2) - 1).toInteger()).collect {[8, ((2 * it) + 1 + startPoint), 0, 0, 8, ((2 * it) + 2 + startPoint), 0, 0]}.collect {List row ->
             AppUtil.createFormatI10List(row).join('')
         }.join(ls) + "${ls}"

@@ -31,15 +31,16 @@ public class UNVParser {
      * @deprecated use getGroupNames instead.
      */
     @Deprecated
-    public String[] getTria3GroupNames() {
+    public List getTria3GroupNames() {
         return getGroupNames();
     }
 
-    public String[] getGroupNames() {
-        return surfaceGroupNames.toArray(new String[0]);
+    public List getGroupNames() {
+        return surfaceGroupNames.toList()
     }
 
-    public int[] getTria3FromGroup(int groupId) {
+    public int[] getTria3FromGroup(String groupName) {
+        int groupId = groupNames.indexOf(groupName)
         int[] elids = surfaceGroups.get(groupId);
         int cnt = 0;
         for (int val: elids) {
@@ -59,7 +60,8 @@ public class UNVParser {
         return toReturn;
     }
 
-    public int[] getQuad4FromGroup(int groupId) {
+    public int[] getQuad4FromGroup(String groupName) {
+        int groupId = groupNames.indexOf(groupName)
         int[] elids = surfaceGroups.get(groupId);
         int cnt = 0;
         for (int val: elids) {
