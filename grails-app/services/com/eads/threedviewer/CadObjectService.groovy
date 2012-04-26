@@ -36,6 +36,8 @@ class CadObjectService {
         project.save()
         cadObject = cadObject.save()
         if (!cadObject) {
+            log.info "Saved cadObject ${cadObject.id} : ${cadObject.name}"
+        } else {
             logErrors(cadObject)
         }
         return cadObject
@@ -195,11 +197,13 @@ class CadObjectService {
     CADMeshObject merge(List<CADMeshObject> cadMeshObjects) {
         CADMeshObject cadMeshObject
         if (cadMeshObjects) {
+            log.info "Merging cadobjects"
             CADMeshObject firstObject = cadMeshObjects.first()
             CADObject parentCadObject = firstObject.parent
             Project project = firstObject.project
             String name = cadMeshObjects*.name.join("_")
 
+            log.info "creating merge object for Project : ${project.name} with the name : ${name} for cadobjects : ${cadMeshObjects*.id}"
             ShapeDTO shapeDTO = parentCadObject.readCoordinates()
             File file = ShapeUtil.createUnvFile(new ShapeDTO(setVertices(cadMeshObjects*.readCoordinates(), shapeDTO.vertices), name))
             cadMeshObject = saveCADObjectAndUnvFile(createCADMeshObject(project, name, parentCadObject), file)
@@ -213,11 +217,9 @@ class CadObjectService {
     }
 
     void deleteCADObjects(List<CADObject> cadObjects) {
-        log.info "CADMesh Object created successfuly"
         cadObjects.each {CADObject cadObject ->
             delete(cadObject)
         }
-
     }
 
     CADMeshObject createCADMeshObject(Project project, String name, CADObject parentCadObject) {
@@ -238,12 +240,14 @@ class CadObjectService {
             file = createUnv(cadMeshObjects)
             file.renameTo(cadMeshObject.unvFilePath)
         } else {
+            log.info "Getting existing unv file"
             file = cadMeshObject.findUnvFile()
         }
         return file
     }
 
     File createUnv(List<CADObject> cadObjects) {
+        log.info "Createing unv file for cadObjects ${cadObjects*.id}"
         CADObject cadObject = cadObjects.first().parent
         ShapeDTO shapeDTO = cadObject.readCoordinates()
         List<ShapeDTO> shapeDTOs = setVertices(cadObjects*.readCoordinates(), shapeDTO.vertices)
