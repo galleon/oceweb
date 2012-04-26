@@ -4,8 +4,6 @@ import grails.converters.JSON
 import grails.validation.ValidationException
 import org.jcae.opencascade.jni.TopAbs_ShapeEnum
 import com.eads.threedviewer.co.*
-import com.eads.threedviewer.util.ShapeUtil
-import com.eads.threedviewer.dto.ShapeDTO
 
 class CADObjectController {
 
@@ -191,8 +189,7 @@ class CADObjectController {
     def export(Long id) {
         CADMeshObject cadMeshObject = id ? CADMeshObject.get(id) : null
         if (cadMeshObject) {
-            File file = cadObjectService.generateUnv(cadMeshObject)
-            renderUnvFile(file, cadMeshObject.name)
+            renderUnvFile(cadMeshObject.findUnvFile(), cadMeshObject.name)
         } else {
             response.sendError(404, "Object not found for id ${id}")
         }

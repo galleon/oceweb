@@ -200,19 +200,28 @@ class CadObjectService {
             Project project = firstObject.project
             String name = cadMeshObjects*.name.join("_")
 
-            List<ShapeDTO> shapeDTOs = cadMeshObjects*.readCoordinates()
             ShapeDTO shapeDTO = parentCadObject.readCoordinates()
-            File file = ShapeUtil.createUnvFile(new ShapeDTO(setVertices(shapeDTOs, shapeDTO.vertices), name))
-            cadMeshObject = new CADMeshObject(name: name, project: project, type: ShapeType.MESH, deflection: 0, size: 0, parent: parentCadObject)
-            cadMeshObject = saveCADObjectAndUnvFile(cadMeshObject, file)
+            File file = ShapeUtil.createUnvFile(new ShapeDTO(setVertices(cadMeshObjects*.readCoordinates(), shapeDTO.vertices), name))
+            cadMeshObject = saveCADObjectAndUnvFile(createCADMeshObject(project, name, parentCadObject), file)
+
             if (cadMeshObject) {
-                log.info "CADMesh Object created successfuly"
-                cadMeshObjects.each {CADObject cadObject ->
-                    delete(cadObject)
-                }
+                deleteCADObjects(cadMeshObjects)
+                createAndReplaceUnv(parentCadObject)
             }
         }
         return cadMeshObject
+    }
+
+    void deleteCADObjects(List<CADObject> cadObjects) {
+        log.info "CADMesh Object created successfuly"
+        cadObjects.each {CADObject cadObject ->
+            delete(cadObject)
+        }
+
+    }
+
+    CADMeshObject createCADMeshObject(Project project, String name, CADObject parentCadObject) {
+        return new CADMeshObject(name: name, project: project, type: ShapeType.MESH, deflection: 0, size: 0, parent: parentCadObject)
     }
 
     void logErrors(CADObject cadObject) {
@@ -222,17 +231,23 @@ class CadObjectService {
         }
     }
 
-    File generateUnv(CADMeshObject cadMeshObject) {
+    File createAndReplaceUnv(CADObject cadMeshObject) {
         File file
-        List<CADMeshObject> cadMeshObjects = cadMeshObject.subCadObjects
+        List<CADObject> cadMeshObjects = cadMeshObject.subCadObjects
         if (cadMeshObjects) {
-            ShapeDTO shapeDTO = cadMeshObject.readCoordinates()
-            List<ShapeDTO> shapeDTOs = setVertices(cadMeshObjects*.readCoordinates(), shapeDTO.vertices)
-            file = ShapeUtil.createUnvFile(shapeDTOs)
+            file = createUnv(cadMeshObjects)
+            file.renameTo(cadMeshObject.unvFilePath)
         } else {
             file = cadMeshObject.findUnvFile()
         }
         return file
+    }
+
+    File createUnv(List<CADObject> cadObjects) {
+        CADObject cadObject = cadObjects.first().parent
+        ShapeDTO shapeDTO = cadObject.readCoordinates()
+        List<ShapeDTO> shapeDTOs = setVertices(cadObjects*.readCoordinates(), shapeDTO.vertices)
+        return ShapeUtil.createUnvFile(shapeDTOs)
     }
 
     List<ShapeDTO> setVertices(List<ShapeDTO> shapeDTOs, List vertices) {
