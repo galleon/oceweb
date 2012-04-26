@@ -206,13 +206,13 @@ class CadObjectService {
             ShapeDTO shapeDTO = parentCadObject.readCoordinates()
             File file = ShapeUtil.createUnvFile(new ShapeDTO(setVertices(shapeDTOs, shapeDTO.vertices), name))
             cadMeshObject = new CADMeshObject(name: name, project: project, type: ShapeType.MESH, deflection: 0, size: 0, parent: parentCadObject)
+            cadMeshObject = saveCADObjectAndUnvFile(cadMeshObject, file)
             if (cadMeshObject) {
                 log.info "CADMesh Object created successfuly"
                 cadMeshObjects.each {CADObject cadObject ->
                     delete(cadObject)
                 }
             }
-            cadMeshObject = saveCADObjectAndUnvFile(cadMeshObject, file)
         }
         return cadMeshObject
     }
