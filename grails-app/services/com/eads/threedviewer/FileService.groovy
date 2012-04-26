@@ -23,7 +23,17 @@ class FileService {
         }
     }
 
-    boolean renameFolder(File file,String folderPath){
-        return file.renameTo(folderPath)
+    void deleteFilesExcept(File folder, File file) {
+        log.info "Deleting unneccessary files and folders from ${folder.name} except ${file.name}"
+        folder.eachDir {
+            log.info "Deleting folder ${it.name}"
+            it.deleteDir()
+        }
+        folder.eachFile {
+            if (it.name != file.name) {
+                log.info "Deleting file ${it.name}"
+                it.delete()
+            }
+        }
     }
 }

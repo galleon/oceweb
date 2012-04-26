@@ -28,6 +28,8 @@ import com.eads.threedviewer.co.SimulationCO
 
 class ShapeService {
 
+    def fileService
+
     List<TopoDS_Shape> explode(CADObject cadObject, TopAbs_ShapeEnum shapeType) {
         TopoDS_Shape shape = ShapeUtil.getShape(cadObject.findBrepFile())
         return explode(shape, shapeType)
@@ -65,12 +67,11 @@ class ShapeService {
     }
 
     //TODO -: Refactore code and check why its not working in co class so that project service method of creating cadobject can be used
-    File generateMeshFolder(MeshCO co, Long id) {
+    File generateMeshFolder(MeshCO co, String folderPath, Long id) {
         float size = co.size
         float deflection = co.deflection
         File file = co.findOrCreateCADObject().parent.findBrepFile()
         String brepfile = file.name
-        String outputDir = "/tmp/${id}"
         String brepdir = file.parent
 
         if (brepfile.indexOf((int) File.separatorChar) >= 0) {
@@ -79,23 +80,23 @@ class ShapeService {
             brepfile = brepfile.substring(idx + 1)
         }
 
-        String unvName = "${outputDir}/${id}.unv"
-        log.info "Output Dir -: ${outputDir} ,unvName -: ${unvName} ,brepDir -: ${brepdir}"
+        String unvName = "${folderPath}/${id}.unv"
+        log.info "Output Dir -: ${folderPath} ,unvName -: ${unvName} ,brepDir -: ${brepdir}"
 
-        File xmlDirF = new File(outputDir);
+        File xmlDirF = new File(folderPath);
         xmlDirF.mkdirs();
         if (!xmlDirF.exists() || !xmlDirF.isDirectory()) {
-            log.info "Cannot write to ${outputDir}"
+            log.info "Cannot write to ${folderPath}"
         } else {
             CADShapeFactory factory = CADShapeFactory.getFactory()
 
-            if (!brepdir.equals(outputDir)) {
+            if (!brepdir.equals(folderPath)) {
                 FileInputStream is = null;
                 FileOutputStream os = null;
                 try {
                     is = new FileInputStream(brepdir + File.separator + brepfile);
                     FileChannel iChannel = is.getChannel();
-                    os = new FileOutputStream(new File(outputDir, brepfile), false);
+                    os = new FileOutputStream(new File(folderPath, brepfile), false);
                     FileChannel oChannel = os.getChannel();
                     oChannel.transferFrom(iChannel, 0, iChannel.size());
                 } finally {
@@ -104,7 +105,7 @@ class ShapeService {
                 }
             }
 
-            MMesh1D mesh1d = new MMesh1D(outputDir + File.separator + brepfile)
+            MMesh1D mesh1d = new MMesh1D(folderPath + File.separator + brepfile)
             CADShape shape = mesh1d.getGeometry();
             HashMap<String, String> options1d = new HashMap<String, String>()
             options1d.put("size", "" + size)
@@ -118,7 +119,7 @@ class ShapeService {
                 new Compat1D2D(mesh1d, options1d).compute()
             }
 
-            MMesh1DWriter.writeObject(mesh1d, outputDir, brepfile)
+            MMesh1DWriter.writeObject(mesh1d, folderPath, brepfile)
             log.info "Edges discretized"
 
 // Mesh 2D
@@ -178,13 +179,13 @@ class ShapeService {
 
                         log.info "Face #${iface} has been meshed"
                     }
-                    MeshWriter.writeObject(mesh, outputDir, brepfile, iface)
+                    MeshWriter.writeObject(mesh, folderPath, brepfile, iface)
                 }
             }
 
 // Mesh 3D
             expl = factory.newExplorer()
-            MeshToMMesh3DConvert m2dto3d = new MeshToMMesh3DConvert(outputDir, brepfile, shape)
+            MeshToMMesh3DConvert m2dto3d = new MeshToMMesh3DConvert(folderPath, brepfile, shape)
             m2dto3d.exportUNV(unvName != null, unvName)
 
             iface = 0
@@ -204,6 +205,7 @@ class ShapeService {
             }
             m2dto3d.afterProcessingAllShapes()
         }
+        fileService.deleteFilesExcept(xmlDirF, new File(unvName))
         return xmlDirF
     }
 }

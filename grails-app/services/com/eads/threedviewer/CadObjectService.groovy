@@ -103,9 +103,7 @@ class CadObjectService {
         CADMeshObject cadObject = co.findOrCreateCADObject() as CADMeshObject
         cadObject = save(co.project, cadObject as CADObject)
         if (cadObject) {
-            File file = shapeService.generateMeshFolder(co, cadObject.id)
-            log.info "CadMeshObject saved successfuly. Moving ${file.path} to ${cadObject.filesFolderPath}"
-            fileService.renameFolder(file, cadObject.filesFolderPath)
+            File file = shapeService.generateMeshFolder(co, cadObject.filesFolderPath, cadObject.id)
             saveSubMeshes(cadObject)
         }
         else {
