@@ -197,7 +197,6 @@ class CadObjectService {
     CADMeshObject merge(List<CADMeshObject> cadMeshObjects) {
         CADMeshObject cadMeshObject
         if (cadMeshObjects) {
-            log.info "Merging cadobjects"
             CADMeshObject firstObject = cadMeshObjects.first()
             CADObject parentCadObject = firstObject.parent
             Project project = firstObject.project
@@ -205,7 +204,12 @@ class CadObjectService {
 
             log.info "creating merge object for Project : ${project.name} with the name : ${name} for cadobjects : ${cadMeshObjects*.id}"
             ShapeDTO shapeDTO = parentCadObject.readCoordinates()
-            File file = ShapeUtil.createUnvFile(new ShapeDTO(setVertices(cadMeshObjects*.readCoordinates(), shapeDTO.vertices), name))
+            List<ShapeDTO> shapeDTOs = cadMeshObjects*.readCoordinates()
+            log.info "Created dtos for cadmesh objects ${shapeDTOs.size()}"
+
+            shapeDTO = new ShapeDTO(setVertices(shapeDTOs, shapeDTO.vertices), name)
+            log.info "New shapeDTO constructed for merging and now creating unv file"
+            File file = ShapeUtil.createUnvFile(shapeDTO)
             cadMeshObject = saveCADObjectAndUnvFile(createCADMeshObject(project, name, parentCadObject), file)
 
             if (cadMeshObject) {
