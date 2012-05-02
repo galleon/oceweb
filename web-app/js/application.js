@@ -10,29 +10,13 @@ var mouseXOnMouseDown = 0;
 var mouseYOnMouseDown = 0;
 var objectColor = 0x545354;
 var selectionColor = 0xff0000;
-var httpData = $.httpData || function (xhr, type, s) { // lifted from jq1.4.4
-    var ct = xhr.getResponseHeader("content-type") || "",
-        xml = type === "xml" || !type && ct.indexOf("xml") >= 0,
-        data = xml ? xhr.responseXML : xhr.responseText;
-
-    if (xml && data.documentElement.nodeName === "parsererror") {
-        $.error("parsererror");
-    }
-
-    if (s && s.dataFilter) {
-        data = s.dataFilter(data, type);
-    }
-
-    if (typeof data === "string") {
-        if (type === "json" || !type && ct.indexOf("json") >= 0) {
-            data = $.parseJSON(data);
-        } else if (type === "script" || !type && ct.indexOf("javascript") >= 0) {
-            $.globalEval(data);
-        }
-    }
-    return data;
-};
 $(document).ready(function () {
+    $("#spinner").ajaxStart(function () {
+        showFlashInfo('Please wait while you content is loading')
+    });
+    $("#spinner").ajaxStop(function () {
+        hideFlashMessage();
+    });
     $("#closeFlash").click(function () {
         hideFlashMessage();
     });
@@ -44,26 +28,9 @@ $(document).ready(function () {
     enableJsTree();
     initialiseCanvas('content');
     showShapeFromLocalStorage();
-    jQuery("#spinner").ajaxStart(function () {
-        showFlashInfo('Please wait while you content is loading')
-    });
-    jQuery("#spinner").ajaxStop(function () {
-        hideFlashMessage();
-    });
+    jQuery.ajaxSetup({cache:true});
     setupUI();
     ajaxSubmit();
-    jQuery.ajaxSetup({cache:true});
-    jQuery("#spinner").ajaxComplete(function (event, xhr, options) {
-        var data = httpData(xhr, options.dataType, options);
-        var inputFieldIndex = -1;
-        try {
-            inputFieldIndex = data.indexOf("Session TimedOut url");
-        } catch (err) {
-        }
-        if (inputFieldIndex > -1) {
-            window.location.href = data.substring(data.indexOf("=") + 1, data.length);
-        }
-    });
     closeModel();
     $("input:submit,input:button, button,a.modelLink").button();
     $(".model").click(function () {
