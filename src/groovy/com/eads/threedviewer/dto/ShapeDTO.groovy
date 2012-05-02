@@ -24,7 +24,7 @@ class ShapeDTO {
     }
 
     ShapeDTO(List<ShapeDTO> shapeDTOs, String name) {
-        vertices = shapeDTOs.vertices.flatten()
+        vertices = shapeDTOs.first().vertices
         edges = shapeDTOs.edges.flatten()
         faces = shapeDTOs.faces.flatten()
         groupName = name
