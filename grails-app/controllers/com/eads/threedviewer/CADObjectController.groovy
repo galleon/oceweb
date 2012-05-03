@@ -177,7 +177,7 @@ class CADObjectController {
     def merge() {
         Map result = ['success': 'Deleted Successfully']
         Set ids = params.list('ids')*.toLong()
-        List<CADMeshObject> cadMeshObjects = ids ? CADMeshObject.findAllByIdInList(ids.toList()) : []
+        List<CADMeshObject> cadMeshObjects = ids ? CADMeshObject.findAllByIdInList(ids.toList(), [sort: 'id']) : []
         try {
             cadObjectService.merge(cadMeshObjects)
         } catch (RuntimeException rte) {

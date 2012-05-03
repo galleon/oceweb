@@ -197,11 +197,12 @@ class CadObjectService {
             String name = cadMeshObjects*.name.join("_")
 
             log.info "creating merge object for Project : ${project.name} with the name : ${name} for cadobjects : ${cadMeshObjects*.id}"
-            ShapeDTO shapeDTO = parentCadObject.readCoordinates()
+            ShapeDTO parentShapeDTO = parentCadObject.readCoordinates()
             List<ShapeDTO> shapeDTOs = cadMeshObjects*.readCoordinates()
             log.info "Created dtos for cadmesh objects ${shapeDTOs.size()}"
 
-            shapeDTO = new ShapeDTO(setVertices(shapeDTOs, shapeDTO.vertices), name)
+            ShapeDTO shapeDTO = new ShapeDTO(shapeDTOs, name)
+            shapeDTO.vertices = parentShapeDTO.vertices
             log.info "New shapeDTO constructed for merging and now creating unv file"
             File file = ShapeUtil.createUnvFile(shapeDTO)
             cadMeshObject = saveCADObjectAndUnvFile(createCADMeshObject(project, name, parentCadObject), file)
@@ -248,13 +249,22 @@ class CadObjectService {
         log.info "Createing unv file for cadObjects ${cadObjects*.id}"
         CADObject cadObject = cadObjects.first().parent
         ShapeDTO shapeDTO = cadObject.readCoordinates()
-        List<ShapeDTO> shapeDTOs = setVertices(cadObjects*.readCoordinates(), shapeDTO.vertices)
+        List<ShapeDTO> shapeDTOs = cadObjects*.readCoordinates()
+        shapeDTOs = setVertices(shapeDTOs, shapeDTO.vertices)
+        shapeDTOs = setFaces(shapeDTOs, shapeDTO.faces)
         return ShapeUtil.createUnvFile(shapeDTOs)
     }
 
     List<ShapeDTO> setVertices(List<ShapeDTO> shapeDTOs, List vertices) {
         shapeDTOs.each {ShapeDTO shapeDTO ->
             shapeDTO.vertices = vertices
+        }
+        return shapeDTOs
+    }
+
+    List<ShapeDTO> setFaces(List<ShapeDTO> shapeDTOs, List faces) {
+        shapeDTOs.each {ShapeDTO shapeDTO ->
+            shapeDTO.faces = faces
         }
         return shapeDTOs
     }

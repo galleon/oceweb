@@ -70,13 +70,11 @@ class ShapeUtil {
     public static File createUnvFile(List<ShapeDTO> shapeDTOs) {
         String result = ''
         if (shapeDTOs) {
-            result += shapeDTOs.first().createFormattedVertices() + ls
+            ShapeDTO firstDTO = shapeDTOs.first()
+            result += firstDTO.createFormattedVertices() + ls
             result += facesBeginning
             List<Integer> entityCounts = shapeDTOs*.entitiesCount
-            shapeDTOs.eachWithIndex {ShapeDTO shapeDTO, int index ->
-                Integer startPoint = entityCounts.take(index).sum() ?: 0
-                result += shapeDTO.readFormattedFaces(startPoint)
-            }
+            result += firstDTO.readFormattedFaces()
             result += end + ls
             result += entitiesBeginning
             shapeDTOs.eachWithIndex {ShapeDTO shapeDTO, int index ->
