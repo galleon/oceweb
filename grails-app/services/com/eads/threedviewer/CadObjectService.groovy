@@ -139,12 +139,6 @@ class CadObjectService {
         return subCadMeshObject
     }
 
-
-    CADMeshObject updateMesh(MeshCO co) {
-        CADMeshObject cadObject = co.findOrCreateCADObject() as CADMeshObject
-        cadObject.save()
-    }
-
     void delete(Set<Long> ids) {
         List<CADObject> cadObjects = ids ? CADObject.getAll(ids.toList()) : []
         cadObjects.each {CADObject cadObject ->

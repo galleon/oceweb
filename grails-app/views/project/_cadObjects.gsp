@@ -1,4 +1,3 @@
-<%@ page import="com.eads.threedviewer.enums.ShapeType" %>
 <g:render template="/project/confirmDelete" model="[project: project]"/>
 
 <div class="block small left">

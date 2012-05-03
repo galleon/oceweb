@@ -132,7 +132,7 @@ function addToLocalStorage(id) {
             }
         })
         debugStatement("Value of found after reading from local storage is -: " + found)
-        if (found == false) {
+        if (!found) {
             debugStatement("Id -: " + id + " not in local storage so adding it")
             currentIds.push(parseInt(id))
             window.localStorage.objectIDs = JSON.stringify(currentIds)
@@ -394,20 +394,11 @@ function enableJsTree() {
     }).bind("select_node.jstree",
         function (event, data) {
             if ($('#project').jstree('get_selected').size() == 1) {
-                showShape(data.rslt.obj.children().filter('a').attr('id'))
+                if (data.rslt.obj.children().filter('a').hasClass('showObject')) {
+                    showShape(data.rslt.obj.children().filter('a').attr('id'))
+                }
             }
 
-        }).bind("rename.jstree", function (e, data) {
-            var id = data.rslt.obj.children().filter('a').attr("id")
-            var name = data.rslt.new_name;
-            $.post(createLink('CADObject', 'rename'), {id:id, name:name}, function (response) {
-                if (response.success) {
-                    showFlashSuccess(response.success)
-                }
-                if (response.error) {
-                    showFlashError(response.error)
-                }
-            })
         })
 }
 
@@ -531,7 +522,6 @@ function defaultMenu(node) {
                 var rel = $(val).attr('rel');
                 debugStatement("index " + index + " rel -: " + rel);
                 if (!hasMesh && rel == "MESH") {
-
                     hasMesh = true
                 }
             });
@@ -580,8 +570,33 @@ function defaultMenu(node) {
 
 function toggleVisibility(node) {
     var id = $(node).children().filter('a').attr('id');
+    toggleVisibilityById(id)
+}
+
+function toggleVisibilityById(id) {
     var object = group.getChildByName(id);
+    var isNotParentMesh = $("#" + id).hasClass('showObject');
     if (object) {
+        if (isNotParentMesh) {
+            toggleVisibilityByObject(object);
+        }
+    } else {
+        if (isNotParentMesh) {
+            debugStatement("Object not found in group and this object is not parent mesh");
+            showShape(id);
+        } else {
+            debugStatement("This object is parent mesh")
+            $.each($("#" + id).parent().children().filter('ul').children().children().filter('a'), function (index, value) {
+                id = $(value).attr('id')
+                toggleVisibilityById(id)
+            })
+        }
+    }
+}
+
+function toggleVisibilityByObject(object) {
+    if (object) {
+        debugStatement("This object is not parent mesh")
         var color = '';
         var visible;
         if (object.visible) {
@@ -594,7 +609,7 @@ function toggleVisibility(node) {
         setVisible(object, visible);
         setColor(object, color);
     } else {
-        showShape(id);
+        debugStatement("No object found for toggle visibility")
     }
 }
 
@@ -708,7 +723,7 @@ function confirmDelete(node) {
                             removeObjects(ids);
                             reloadProjectTree();
                         } else {
-                            showError(response.error);
+                            showFlashError(response.error);
                         }
                     });
                 }

@@ -1,5 +1,7 @@
 <li id="${"phtml_" + (count)}" rel="${cadObject.type}">
-    <a href="${createLink(controller: 'CADObject', action: 'show', id: cadObject.id)}" class="showObject ${cadObject.parent ? 'parent_' + cadObject.parent.type : ''}"
+    <a href="${createLink(controller: 'CADObject', action: 'show', id: cadObject.id)}"
+       class="${cadObject.isMesh() && !cadObject?.parent?.isMesh() ? '' : 'showObject'}
+       ${cadObject.parent ? 'parent_' + cadObject.parent.type : ''}"
        id="${cadObject.id}" title="Edit ${cadObject.type.value}"
        rel='${createLink(controller: "CADObject", action: "create${cadObject.type.value}", id: cadObject.id)}'>${cadObject.name}</a>
     <g:if test="${cadObject?.subCadObjects}">

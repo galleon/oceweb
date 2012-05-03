@@ -2,9 +2,8 @@ package com.eads.threedviewer
 
 import com.eads.threedviewer.co.BooleanOperationCO
 import com.eads.threedviewer.co.MeshCO
-import com.eads.threedviewer.dto.ShapeDTO
+import com.eads.threedviewer.co.SimulationCO
 import com.eads.threedviewer.enums.Operation
-import com.eads.threedviewer.enums.ShapeType
 import com.eads.threedviewer.util.ShapeUtil
 import java.nio.channels.FileChannel
 import org.jcae.mesh.amibe.algos1d.Compat1D2D
@@ -24,7 +23,6 @@ import org.jcae.mesh.xmldata.MeshToMMesh3DConvert
 import org.jcae.mesh.xmldata.MeshWriter
 import org.jcae.mesh.amibe.algos2d.*
 import org.jcae.opencascade.jni.*
-import com.eads.threedviewer.co.SimulationCO
 
 class ShapeService {
 
