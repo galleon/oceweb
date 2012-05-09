@@ -106,7 +106,7 @@ function showShapeFromLocalStorage() {
         $.each(objectIDs, function (key, value) {
             $.each(projectShapeIds, function (index, shapeId) {
                 if (parseInt(value) == parseInt(shapeId)) {
-                    $("#" + value + '').click()
+                    showShape(value);
                 }
             });
         })
@@ -266,7 +266,7 @@ function onDocumentMouseDown(event) {
         var object = intersects[ 0 ].object;
         if (object.visible) {
             repaint();
-            $("#" + object.name).click();
+            showShape(object.name);
         }
     }
 }
@@ -391,15 +391,7 @@ function enableJsTree() {
                 }
             }
         }
-    }).bind("select_node.jstree",
-        function (event, data) {
-            if ($('#project').jstree('get_selected').size() == 1) {
-                if (data.rslt.obj.children().filter('a').hasClass('showObject')) {
-                    showShape(data.rslt.obj.children().filter('a').attr('id'))
-                }
-            }
-
-        })
+    })
 }
 
 function defaultMenu(node) {
