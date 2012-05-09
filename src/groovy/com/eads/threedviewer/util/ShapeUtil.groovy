@@ -67,14 +67,18 @@ class ShapeUtil {
         return parser.groupNames.collect {String groupName -> new ShapeDTO(parser, groupName)}
     }
 
-    public static File createUnvFile(List<ShapeDTO> shapeDTOs) {
+    public static File createUnvFile(List<ShapeDTO> shapeDTOs, String facesContent = null) {
+        return createUnvFile(createUnvContent(shapeDTOs, facesContent))
+    }
+
+    public static createUnvContent(List<ShapeDTO> shapeDTOs, String facesContent = null) {
         String result = ''
         if (shapeDTOs) {
             ShapeDTO firstDTO = shapeDTOs.first()
             result += firstDTO.createFormattedVertices() + ls
             result += facesBeginning
             List<Integer> entityCounts = shapeDTOs*.entitiesCount
-            result += firstDTO.readFormattedFaces()
+            result += (facesContent ?: firstDTO.readFormattedFaces())
             result += end + ls
             result += entitiesBeginning
             shapeDTOs.eachWithIndex {ShapeDTO shapeDTO, int index ->
@@ -83,7 +87,7 @@ class ShapeUtil {
             }
             result += end
         }
-        return createUnvFile(result)
+        return result
     }
 
     public static File createUnvFile(ShapeDTO shapeDTO) {
