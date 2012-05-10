@@ -43,7 +43,9 @@ class CADMeshObject extends CADObject {
 /* Methods */
 
     ShapeDTO readCoordinates() {
-        return new ShapeDTO(ShapeUtil.getUnvGroups(unvFilePath), name)
+        ShapeDTO shapeDTO = new ShapeDTO(ShapeUtil.getUnvGroups(unvFilePath), name)
+        shapeDTO.color = Math.random() * 0xffffff
+        return shapeDTO
     }
 
 /* Static Methods */

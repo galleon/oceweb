@@ -178,7 +178,10 @@ function createMesh(response, name) {
             geometry = changeFaceOrientation(geometry);
         }
         color = selectionColor;
-        var localColor = getLocalColor(name)
+        if (response.color) {
+            color = response.color
+        }
+        var localColor = getLocalColor(name);
         if (localColor) {
             color = localColor
         }
@@ -527,7 +530,7 @@ function defaultMenu(node) {
         var allParentMesh = true;
         $.each($('#project').jstree('get_selected').children().filter('a'), function (index, val) {
             var hasParentMesh = $(val).hasClass('parent_MESH')
-            debugStatement("index " + index + " hasParentMesh -: " + hasParentMesh)
+            debugStatement("index " + index + " val " + val + " hasParentMesh -: " + hasParentMesh)
             if (allParentMesh && !hasParentMesh) {
                 allParentMesh = false
             }
@@ -561,8 +564,10 @@ function defaultMenu(node) {
 }
 
 function toggleVisibility(node) {
-    var id = $(node).children().filter('a').attr('id');
-    toggleVisibilityById(id)
+    $.each($('#project').jstree('get_selected').children().filter('a'), function (index, val) {
+        var id = $(val).attr('id');
+        toggleVisibilityById(id)
+    });
 }
 
 function toggleVisibilityById(id) {
@@ -577,7 +582,7 @@ function toggleVisibilityById(id) {
             debugStatement("Object not found in group and this object is not parent mesh");
             showShape(id);
         } else {
-            debugStatement("This object is parent mesh")
+            debugStatement("Object " + id + " is parent mesh")
             $.each($("#" + id).parent().children().filter('ul').children().children().filter('a'), function (index, value) {
                 id = $(value).attr('id')
                 toggleVisibilityById(id)
@@ -588,14 +593,14 @@ function toggleVisibilityById(id) {
 
 function toggleVisibilityByObject(object) {
     if (object) {
-        debugStatement("This object is not parent mesh")
+        debugStatement("Object " + object.name + " is not parent mesh")
         var color = '';
         var visible;
         if (object.visible) {
             visible = false;
-            color = objectColor;
+            color = getColorForRepaint(object.name);
         } else {
-            color = selectionColor;
+            color = getColorForSelection(object.name);
             visible = true;
         }
         setVisible(object, visible);
@@ -748,14 +753,30 @@ function repaint() {
     debugStatement("Repainting the group");
     $.each($("#phtml_1").children().find('li a'), function () {
         var id = $(this).attr('id');
-        debugStatement("Repainting " + id + " to color " + objectColor)
-        var object = scene.getChildByName(id + '', true)
+        debugStatement("Repainting " + id + " to color " + objectColor);
+        var object = scene.getChildByName(id + '', true);
         if (object) {
-            setColor(object, objectColor);
+            setColor(object, getColorForRepaint(id));
         } else {
             debugStatement("object not found for coloring -: " + id)
         }
     })
+}
+
+function getColorForRepaint(id) {
+    var color = getLocalColor(id);
+    if (!color) {
+        color = objectColor
+    }
+    return color;
+}
+
+function getColorForSelection(id) {
+    var color = getLocalColor(id);
+    if (!color) {
+        color = selectionColor
+    }
+    return color;
 }
 
 function showMessage(message, className) {
