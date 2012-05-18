@@ -13,21 +13,53 @@ import groovy.util.logging.Log
 class ShapeDTO {
     public static String ls = System.getProperty("line.separator")
 
-    String groupName
     String color
     List vertices = []
     List faces = []
     List edges = []
+    List<ShapeGroup> groups
 
-    Integer getEntitiesCount() {
-        return faces ? (faces.size() / 4) : 0
+    String getGroupName() {
+        return (groups ? groups.name.join("_") : 'No Group')
     }
 
-    ShapeDTO(List<ShapeDTO> shapeDTOs, String name) {
-        vertices = shapeDTOs.first().vertices
-        faces = shapeDTOs.faces.flatten()
-        edges = shapeDTOs.edges.flatten()
-        groupName = name
+    ShapeDTO(String fileName) {
+        List vertices = []
+        List faces = []
+        List edges = []
+
+        UNVParser parser = new UNVParser()
+        parser.parse(new BufferedReader(new FileReader(fileName)))
+        parser.groupNames.each {String groupName ->
+            int[] triangles = parser.getTria3FromGroup(groupName)
+            for (int i = 0; i < triangles.length;) {
+                faces << 0
+                faces << triangles[i++]
+                faces << triangles[i++]
+                faces << triangles[i++]
+            }
+            int[] quads = parser.getQuad4FromGroup(groupName)
+            for (int i = 0; i < quads.length;) {
+                faces << 1
+                faces << quads[i++]
+                faces << quads[i++]
+                faces << quads[i++]
+                faces << quads[i++]
+            }
+            int[] beams = parser.getQuad4FromGroup(groupName)
+            for (int i = 0; i < beams.length;) {
+                edges << beams[i++]
+                edges << beams[i++]
+            }
+        }
+        parser.nodesCoordinates.each {nodeCoordinate ->
+            vertices << nodeCoordinate
+        }
+
+        this.groups = parser.groupInfo
+        this.vertices = vertices
+        this.edges = edges
+        this.faces = faces
     }
 
     ShapeDTO(TopoDS_Shape shape) {
@@ -64,50 +96,15 @@ class ShapeDTO {
         this.vertices = vertices
     }
 
-    ShapeDTO(UNVParser parser, String groupName) {
-        List vertices = []
-        List faces = []
-        List edges = []
-
-        int[] triangles = parser.getTria3FromGroup(groupName)
-        for (int i = 0; i < triangles.length;) {
-            faces << 0
-            faces << triangles[i++]
-            faces << triangles[i++]
-            faces << triangles[i++]
-        }
-        int[] quads = parser.getQuad4FromGroup(groupName)
-        for (int i = 0; i < quads.length;) {
-            faces << 1
-            faces << quads[i++]
-            faces << quads[i++]
-            faces << quads[i++]
-            faces << quads[i++]
-        }
-        int[] beams = parser.getQuad4FromGroup(groupName)
-        for (int i = 0; i < beams.length;) {
-            edges << beams[i++]
-            edges << beams[i++]
-        }
-
-        parser.nodesCoordinates.each {nodeCoordinate ->
-            vertices << nodeCoordinate
-        }
-        this.groupName = groupName
-        this.vertices = vertices
-        this.edges = edges
-        this.faces = faces
-    }
-
-    File createUnvFile() {
-        String result = createFormattedContent()
+    File createUnvFile(ShapeGroup group = null) {
+        String result = createFormattedContent(group)
         return ShapeUtil.createUnvFile(result)
     }
 
-    String createFormattedContent() {
+    String createFormattedContent(ShapeGroup group = null) {
         String result = createFormattedVertices() + ls
         result += createFormattedFaces() + ls
-        result += createFormattedEntityInfo()
+        result += createFormattedGroupInfo(group)
         return result
     }
 
@@ -143,19 +140,33 @@ class ShapeDTO {
         return result
     }
 
-    String createFormattedEntityInfo() {
+    String createFormattedGroupInfo(ShapeGroup group = null) {
         String result = ShapeUtil.entitiesBeginning
-        result += readFormattedEntities()
+        result += readFormattedGroup(group)
         result += ShapeUtil.end
         return result
     }
 
-    String readFormattedEntities(Integer groupNumber = 1, String groupName = '1', Integer startPoint = 0) {
-        String result = AppUtil.createFormatI10List([groupNumber, 0, 0, 0, 0, 0, 0, entitiesCount]).join('') + "${ls}${groupName}${ls}"
-        result += (0..((entitiesCount / 2) - 1).toInteger()).collect {[8, ((2 * it) + 1 + startPoint), 0, 0, 8, ((2 * it) + 2 + startPoint), 0, 0]}.collect {List row ->
-            AppUtil.createFormatI10List(row).join('')
-        }.join(ls) + "${ls}"
+    String readFormattedGroup(ShapeGroup group = null) {
+        String result = ''
+        if (groups) {
+            if (group) {
+                result += readFormattedGroup(group, 1) + ls
+            } else {
+                groups.eachWithIndex {ShapeGroup shapeGroup, int index ->
+                    result += readFormattedGroup(shapeGroup, index + 1) + ls
+                }
+            }
+        }
         log.info "Created formatted entities info"
+        return result
+    }
+
+    String readFormattedGroup(ShapeGroup group, int index) {
+        String result = AppUtil.createFormatI10List([index, 0, 0, 0, 0, 0, 0, group.entityCount]).join('') + "${ls}${group.name}${ls}"
+        result += group.values.collect {List value ->
+            AppUtil.createFormatI10List([8, value.first(), 0, 0, 8, value.last(), 0, 0]).join('')
+        }.join(ls)
         return result
     }
 
@@ -171,6 +182,10 @@ class ShapeDTO {
             }
         }
         return AppUtil.getTriangularList(modifiedFaces)
+    }
+
+    ShapeGroup getGroupByName(String name) {
+        return groups.find {it.name == name}
     }
 
 }
