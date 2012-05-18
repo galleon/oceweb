@@ -130,7 +130,7 @@ class CadObjectService {
 
     CADMeshObject saveSubMesh(CADMeshObject cadMeshObject, ShapeDTO shapeDTO, ShapeGroup group) {
         CADMeshObject subCadMeshObject = createSubCADMesh(cadMeshObject, group)
-        saveCADObjectAndUnvFile(subCadMeshObject, shapeDTO.createUnvFile(group))
+        saveCADObjectAndUnvFile(subCadMeshObject, shapeDTO.createUnvFile([group]))
         return subCadMeshObject
     }
 

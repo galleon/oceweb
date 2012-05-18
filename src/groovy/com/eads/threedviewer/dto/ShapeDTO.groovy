@@ -19,10 +19,6 @@ class ShapeDTO {
     List edges = []
     List<ShapeGroup> groups
 
-    String getGroupName() {
-        return (groups ? groups.name.join("_") : 'No Group')
-    }
-
     ShapeDTO(String fileName) {
         List vertices = []
         List faces = []
@@ -96,15 +92,15 @@ class ShapeDTO {
         this.vertices = vertices
     }
 
-    File createUnvFile(ShapeGroup group = null) {
-        String result = createFormattedContent(group)
+    File createUnvFile(List<ShapeGroup> shapeGroups = []) {
+        String result = createFormattedContent(shapeGroups)
         return ShapeUtil.createUnvFile(result)
     }
 
-    String createFormattedContent(ShapeGroup group = null) {
+    String createFormattedContent(List<ShapeGroup> shapeGroups = []) {
         String result = createFormattedVertices() + ls
         result += createFormattedFaces() + ls
-        result += createFormattedGroupInfo(group)
+        result += createFormattedGroupInfo(shapeGroups)
         return result
     }
 
@@ -140,22 +136,19 @@ class ShapeDTO {
         return result
     }
 
-    String createFormattedGroupInfo(ShapeGroup group = null) {
+    String createFormattedGroupInfo(List<ShapeGroup> shapeGroups = []) {
         String result = ShapeUtil.entitiesBeginning
-        result += readFormattedGroup(group)
+        result += readFormattedGroup(shapeGroups)
         result += ShapeUtil.end
         return result
     }
 
-    String readFormattedGroup(ShapeGroup group = null) {
+    String readFormattedGroup(List<ShapeGroup> shapeGroups = []) {
         String result = ''
-        if (groups) {
-            if (group) {
-                result += readFormattedGroup(group, 1) + ls
-            } else {
-                groups.eachWithIndex {ShapeGroup shapeGroup, int index ->
-                    result += readFormattedGroup(shapeGroup, index + 1) + ls
-                }
+        shapeGroups = shapeGroups ?: groups
+        if (shapeGroups) {
+            shapeGroups.eachWithIndex {ShapeGroup shapeGroup, int index ->
+                result += readFormattedGroup(shapeGroup, index + 1) + ls
             }
         }
         log.info "Created formatted entities info"
