@@ -6,16 +6,20 @@ import org.jcae.mesh.xmldata.MeshExporter
 class AppUtil {
 
     static List getTriangularList(List list) {
-        List triangularList = []
+        return collate(list, 3)
+    }
+
+    static List collate(List list, Integer number) {
+        List newList = []
         List temp = []
         list.eachWithIndex {val, index ->
             temp.add(val)
-            if ((index % 3 == 2)) {
-                triangularList.add(temp)
+            if ((index % number == (number - 1))) {
+                newList.add(temp)
                 temp = []
             }
         }
-        return triangularList
+        return newList
     }
 
     static List createFormatI10List(List list) {

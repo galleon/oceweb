@@ -20,6 +20,7 @@ public class UNVParser {
     private ArrayList<String> surfaceGroupNames = new ArrayList<String>();
     private ArrayList<int[]> surfaceGroups = new ArrayList<int[]>();
     List<ShapeGroup> groupInfo = []
+    List<Integer> faces = []
     private TIntArrayList surfaceIndices = new TIntArrayList();
     private TIntArrayList volumeIndices = new TIntArrayList();
     private TIntIntHashMap elementSurfaceIndicesMap, elementVolumeIndicesMap;
@@ -198,6 +199,9 @@ public class UNVParser {
             int type = Integer.parseInt(st.nextToken());
 
             line = rd.readLine(); //RECORD 2
+            line.tokenize().each {
+                faces.add(Integer.parseInt(it.toString()))
+            }
             switch (type) {
                 case 21: // Linear beam
                     st = new StringTokenizer(line);
@@ -283,6 +287,7 @@ public class UNVParser {
                     }
                 }
                 group.values.add(content)
+                content = []
                 if (nbelem <= 0) {
                     line = rd.readLine();
                     break;

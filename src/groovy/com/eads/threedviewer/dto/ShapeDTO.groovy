@@ -19,21 +19,23 @@ class ShapeDTO {
     List edges = []
     List<ShapeGroup> groups
 
+    ShapeDTO(List<ShapeDTO> shapeDTOs) {
+        vertices = shapeDTOs ? shapeDTOs.first().vertices.flatten() : []
+        faces = shapeDTOs ? shapeDTOs.faces.flatten() : []
+        edges = shapeDTOs ? shapeDTOs.first().edges.flatten() : []
+        List<ShapeGroup> shapeGroups = shapeDTOs.groups.flatten()
+        ShapeGroup group = new ShapeGroup(name: shapeGroups.name.join("_"), values: AppUtil.collate(shapeGroups.values.flatten().toList(), 2), entityCount: shapeGroups*.entityCount.flatten().sum())
+        groups = [group]
+    }
+
     ShapeDTO(String fileName) {
         List vertices = []
-        List faces = []
         List edges = []
 
         UNVParser parser = new UNVParser()
         parser.parse(new BufferedReader(new FileReader(fileName)))
+        List faces = parser.faces
         parser.groupNames.each {String groupName ->
-            int[] triangles = parser.getTria3FromGroup(groupName)
-            for (int i = 0; i < triangles.length;) {
-                faces << 0
-                faces << triangles[i++]
-                faces << triangles[i++]
-                faces << triangles[i++]
-            }
             int[] quads = parser.getQuad4FromGroup(groupName)
             for (int i = 0; i < quads.length;) {
                 faces << 1
@@ -129,8 +131,9 @@ class ShapeDTO {
 
     String readFormattedFaces(Integer startPoint = 0) {
         String result = ""
-        readTriangularFaces(faces).eachWithIndex {List val, int index ->
-            result += "${AppUtil.createFormatI10List([index + startPoint + 1, 91, 1, 1, 1, 3]).join('')}${ls}${AppUtil.createFormatI10List(val.collect {it + 1}).join('')}${ls}"
+
+        AppUtil.getTriangularList(faces).eachWithIndex {List val, int index ->
+            result += "${AppUtil.createFormatI10List([index + startPoint + 1, 91, 1, 1, 1, 3]).join('')}${ls}${AppUtil.createFormatI10List(val).join('')}${ls}"
         }
         log.info "Created formatted faces"
         return result
@@ -165,16 +168,6 @@ class ShapeDTO {
 
     List readTriangularVertices(List vertices) {
         return AppUtil.getTriangularList(vertices)
-    }
-
-    List readTriangularFaces(List faces) {
-        List modifiedFaces = []
-        faces.eachWithIndex {val, index ->
-            if (index % 4) {
-                modifiedFaces.add(val)
-            }
-        }
-        return AppUtil.getTriangularList(modifiedFaces)
     }
 
     ShapeGroup getGroupByName(String name) {
