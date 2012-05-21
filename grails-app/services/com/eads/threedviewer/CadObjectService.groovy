@@ -9,7 +9,8 @@ import com.eads.threedviewer.util.ShapeUtil
 import com.eads.threedviewer.co.BooleanOperationCO
 import org.jcae.opencascade.jni.BRepAlgoAPI_BooleanOperation
 import com.eads.threedviewer.co.MeshCO
-import com.eads.threedviewer.dto.ShapeGroup
+
+import com.eads.threedviewer.dto.ShapeGroupDTO
 
 class CadObjectService {
 
@@ -118,7 +119,7 @@ class CadObjectService {
     List<CADMeshObject> saveSubMeshes(CADMeshObject cadMeshObject) {
         List<CADMeshObject> cadMeshObjects = []
         ShapeDTO shapeDTO = cadMeshObject.readCoordinates()
-        shapeDTO.groups.each {ShapeGroup group ->
+        shapeDTO.groups.each {ShapeGroupDTO group ->
             log.info "Creating mesh sub object for groupName ${cadMeshObject.name} entitycount ${group.entityCount}-----------"
             CADMeshObject subCadMeshObject = saveSubMesh(cadMeshObject, shapeDTO, group)
             if (subCadMeshObject) {
@@ -128,13 +129,13 @@ class CadObjectService {
         return cadMeshObjects
     }
 
-    CADMeshObject saveSubMesh(CADMeshObject cadMeshObject, ShapeDTO shapeDTO, ShapeGroup group) {
+    CADMeshObject saveSubMesh(CADMeshObject cadMeshObject, ShapeDTO shapeDTO, ShapeGroupDTO group) {
         CADMeshObject subCadMeshObject = createSubCADMesh(cadMeshObject, group)
         saveCADObjectAndUnvFile(subCadMeshObject, shapeDTO.createUnvFile([group]))
         return subCadMeshObject
     }
 
-    CADMeshObject createSubCADMesh(CADMeshObject cadMeshObject, ShapeGroup group) {
+    CADMeshObject createSubCADMesh(CADMeshObject cadMeshObject, ShapeGroupDTO group) {
         return createSubCADMesh(cadMeshObject, group.name)
     }
 
@@ -238,7 +239,7 @@ class CadObjectService {
     File createAndReplaceUnv(CADMeshObject cadMeshObject) {
         ShapeDTO shapeDTO = cadMeshObject.readCoordinates()
         List<ShapeDTO> subCADObjectCoordinates = cadMeshObject?.subCadObjects*.readCoordinates()
-        List<ShapeGroup> shapeGroups = subCADObjectCoordinates ? subCADObjectCoordinates*.groups.flatten() : shapeDTO.groups
+        List<ShapeGroupDTO> shapeGroups = subCADObjectCoordinates ? subCADObjectCoordinates*.groups.flatten() : shapeDTO.groups
         shapeDTO.groups = shapeGroups
         File file = shapeDTO.createUnvFile()
         file.renameTo(cadMeshObject.unvFilePath)

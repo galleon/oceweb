@@ -5,7 +5,7 @@ import groovy.util.logging.Log
 
 @Log
 @ToString(includeNames = true, includeFields = true, excludes = 'metaClass')
-class ShapeGroup {
+class ShapeGroupDTO {
     String name
     List values = []
     Integer entityCount

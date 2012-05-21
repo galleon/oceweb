@@ -3,7 +3,8 @@ package com.eads.threedviewer.util
 import gnu.trove.TFloatArrayList
 import gnu.trove.TIntArrayList
 import gnu.trove.TIntIntHashMap
-import com.eads.threedviewer.dto.ShapeGroup
+
+import com.eads.threedviewer.dto.ShapeGroupDTO
 
 public class UNVParser {
     private static final int TETRA4_MASK = 0x10000000;
@@ -19,7 +20,7 @@ public class UNVParser {
     private boolean hasBeam2, hasTria3, hasTria6, hasQuad4, hasTetra4, hasHexa8;
     private ArrayList<String> surfaceGroupNames = new ArrayList<String>();
     private ArrayList<int[]> surfaceGroups = new ArrayList<int[]>();
-    List<ShapeGroup> groupInfo = []
+    List<ShapeGroupDTO> groupInfo = []
     List<Integer> faces = []
     private TIntArrayList surfaceIndices = new TIntArrayList();
     private TIntArrayList volumeIndices = new TIntArrayList();
@@ -257,7 +258,7 @@ public class UNVParser {
         String line = rd.readLine();
         while (!line.trim().equals("-1")) {
             // read the number of elements to read in the last number of the line
-            ShapeGroup group = new ShapeGroup()
+            ShapeGroupDTO group = new ShapeGroupDTO()
             StringTokenizer st = new StringTokenizer(line);
             String snb = st.nextToken();
             while (st.hasMoreTokens()) {

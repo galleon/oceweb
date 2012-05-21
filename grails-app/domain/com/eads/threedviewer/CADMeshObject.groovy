@@ -43,7 +43,22 @@ class CADMeshObject extends CADObject {
 /* Methods */
 
     ShapeDTO readCoordinates() {
-        ShapeDTO shapeDTO = new ShapeDTO(unvFilePath)
+        ShapeDTO shapeDTO = new ShapeDTO()
+        File file = new File(unvFilePath)
+        if (file.exists()) {
+            shapeDTO = new ShapeDTO(unvFilePath)
+        } else {
+            if (parent && parent.isMesh()) {
+                log.info "Creating group file from parent file and moving it to ${unvFilePath}"
+                shapeDTO = new ShapeDTO(parent.readCoordinates(), name)
+                file = shapeDTO.createUnvFile()
+                File folder = new File(filesFolderPath)
+                if (!folder.exists()) {
+                    folder.mkdirs()
+                }
+                file.renameTo(unvFilePath)
+            }
+        }
         shapeDTO.color = Math.random() * 0xffffff
         return shapeDTO
     }

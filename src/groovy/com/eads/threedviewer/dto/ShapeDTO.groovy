@@ -18,15 +18,24 @@ class ShapeDTO {
     List faces = []
     List allFaces = []
     List edges = []
-    List<ShapeGroup> groups
+    List<ShapeGroupDTO> groups
+
+    ShapeDTO() {}
 
     ShapeDTO(List<ShapeDTO> shapeDTOs) {
         vertices = shapeDTOs ? shapeDTOs.first().vertices.flatten() : []
         faces = shapeDTOs ? shapeDTOs.faces.flatten() : []
         edges = shapeDTOs ? shapeDTOs.first().edges.flatten() : []
-        List<ShapeGroup> shapeGroups = shapeDTOs.groups.flatten()
-        ShapeGroup group = new ShapeGroup(name: shapeGroups.name.join("_"), values: AppUtil.collate(shapeGroups.values.flatten().toList(), 2), entityCount: shapeGroups*.entityCount.flatten().sum())
+        List<ShapeGroupDTO> shapeGroups = shapeDTOs.groups.flatten()
+        ShapeGroupDTO group = new ShapeGroupDTO(name: shapeGroups.name.join("_"), values: AppUtil.collate(shapeGroups.values.flatten().toList(), 2), entityCount: shapeGroups*.entityCount.flatten().sum())
         groups = [group]
+    }
+
+    ShapeDTO(ShapeDTO shapeDTO, String groupName) {
+        allFaces = shapeDTO.allFaces
+        vertices = shapeDTO.vertices
+        faces = shapeDTO.faces
+        groups = shapeDTO.groups.findAll {it.name == groupName}
     }
 
     ShapeDTO(String fileName) {
@@ -102,12 +111,12 @@ class ShapeDTO {
         this.vertices = vertices
     }
 
-    File createUnvFile(List<ShapeGroup> shapeGroups = []) {
+    File createUnvFile(List<ShapeGroupDTO> shapeGroups = []) {
         String result = createFormattedContent(shapeGroups)
         return ShapeUtil.createUnvFile(result)
     }
 
-    String createFormattedContent(List<ShapeGroup> shapeGroups = []) {
+    String createFormattedContent(List<ShapeGroupDTO> shapeGroups = []) {
         String result = createFormattedVertices() + ls
         result += createFormattedFaces() + ls
         result += createFormattedGroupInfo(shapeGroups)
@@ -147,18 +156,18 @@ class ShapeDTO {
         return result
     }
 
-    String createFormattedGroupInfo(List<ShapeGroup> shapeGroups = []) {
+    String createFormattedGroupInfo(List<ShapeGroupDTO> shapeGroups = []) {
         String result = ShapeUtil.entitiesBeginning
         result += readFormattedGroup(shapeGroups)
         result += ShapeUtil.end
         return result
     }
 
-    String readFormattedGroup(List<ShapeGroup> shapeGroups = []) {
+    String readFormattedGroup(List<ShapeGroupDTO> shapeGroups = []) {
         String result = ''
         shapeGroups = shapeGroups ?: groups
         if (shapeGroups) {
-            shapeGroups.eachWithIndex {ShapeGroup shapeGroup, int index ->
+            shapeGroups.eachWithIndex {ShapeGroupDTO shapeGroup, int index ->
                 result += readFormattedGroup(shapeGroup, index + 1) + ls
             }
         }
@@ -166,7 +175,7 @@ class ShapeDTO {
         return result
     }
 
-    String readFormattedGroup(ShapeGroup group, int index) {
+    String readFormattedGroup(ShapeGroupDTO group, int index) {
         String result = AppUtil.createFormatI10List([index, 0, 0, 0, 0, 0, 0, group.entityCount]).join('') + "${ls}${group.name}${ls}"
         result += group.values.collect {List value ->
             AppUtil.createFormatI10List([8, value.first(), 0, 0, 8, value.last(), 0, 0]).join('')
