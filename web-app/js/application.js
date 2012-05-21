@@ -751,12 +751,18 @@ function reloadProjectTree() {
 
 function repaint() {
     debugStatement("Repainting the group");
-    $.each($("#phtml_1").children().find('li a'), function () {
-        var id = $(this).attr('id');
+    $.each($("#phtml_1").children().find('li'), function () {
+        var className = $(this).attr('rel')
+            debugStatement(className)
+        var id = $(this).find('a').attr('id');
         debugStatement("Repainting " + id + " to color " + objectColor);
         var object = scene.getChildByName(id + '', true);
         if (object) {
-            setColor(object, getColorForRepaint(id));
+            if(className == "MESH"){
+                setColor(object, getColorForRepaint(id));
+            }else{
+                setColor(object, objectColor);
+            }
         } else {
             debugStatement("object not found for coloring -: " + id)
         }
