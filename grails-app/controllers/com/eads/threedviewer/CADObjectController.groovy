@@ -95,12 +95,12 @@ class CADObjectController {
     def saveMesh(MeshCO co) {
         Map result
         if (co.validate()) {
-            try {
+//            try {
                 CADMeshObject cadMeshObject = cadObjectService.saveMesh(co)
                 result = ['ids': cadMeshObject.subCadObjects?.id]
-            } catch (RuntimeException rte) {
-                result = ['error': rte.message]
-            }
+//            } catch (RuntimeException rte) {
+//                result = ['error': rte.message]
+//            }
         } else {
             result = ['error': co.errors]
         }

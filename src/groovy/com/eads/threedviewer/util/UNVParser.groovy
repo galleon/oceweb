@@ -3,6 +3,7 @@ package com.eads.threedviewer.util
 import gnu.trove.TFloatArrayList
 import gnu.trove.TIntArrayList
 import gnu.trove.TIntIntHashMap
+import com.eads.threedviewer.dto.GroupDTO
 
 public class UNVParser {
     private static final int TETRA4_MASK = 0x10000000;
@@ -18,6 +19,7 @@ public class UNVParser {
     private boolean hasBeam2, hasTria3, hasTria6, hasQuad4, hasTetra4, hasHexa8;
     private ArrayList<String> surfaceGroupNames = new ArrayList<String>();
     private ArrayList<int[]> surfaceGroups = new ArrayList<int[]>();
+    List<GroupDTO> groupInfo = []
     private TIntArrayList surfaceIndices = new TIntArrayList();
     private TIntArrayList volumeIndices = new TIntArrayList();
     private TIntIntHashMap elementSurfaceIndicesMap, elementVolumeIndicesMap;
@@ -251,6 +253,7 @@ public class UNVParser {
         String line = rd.readLine();
         while (!line.trim().equals("-1")) {
             // read the number of elements to read in the last number of the line
+            GroupDTO group = new GroupDTO()
             StringTokenizer st = new StringTokenizer(line);
             String snb = st.nextToken();
 
@@ -258,8 +261,12 @@ public class UNVParser {
                 snb = st.nextToken();
             }
             int nbelem = Integer.parseInt(snb);
+            group.entityCount = nbelem
             // Read group name
-            surfaceGroupNames.add(rd.readLine().trim());
+            String groupName = rd.readLine().trim()
+            group.name = groupName
+            List content = []
+            surfaceGroupNames.add(groupName);
 
             TIntArrayList facelist = new TIntArrayList();
             while ((line = rd.readLine().trim()).startsWith("8")) {
@@ -269,6 +276,7 @@ public class UNVParser {
                 while (st.hasMoreTokens()) {
                     st.nextToken();
                     String index = st.nextToken();
+                    content.add(Integer.parseInt(index))
                     int id = elementSurfaceIndicesMap.get(Integer.parseInt(index));
                     facelist.add(id);
                     nbelem--;
@@ -277,11 +285,14 @@ public class UNVParser {
                         st.nextToken();
                     }
                 }
+                group.values.add(content)
+                content = []
                 if (nbelem <= 0) {
                     line = rd.readLine();
                     break;
                 }
             }
+            groupInfo.add(group)
             surfaceGroups.add(facelist.toNativeArray());
         }
     }

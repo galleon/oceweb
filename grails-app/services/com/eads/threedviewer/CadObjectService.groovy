@@ -9,6 +9,7 @@ import com.eads.threedviewer.util.ShapeUtil
 import com.eads.threedviewer.co.BooleanOperationCO
 import org.jcae.opencascade.jni.BRepAlgoAPI_BooleanOperation
 import com.eads.threedviewer.co.MeshCO
+import com.eads.threedviewer.dto.GroupDTO
 
 class CadObjectService {
 
@@ -105,7 +106,7 @@ class CadObjectService {
         CADMeshObject cadObject = co.findOrCreateCADObject() as CADMeshObject
         cadObject = save(co.project, cadObject as CADObject)
         if (cadObject) {
-            File file = shapeService.generateMeshFolder(co, cadObject.filesFolderPath, cadObject.id)
+            shapeService.generateMeshFolder(co, cadObject.filesFolderPath, cadObject.id)
             saveSubMeshes(cadObject)
         }
         else {
@@ -116,10 +117,10 @@ class CadObjectService {
 
     List<CADMeshObject> saveSubMeshes(CADMeshObject cadMeshObject) {
         List<CADMeshObject> cadMeshObjects = []
-        List<ShapeDTO> shapeDTOs = ShapeUtil.getUnvGroups(cadMeshObject.unvFilePath)
-        shapeDTOs.each {ShapeDTO shapeDTO ->
-            log.info "creating mesh sub object for groupName ${shapeDTO.groupName} entitycount ${shapeDTO.entitiesCount}"
-            CADMeshObject subCadMeshObject = saveSubMesh(cadMeshObject, shapeDTO)
+        ShapeDTO shapeDTO = cadMeshObject.readCoordinates()
+        shapeDTO.groups.each {GroupDTO group ->
+            log.info "Creating mesh sub object for groupName ${cadMeshObject.name} entitycount ${group.entityCount}"
+            CADMeshObject subCadMeshObject = saveSubMesh(cadMeshObject, shapeDTO, group)
             if (subCadMeshObject) {
                 cadMeshObjects.add(subCadMeshObject)
             }
@@ -127,14 +128,18 @@ class CadObjectService {
         return cadMeshObjects
     }
 
-    CADMeshObject saveSubMesh(CADMeshObject cadMeshObject, ShapeDTO shapeDTO) {
-        CADMeshObject subCadMeshObject = createSubCADMesh(cadMeshObject, shapeDTO)
-        saveCADObjectAndUnvFile(subCadMeshObject, shapeDTO.createUnvFile())
+    CADMeshObject saveSubMesh(CADMeshObject cadMeshObject, ShapeDTO shapeDTO, GroupDTO group) {
+        CADMeshObject subCadMeshObject = createSubCADMesh(cadMeshObject, group)
+        saveCADObjectAndUnvFile(subCadMeshObject, shapeDTO.createUnvFile([group]))
         return subCadMeshObject
     }
 
-    CADMeshObject createSubCADMesh(CADMeshObject cadMeshObject, ShapeDTO shapeDTO) {
-        CADMeshObject subCadMeshObject = new CADMeshObject(parent: cadMeshObject, project: cadMeshObject.project, name: "${shapeDTO.groupName}", size: cadMeshObject.size,
+    CADMeshObject createSubCADMesh(CADMeshObject cadMeshObject, GroupDTO group) {
+        return createSubCADMesh(cadMeshObject, group.name)
+    }
+
+    CADMeshObject createSubCADMesh(CADMeshObject cadMeshObject, String name) {
+        CADMeshObject subCadMeshObject = new CADMeshObject(parent: cadMeshObject, project: cadMeshObject.project, name: name, size: cadMeshObject.size,
                 deflection: cadMeshObject.deflection, type: cadMeshObject.type)
         return subCadMeshObject
     }
@@ -193,22 +198,21 @@ class CadObjectService {
         if (cadMeshObjects) {
             CADMeshObject firstObject = cadMeshObjects.first()
             CADObject parentCadObject = firstObject.parent
-            Project project = firstObject.project
+            ShapeDTO parentCoordinates = parentCadObject.readCoordinates()
             String name = cadMeshObjects*.name.join("_")
 
-            log.info "creating merge object for Project : ${project.name} with the name : ${name} for cadobjects : ${cadMeshObjects*.id}"
-            ShapeDTO shapeDTO = parentCadObject.readCoordinates()
+            log.info "creating merge object for Project : ${parentCadObject.project.name} with the name : ${name} for cadobjects : ${cadMeshObjects*.id}"
             List<ShapeDTO> shapeDTOs = cadMeshObjects*.readCoordinates()
+            ShapeDTO shapeDTO = new ShapeDTO(shapeDTOs)
+            shapeDTO.faces = parentCoordinates.faces
             log.info "Created dtos for cadmesh objects ${shapeDTOs.size()}"
 
-            shapeDTO = new ShapeDTO(setVertices(shapeDTOs, shapeDTO.vertices), name)
-            log.info "New shapeDTO constructed for merging and now creating unv file"
-            File file = ShapeUtil.createUnvFile(shapeDTO)
-            cadMeshObject = saveCADObjectAndUnvFile(createCADMeshObject(project, name, parentCadObject), file)
+            File file = shapeDTO.createUnvFile()
+            cadMeshObject = saveCADObjectAndUnvFile(createCADMeshObject(parentCadObject, name), file)
 
             if (cadMeshObject) {
                 deleteCADObjects(cadMeshObjects)
-                createAndReplaceUnv(parentCadObject)
+                createAndReplaceUnv(parentCadObject as CADMeshObject)
             }
         }
         return cadMeshObject
@@ -220,8 +224,8 @@ class CadObjectService {
         }
     }
 
-    CADMeshObject createCADMeshObject(Project project, String name, CADObject parentCadObject) {
-        return new CADMeshObject(name: name, project: project, type: ShapeType.MESH, deflection: 0, size: 0, parent: parentCadObject)
+    CADMeshObject createCADMeshObject(CADObject parentCadObject, String name) {
+        return new CADMeshObject(name: name, project: parentCadObject.project, type: ShapeType.MESH, deflection: 0, size: 0, parent: parentCadObject)
     }
 
     void logErrors(CADObject cadObject) {
@@ -231,32 +235,14 @@ class CadObjectService {
         }
     }
 
-    File createAndReplaceUnv(CADObject cadMeshObject) {
-        File file
-        List<CADObject> cadMeshObjects = cadMeshObject.subCadObjects
-        if (cadMeshObjects) {
-            file = createUnv(cadMeshObjects)
-            file.renameTo(cadMeshObject.unvFilePath)
-        } else {
-            log.info "Getting existing unv file"
-            file = cadMeshObject.findUnvFile()
-        }
+    File createAndReplaceUnv(CADMeshObject cadMeshObject) {
+        ShapeDTO shapeDTO = cadMeshObject.readCoordinates()
+        List<ShapeDTO> subCADObjectCoordinates = cadMeshObject?.subCadObjects*.readCoordinates()
+        List<GroupDTO> shapeGroups = subCADObjectCoordinates ? subCADObjectCoordinates*.groups.flatten() : shapeDTO.groups
+        shapeDTO.groups = shapeGroups
+        File file = shapeDTO.createUnvFile()
+        file.renameTo(cadMeshObject.unvFilePath)
         return file
-    }
-
-    File createUnv(List<CADObject> cadObjects) {
-        log.info "Createing unv file for cadObjects ${cadObjects*.id}"
-        CADObject cadObject = cadObjects.first().parent
-        ShapeDTO shapeDTO = cadObject.readCoordinates()
-        List<ShapeDTO> shapeDTOs = setVertices(cadObjects*.readCoordinates(), shapeDTO.vertices)
-        return ShapeUtil.createUnvFile(shapeDTOs, shapeDTO.readFormattedFaces())
-    }
-
-    List<ShapeDTO> setVertices(List<ShapeDTO> shapeDTOs, List vertices) {
-        shapeDTOs.each {ShapeDTO shapeDTO ->
-            shapeDTO.vertices = vertices
-        }
-        return shapeDTOs
     }
 
 }
