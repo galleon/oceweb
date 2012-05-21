@@ -16,6 +16,7 @@ class ShapeDTO {
     String color
     List vertices = []
     List faces = []
+    List allFaces = []
     List edges = []
     List<ShapeGroup> groups
 
@@ -60,7 +61,7 @@ class ShapeDTO {
         parser.nodesCoordinates.each {nodeCoordinate ->
             vertices << nodeCoordinate
         }
-
+        this.allFaces = parser.faces
         this.groups = parser.groupInfo
         this.vertices = vertices
         this.edges = edges
@@ -139,8 +140,8 @@ class ShapeDTO {
     String readFormattedFaces(Integer startPoint = 0) {
         String result = ""
 
-        readTriangularFaces(faces).eachWithIndex {List val, int index ->
-            result += "${AppUtil.createFormatI10List([index + startPoint + 1, 91, 1, 1, 1, 3]).join('')}${ls}${AppUtil.createFormatI10List(val).join('')}${ls}"
+        AppUtil.collate(allFaces, 3).eachWithIndex {List val, int index ->
+            result += "${AppUtil.createFormatI10List([index + startPoint + 1, 91, 1, 1, 1, 3]).join('')}${ls}${AppUtil.createFormatI10List(val.collect {it}).join('')}${ls}"
         }
         log.info "Created formatted faces"
         return result
@@ -175,20 +176,6 @@ class ShapeDTO {
 
     List readTriangularVertices(List vertices) {
         return AppUtil.getTriangularList(vertices)
-    }
-
-    List readTriangularFaces(List faces) {
-        List modifiedFaces = []
-        faces.eachWithIndex {val, index ->
-            if (index % 4) {
-                modifiedFaces.add(val)
-            }
-        }
-        return AppUtil.getTriangularList(modifiedFaces)
-    }
-
-    ShapeGroup getGroupByName(String name) {
-        return groups.find {it.name == name}
     }
 
 }
