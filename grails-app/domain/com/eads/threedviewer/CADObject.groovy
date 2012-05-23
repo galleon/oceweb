@@ -49,7 +49,7 @@ class CADObject {
 /* Transient Methods */
 
     List<CADObject> getSubCadObjects() {
-        return CADObject.findAllByParent(this)
+        return CADObject.findAllByParent(this, [sort: 'id', order: 'asc'])
     }
 
     String getProjectFolderPath() {
@@ -100,6 +100,10 @@ class CADObject {
 
     Boolean isMesh() {
         return isType(ShapeType.MESH)
+    }
+
+    Boolean hasParentMesh() {
+        return (parent && parent.isMesh())
     }
 
     byte[] readBytes() {

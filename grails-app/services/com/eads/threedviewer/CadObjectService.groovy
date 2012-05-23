@@ -246,4 +246,34 @@ class CadObjectService {
         return file
     }
 
+    CADObject rename(CADObject cadObject, String newName) {
+        if (cadObject.hasParentMesh()) {
+            String currentName = cadObject.name
+            cadObject.name = newName
+            changeGroupNameOnFile(cadObject, currentName, newName)
+            changeGroupNameOnFile(cadObject.parent, currentName, newName)
+        } else {
+            cadObject.name = newName
+        }
+        return cadObject.save()
+    }
+
+    private File changeGroupNameOnFile(CADObject cadObject, String currentName, String newName) {
+        return changeGroupNameOnFile(cadObject.readCoordinates(), currentName, newName, cadObject.unvFilePath)
+    }
+
+    private File changeGroupNameOnFile(ShapeDTO shapeDTO, String currentName, String newName, String filePath) {
+        log.info "Changing unv file on filesystem for group name ${currentName} with new group name ${newName}"
+        List<ShapeGroupDTO> groups = shapeDTO.groups
+        groups.each {ShapeGroupDTO shapeGroupDTO ->
+            if (shapeGroupDTO.name == currentName) {
+                shapeGroupDTO.name = newName
+            }
+        }
+        shapeDTO.groups = groups ?: shapeDTO.groups
+        File file = shapeDTO.createUnvFile()
+        file.renameTo(filePath)
+        return file
+    }
+
 }

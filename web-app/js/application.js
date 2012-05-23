@@ -394,7 +394,18 @@ function enableJsTree() {
                 }
             }
         }
-    })
+    }).bind("rename.jstree", function (e, data) {
+            var id = data.rslt.obj.children().filter('a').attr("id")
+            var name = data.rslt.new_name;
+            $.post(createLink('CADObject', 'rename'), {id:id, name:name}, function (response) {
+                if (response.success) {
+                    showFlashSuccess(response.success)
+                }
+                if (response.error) {
+                    showFlashError(response.error)
+                }
+            })
+        })
 }
 
 function defaultMenu(node) {

@@ -48,7 +48,7 @@ class CADMeshObject extends CADObject {
         if (file.exists()) {
             shapeDTO = new ShapeDTO(unvFilePath)
         } else {
-            if (parent && parent.isMesh()) {
+            if (hasParentMesh()) {
                 log.info "Creating group file from parent file and moving it to ${unvFilePath}"
                 shapeDTO = new ShapeDTO(parent.readCoordinates(), name)
                 file = shapeDTO.createUnvFile()

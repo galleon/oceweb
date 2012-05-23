@@ -199,9 +199,8 @@ class CADObjectController {
         CADObject cadObject = id ? CADObject.get(id) : null
         Map result = [:]
         if (cadObject) {
-            cadObject.name = name
             try {
-                cadObject.save()
+                cadObjectService.rename(cadObject, name)
                 result['success'] = "Name updated successfuly"
             } catch (RuntimeException rte) {
                 result['error'] = rte.message
