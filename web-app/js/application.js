@@ -181,11 +181,13 @@ function createMesh(response, name) {
         if (response.color) {
             color = response.color
         }
+        var actualColor = response.color ? response.color : objectColor;
+        setActualColorOnLocal(name, actualColor);
         var localColor = getLocalColor(name);
         if (localColor) {
             color = localColor
         }
-        var material = new THREE.MeshLambertMaterial({overdraw:true, shading:THREE.FlatShading, wireframe:response.wireframe});
+        var material = new THREE.MeshLambertMaterial({color:0xffffff, shading:THREE.FlatShading, vertexColors:THREE.VertexColors, opacity:0.75 });
         object = new THREE.Mesh(geometry, material);
         object.updateMatrix();
     })
@@ -268,6 +270,7 @@ function onDocumentMouseDown(event) {
     if (intersects.length > 0) {
         var object = intersects[ 0 ].object;
         if (object.visible) {
+            debugStatement("Repainting for selection")
             repaint();
             showShape(object.name);
         }
@@ -637,6 +640,10 @@ function setVisible(object, visible) {
     }
 }
 
+function setActualColorOnLocal(name, color) {
+    window.localStorage["actualColor_" + name] = color;
+}
+
 function getSelectedObjects(node) {
     var objects = [];
     $.each($('#project').jstree('get_selected').children().filter('a'), function () {
@@ -764,16 +771,11 @@ function repaint() {
     debugStatement("Repainting the group");
     $.each($("#phtml_1").children().find('li'), function () {
         var className = $(this).attr('rel')
-            debugStatement(className)
         var id = $(this).find('a').attr('id');
-        debugStatement("Repainting " + id + " to color " + objectColor);
         var object = scene.getChildByName(id + '', true);
         if (object) {
-            if(className == "MESH"){
-                setColor(object, getColorForRepaint(id));
-            }else{
-                setColor(object, objectColor);
-            }
+            debugStatement("Repainting " + id + " to color " + objectColor);
+            setColor(object, getColorForRepaint(id));
         } else {
             debugStatement("object not found for coloring -: " + id)
         }
@@ -781,11 +783,7 @@ function repaint() {
 }
 
 function getColorForRepaint(id) {
-    var color = getLocalColor(id);
-    if (!color) {
-        color = objectColor
-    }
-    return color;
+    return window.localStorage["actualColor_" + id]
 }
 
 function getColorForSelection(id) {

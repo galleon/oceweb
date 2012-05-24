@@ -59,7 +59,8 @@ class CADMeshObject extends CADObject {
                 file.renameTo(unvFilePath)
             }
         }
-        shapeDTO.color = Math.random() * 0xffffff
+        String color = '0x' + Double.toHexString(Math.random() * 0xffffff).tokenize('.').last().toString().substring(0,6)
+        shapeDTO.color = color
         return shapeDTO
     }
 
