@@ -174,8 +174,12 @@ function createMesh(response, name) {
     var object, color;
     var loader = new THREE.JSONLoader();
     loader.createModel(response, function (geometry) {
+        var material
         if (response.wireframe) {
             geometry = changeFaceOrientation(geometry);
+            material = new THREE.MeshLambertMaterial({color:0xffffff, shading:THREE.FlatShading, vertexColors:THREE.VertexColors, opacity:0.75 });
+        } else {
+            material = new THREE.MeshLambertMaterial({overdraw:true, shading:THREE.FlatShading, wireframe:response.wireframe});
         }
         color = selectionColor;
         if (response.color) {
@@ -187,7 +191,6 @@ function createMesh(response, name) {
         if (localColor) {
             color = localColor
         }
-        var material = new THREE.MeshLambertMaterial({color:0xffffff, shading:THREE.FlatShading, vertexColors:THREE.VertexColors, opacity:0.75 });
         object = new THREE.Mesh(geometry, material);
         object.updateMatrix();
     })
