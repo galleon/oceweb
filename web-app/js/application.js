@@ -522,6 +522,9 @@ function defaultMenu(node) {
                 "_class":"class",
                 "action":function (obj) {
                     var id = $(obj).children().filter('a').attr('id');
+                    $.each($("input[type='text']"),function(){
+                        $(this).val('');
+                    })
                     $("#computeForm #cadObjectId").val(id);
                     $("#compute").dialog();
                     $('.ui-dialog').width('600px');
