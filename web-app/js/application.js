@@ -10,6 +10,7 @@ var mouseXOnMouseDown = 0;
 var mouseYOnMouseDown = 0;
 var objectColor = 0x545354;
 var selectionColor = 0xff0000;
+var debug = false;
 $(document).ready(function () {
     $("#spinner").ajaxStart(function () {
         showFlashInfo('Please wait while you content is loading')
@@ -49,8 +50,34 @@ $(document).ready(function () {
             $($(this).attr('href')).dialog();
             $('.ui-dialog').width('340px');
         }
+    });
+    $(".addContent").live("click", function () {
+        var $content = $("#domainContent").clone();
+        $(".removeContent", $content).parent().show();
+        var $domainName = $("#domainName", $content);
+        $domainName.text("Domains");
+        $domainName.removeAttr("id");
+        $(this).parent().parent().parent().after($content);
+        $.each($("input[type='text']", $content), function (inputIndex, inputValue) {
+            $(inputValue).val("");
+        })
+        renameInputFields();
+    });
+    $(".removeContent").live("click", function () {
+        $(this).parent().parent().parent().remove();
+        renameInputFields();
     })
 })
+
+function renameInputFields() {
+    $.each($(".domainContent"), function (index, val) {
+        $.each($("input[type='text']", $(val)), function (inputIndex, inputValue) {
+            var name = $(inputValue).attr("name");
+            name = name.split(".")[0] + "." + index;
+            $(inputValue).attr("name", name);
+        })
+    })
+}
 
 function setupUI() {
     $('.ui-dialog').width('340px');
@@ -677,7 +704,7 @@ function operation(obj) {
 }
 
 function debugStatement(msg) {
-    if (typeof(console) != 'undefined') {
+    if (typeof(console) != 'undefined' && debug == true) {
         console.debug(msg);
     }
 }

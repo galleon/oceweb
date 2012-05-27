@@ -29,20 +29,19 @@
                     <td>Sigma</td>
                     <td>Mu</td>
                     <td>Sigma'</td>
+                    <td colspan="2">&nbsp;</td>
                 </tr>
-                <tr>
-                    <td>Vacuum</td>
-                    <td><g:textField name="epsilon1" class="small"/></td>
-                    <td><g:textField name="sigma1" class="small"/></td>
-                    <td><g:textField name="mu1" class="small"/></td>
-                    <td><g:textField name="sigma_1" class="small"/></td>
-                </tr>
-                <tr>
-                    <td>Vacuum</td>
-                    <td><g:textField name="epsilon2" class="small"/></td>
-                    <td><g:textField name="sigma2" class="small"/></td>
-                    <td><g:textField name="mu2" class="small"/></td>
-                    <td><g:textField name="sigma_2" class="small"/></td>
+                <tr id="domainContent" class="domainContent">
+                    <td id='domainName'>Vacuum</td>
+                    <td><g:textField name="epsilon.0" class="small"/></td>
+                    <td><g:textField name="sigma.0" class="small"/></td>
+                    <td><g:textField name="mu.0" class="small"/></td>
+                    <td><g:textField name="sigma1.0" class="small"/></td>
+                    <td><a href="#"><img src="${resource(dir: 'images', file: 'add.png')}" alt="Add" class="addContent"></a>&nbsp;
+                    </td>
+                    <td>
+                        <a href="#" style="display: none"><img src="${resource(dir: 'images', file: 'remove.png')}" alt="Remove" class="removeContent"></a>
+                    </td>
                 </tr>
             </table>
         </div>

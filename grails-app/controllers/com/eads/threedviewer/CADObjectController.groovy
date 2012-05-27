@@ -165,6 +165,7 @@ class CADObjectController {
 
     def runSimulation(SimulationCO co) {
         CADMeshObject cadMeshObject = co.id ? CADMeshObject.get(co.id) : null
+        co.domains = populateDomainValues(params)
         Map result = ["success": "Simulation completed"]
         if (cadMeshObject) {
             File file = shapeService.runSimulation(cadMeshObject.findUnvFile(), co)
@@ -172,6 +173,18 @@ class CADObjectController {
             result = ['error': "Object not found for id ${co.id}"]
         }
         result as JSON
+    }
+
+    private List<SimulationDomainCO> populateDomainValues(params) {
+        List<SimulationDomainCO> domains = []
+        params.findAll {it.key.contains('.')}.groupBy {it.key.toString().tokenize('.').last().toInteger()}.each {Integer key, value ->
+            Map data = [:]
+            value.each {dataKey, dataValue ->
+                data[dataKey.toString().tokenize(".").first()] = dataValue.toFloat()
+            }
+            domains.add(new SimulationDomainCO(data))
+        }
+        return domains
     }
 
     def merge() {

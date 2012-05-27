@@ -1,6 +1,5 @@
 package com.eads.threedviewer.co
 
-import com.eads.threedviewer.CADMeshObject
 import com.eads.threedviewer.enums.PolarisationType
 import com.eads.threedviewer.enums.ProcessingType
 import grails.validation.Validateable
@@ -15,14 +14,7 @@ class SimulationCO {
     Float phi
     PolarisationType polarisationType
     ProcessingType processingType
-    Float epsilon1
-    Float epsilon2
-    Float sigma1
-    Float sigma2
-    Float mu1
-    Float mu2
-    Float sigma_1
-    Float sigma_2
+    List<SimulationDomainCO> domains = []
 
     static constraints = {
         frequency(nullable: false)

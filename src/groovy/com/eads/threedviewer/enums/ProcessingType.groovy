@@ -1,7 +1,7 @@
 package com.eads.threedviewer.enums;
 public enum ProcessingType {
 
-    COUCHA("Coucha"), PORCHE("Porche"), ANTEN("Anten")
+    COUCHA("Coucha"), PROCHE("Proche"), ANTEN("Anten")
 
     private final String name;
 

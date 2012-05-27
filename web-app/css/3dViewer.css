@@ -203,4 +203,6 @@ fieldset{border: none}
 .polarisationType select,.processingType{width: 180px;float: right;}
 .angle{float: left; width: 50%;padding-top: 3px;}
 .first{width: 30%}
+.addContent{margin-bottom: -16px}
+.removeContent{margin-bottom: -3px}
 
