@@ -202,3 +202,4 @@ fieldset{border: none}
 .polarisationType{text-align: right; padding-top: 10px; margin-bottom: 10px;}
 .polarisationType select,.processingType{width: 180px;float: right;}
 .angle{float: left; width: 50%;padding-top: 3px;}
+#versionNumber{bottom: 0px; position: absolute; right: 0pt;padding-right: 5px;padding-bottom: 5px}

@@ -30,6 +30,9 @@
 <div>
     <div id="content">
     </div>
+    <div id="versionNumber">
+       Version : <td:versionNumber/>
+    </div>
 </div>
 
 <script type="text/javascript">

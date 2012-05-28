@@ -12,4 +12,15 @@ class ApplicationTagLib {
         def value = attrs['value'] ?: (attrs['default'] ?: '')
         out << render(template: '/shared/textField', model: [label: label, name: name, id: id, value: value, isRequired: isRequired])
     }
+
+    def versionNumber = {
+        File file = new File("versionInfo.txt")
+        if (file.exists()) {
+            file.text.eachLine {line ->
+                if (line.startsWith("commit")) {
+                    out << line.tokenize(" ").last()
+                }
+            }
+        }
+    }
 }
