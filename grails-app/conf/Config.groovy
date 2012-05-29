@@ -60,6 +60,7 @@ grails.exceptionresolver.params.exclude = ['password']
 // enable query caching by default
 grails.hibernate.cache.queries = true
 cadobject.folder.path = '/var/www/3dviewer/'
+versionFileName = 'currentVersion.txt'
 // set per-environment serverURL stem for creating absolute links
 environments {
     development {

@@ -14,7 +14,7 @@ class ApplicationTagLib {
     }
 
     def versionNumber = {
-        File file = new File("versionInfo.txt")
+        File file = new File(grailsApplication.config.versionFileName.toString())
         if (file.exists()) {
             file.text.eachLine {line ->
                 if (line.startsWith("commit")) {
