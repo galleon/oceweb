@@ -7,16 +7,9 @@ class BootStrap {
         if (!file.exists()) {
             log.info "Folder for storing files not created at ${CADObject.folderPath}, it will cause application to misbehave."
         }
-        file = new File("versionInfo.txt")
-        if (file.exists()) {
-            log.info "File for version number already exists"
-
-        } else {
-            Process process = "git log -1".execute()
-            file.text = process.getText()
-            log.info "Adding version number to the application"
-
-        }
+        String fileName = "currentVersion.txt"
+        "git log -1 > ${fileName}".execute()
+        log.info "Adding version number to the application"
     }
     def destroy = {
 
