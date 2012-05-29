@@ -1,5 +1,7 @@
 package com.eads.threedviewer
 
+import org.codehaus.groovy.grails.web.context.ServletContextHolder as SCH
+
 class ApplicationTagLib {
 
     static namespace = "td"
@@ -14,7 +16,8 @@ class ApplicationTagLib {
     }
 
     def versionNumber = {
-        File file = new File(grailsApplication.config.versionFileName.toString())
+        String fileName = SCH.servletContext.getRealPath("/") + grailsApplication.config.versionFileName.toString()
+        File file = new File(fileName)
         if (file.exists()) {
             file.text.eachLine {line ->
                 if (line.startsWith("commit")) {

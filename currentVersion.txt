@@ -1,5 +1,0 @@
-commit 2370ad29a09e506bbad3ecae77929906e125d499
-Author: Uday Pratap Singh <uday@intelligrape.com>
-Date:   Tue May 29 13:03:30 2012 +0530
-
-    Removed unused code
