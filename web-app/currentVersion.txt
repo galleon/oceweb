@@ -1,5 +1,5 @@
-commit 66a2598a5e999865196e2ee822eff3ab1ddaf97e
+commit 42d02db71934a444c127cf5d03366289029fc073
 Author: Uday Pratap Singh <uday@intelligrape.com>
-Date:   Tue May 29 14:20:01 2012 +0530
+Date:   Tue May 29 15:41:07 2012 +0530
 
-    Fixed Bug: version not showing when war created
+    Fixed alignment of angle text boxes
