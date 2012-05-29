@@ -1,5 +1,5 @@
-commit c6e63a109d2d233ee850b67d330d1264b9f9df7a
+commit 66a2598a5e999865196e2ee822eff3ab1ddaf97e
 Author: Uday Pratap Singh <uday@intelligrape.com>
-Date:   Tue May 29 13:59:16 2012 +0530
+Date:   Tue May 29 14:20:01 2012 +0530
 
-    Added version number to be shown on application
+    Fixed Bug: version not showing when war created

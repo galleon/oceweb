@@ -4,7 +4,7 @@
         <g:hiddenField name="id" id="cadObjectId" value=""/>
         <td:textField name="frequency" label="Frequency (MHZ)"/>
         <div style="border-bottom: 1px solid #2C2C2C">
-            <div class="angle">
+            <div class="angle" style="width:49%;">
                 <label>Angles</label>
             </div>
 
