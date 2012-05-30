@@ -3,22 +3,22 @@
     <fieldset class="form">
         <g:hiddenField name="id" id="cadObjectId" value=""/>
         <td:textField name="frequency" label="Frequency (MHZ)"/>
-        <div style="border-bottom: 1px solid #2C2C2C">
-            <div class="angle" style="width:49%;">
-                <label>Angles</label>
-            </div>
+        <div class="fieldcontain required">
+            <label>Angles</label>
+        </div>
 
-            <div>
-                <label>Theta</label> <span class="required-indicator">*</span>
-                <input type="text" required="" value="" id="theta" name="theta" class="small">
-                <label>Phi</label> <span class="required-indicator">*</span>
-                <input type="text" required="" value="" id="phi" name="phi" class="small">
+        <div class="fieldcontain required">
+            <table border="0" cellpadding="2" cellspacing="0">
+                <tr>
+                    <td><label>Theta</label> <span class="required-indicator">*</span></td>
+                    <td><input type="text" required="" value="" id="theta" name="theta" class="small"></td>
+                    <td><label>Phi</label> <span class="required-indicator">*</span></td>
+                    <td><input type="text" required="" value="" id="phi" name="phi" class="small"></td>
+                    <td><label>Polarisation</label> <span class="required-indicator">*</span></td>
+                    <td><g:select name="polarisationType" from="${PolarisationType.list()}" optionKey="key" optionValue="value"/></td>
+                </tr>
+            </table>
 
-                <div class="polarisationType">
-                    <label>Polarisation</label> <span class="required-indicator">*</span>
-                    <g:select name="polarisationType" from="${PolarisationType.list()}" optionKey="key" optionValue="value"/>
-                </div>
-            </div>
         </div>
 
         <div class="fieldcontain required">
@@ -40,7 +40,8 @@
                     <td><g:textField name="sigma1.0" class="small"/></td>
                     <td valign="middle" align="center"><a href="#"><img src="${resource(dir: 'images', file: 'add.png')}" alt="Add" class="addContent"></a></td>
                     <td valign="middle" align="center"><a href="#"
-                                                     style="display: none"><img src="${resource(dir: 'images', file: 'remove.png')}" alt="Remove" class="removeContent"></a></td>
+                                                          style="display: none"><img src="${resource(dir: 'images', file: 'remove.png')}" alt="Remove" class="removeContent"></a>
+                    </td>
                 </tr>
             </table>
         </div>

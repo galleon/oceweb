@@ -1,5 +1,0 @@
-commit 42d02db71934a444c127cf5d03366289029fc073
-Author: Uday Pratap Singh <uday@intelligrape.com>
-Date:   Tue May 29 15:41:07 2012 +0530
-
-    Fixed alignment of angle text boxes
