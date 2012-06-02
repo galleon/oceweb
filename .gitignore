@@ -12,7 +12,6 @@ test.brep
 3dviewer.ipr
 *.iml
 web-app/mrdoob-three.js-32b581f/
-*.unv*
 tmp
 CodeNarcReport.html
 cobertura.ser

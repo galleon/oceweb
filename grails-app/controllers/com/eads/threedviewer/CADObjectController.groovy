@@ -4,11 +4,13 @@ import grails.converters.JSON
 import grails.validation.ValidationException
 import org.jcae.opencascade.jni.TopAbs_ShapeEnum
 import com.eads.threedviewer.co.*
+import com.eads.threedviewer.enums.ShapeType
 
 class CADObjectController {
 
     def cadObjectService
     def shapeService
+    def fileService
 
     def saveCube(CubeCO co) {
         sendResponse(co)
@@ -169,10 +171,16 @@ class CADObjectController {
         Map result = ["success": "Simulation completed"]
         if (cadMeshObject) {
             File file = shapeService.runSimulation(cadMeshObject.findUnvFile(), co)
+            CADObject cadObject = new CADObject(type: ShapeType.SIMULATED, project: cadMeshObject.project, name: "S_" + cadMeshObject.name)
+            cadObject = cadObjectService.save(cadObject)
+            if (cadObject?.id) {
+                fileService.saveFileOnFileSystem(file, cadObject.unvFilePath)
+                result = ['id': cadObject.id]
+            }
         } else {
             result = ['error': "Object not found for id ${co.id}"]
         }
-        result as JSON
+        render result as JSON
     }
 
     private List<SimulationDomainCO> populateDomainValues(params) {
@@ -180,9 +188,12 @@ class CADObjectController {
         params.findAll {it.key.contains('.')}.groupBy {it.key.toString().tokenize('.').last().toInteger()}.each {Integer key, value ->
             Map data = [:]
             value.each {dataKey, dataValue ->
-                data[dataKey.toString().tokenize(".").first()] = dataValue.toFloat()
+                data[dataKey.toString().tokenize(".").first()] = dataValue ? dataValue.toFloat() : null
             }
-            domains.add(new SimulationDomainCO(data))
+            SimulationDomainCO simulationDomainCO = new SimulationDomainCO(data)
+            if (simulationDomainCO.validate()) {
+                domains.add(simulationDomainCO)
+            }
         }
         return domains
     }

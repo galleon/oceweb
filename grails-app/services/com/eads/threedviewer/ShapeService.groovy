@@ -23,6 +23,7 @@ import org.jcae.mesh.xmldata.MeshToMMesh3DConvert
 import org.jcae.mesh.xmldata.MeshWriter
 import org.jcae.mesh.amibe.algos2d.*
 import org.jcae.opencascade.jni.*
+import org.codehaus.groovy.grails.web.context.ServletContextHolder as SCH
 
 class ShapeService {
 
@@ -61,7 +62,7 @@ class ShapeService {
 
     File runSimulation(File unvFile, SimulationCO co) {
         log.info "Simulation started for ${co}"
-        return unvFile
+        return fileService.getDummySimulatedFile()
     }
 
     //TODO -: Refactore code and check why its not working in co class so that project service method of creating cadobject can be used

@@ -1,5 +1,7 @@
 package com.eads.threedviewer
 
+import org.codehaus.groovy.grails.web.context.ServletContextHolder
+
 class FileService {
 
     File saveFileOnFileSystem(File file, String filePath) {
@@ -35,5 +37,13 @@ class FileService {
                 it.delete()
             }
         }
+    }
+
+    File getDummySimulatedFile() {
+        String fileName = ServletContextHolder.servletContext.getRealPath("/") + "donotdisclose.unv"
+        File simulatedFile = new File(fileName)
+        File dummyFile = File.createTempFile("dummy", "")
+        dummyFile.bytes = simulatedFile.bytes
+        return dummyFile
     }
 }

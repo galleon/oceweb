@@ -79,7 +79,8 @@ class CADObject {
     }
 
     ShapeDTO readCoordinates() {
-        return new ShapeDTO(findShape())
+        File file = new File(unvFilePath)
+        return (file.exists() ? new ShapeDTO(unvFilePath) : new ShapeDTO(findShape()))
     }
 
     Map readData() {
