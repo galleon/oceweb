@@ -501,6 +501,21 @@ function defaultMenu(node) {
     };
     var selectedId = $(node).attr('id');
     var rel = $(node).attr('rel');
+    var exportFile = {
+        label:"Export",
+        "_class":"class",
+        "action":function (obj) {
+            var id = $(obj).children().filter('a').attr('id');
+            window.location = createLink('CADObject', 'export') + "/" + id;
+        },
+        "separator_before":false,
+        "separator_after":true
+    }
+    if (rel == "SIMULATED") {
+        items['explode'] = null;
+        items['mesh'] = null;
+        items['export'] = exportFile;
+    }
     if (rel == "MESH") {
         items = {
             toggleVisibility:items.toggleVisibility,
@@ -522,7 +537,7 @@ function defaultMenu(node) {
                 "_class":"class",
                 "action":function (obj) {
                     var id = $(obj).children().filter('a').attr('id');
-                    $.each($("input[type='text']"),function(){
+                    $.each($("input[type='text']"), function () {
                         $(this).val('');
                     })
                     $("#computeForm #cadObjectId").val(id);
@@ -532,16 +547,7 @@ function defaultMenu(node) {
                 "separator_before":false,
                 "separator_after":true
             }
-            items['export'] = {
-                label:"Export",
-                "_class":"class",
-                "action":function (obj) {
-                    var id = $(obj).children().filter('a').attr('id');
-                    window.location = createLink('CADObject', 'export') + "/" + id;
-                },
-                "separator_before":false,
-                "separator_after":true
-            }
+            items['export'] = exportFile
         }
     }
     if (selectedId == "phtml_1") {

@@ -175,7 +175,6 @@ class CADObjectController {
             cadObject = cadObjectService.save(cadObject)
             if (cadObject?.id) {
                 fileService.saveFileOnFileSystem(file, cadObject.unvFilePath)
-                result = ['id': cadObject.id]
             }
         } else {
             result = ['error': "Object not found for id ${co.id}"]
@@ -211,11 +210,11 @@ class CADObjectController {
     }
 
     def export(Long id) {
-        CADMeshObject cadMeshObject = id ? CADMeshObject.get(id) : null
-        if (cadMeshObject) {
-            renderUnvFile(cadMeshObject.findUnvFile(), cadMeshObject.name)
+        CADObject cadObject = id ? CADObject.get(id) : null
+        if (cadObject) {
+            renderUnvFile(cadObject.findUnvFile(), cadObject.name)
         } else {
-            response.sendError(404, "Object not found for id ${id}")
+            response.sendError(404, "File not found for id ${id}")
         }
     }
 
