@@ -514,7 +514,6 @@ function defaultMenu(node) {
     if (rel == "SIMULATED") {
         items['explode'] = null;
         items['mesh'] = null;
-        items['export'] = exportFile;
     }
     if (rel == "MESH") {
         items = {

@@ -40,7 +40,7 @@ class FileService {
     }
 
     File getDummySimulatedFile() {
-        String fileName = ServletContextHolder.servletContext.getRealPath("/") + "donotdisclose.unv"
+        String fileName = ServletContextHolder.servletContext.getRealPath("/") + "coneSphere.unv"
         File simulatedFile = new File(fileName)
         File dummyFile = File.createTempFile("dummy", "")
         dummyFile.bytes = simulatedFile.bytes

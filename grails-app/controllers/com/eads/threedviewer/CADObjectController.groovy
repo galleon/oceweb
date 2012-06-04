@@ -171,10 +171,11 @@ class CADObjectController {
         Map result = ["success": "Simulation completed"]
         if (cadMeshObject) {
             File file = shapeService.runSimulation(cadMeshObject.findUnvFile(), co)
-            CADObject cadObject = new CADObject(type: ShapeType.SIMULATED, project: cadMeshObject.project, name: "S_" + cadMeshObject.name)
+            CADObject cadObject = new CADObject(type: ShapeType.SIMULATED, project: cadMeshObject.project, name: "S_" + cadMeshObject.name, parent: cadMeshObject)
             cadObject = cadObjectService.save(cadObject)
             if (cadObject?.id) {
                 fileService.saveFileOnFileSystem(file, cadObject.unvFilePath)
+                result = ["id": cadObject.id]
             }
         } else {
             result = ['error': "Object not found for id ${co.id}"]
