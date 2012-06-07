@@ -34,8 +34,10 @@ class CadObjectService {
     }
 
     CADObject save(Project project, CADObject cadObject) {
-        project.addToCadObjects(cadObject)
-        project.save()
+        if (project) {
+            project.addToCadObjects(cadObject)
+            project.save()
+        }
         cadObject = cadObject.save()
         if (!cadObject) {
             log.info "Saved cadObject ${cadObject.id} : ${cadObject.name}"
