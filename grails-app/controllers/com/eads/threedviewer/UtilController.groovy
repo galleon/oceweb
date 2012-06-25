@@ -42,20 +42,6 @@ class UtilController {
         render data as JSON
     }
 
-    def explode = {
-        TopoDS_Shape shape = getBox().shape();
-        TopExp_Explorer explorer = new TopExp_Explorer();
-        List<ShapeVO> shapes = []
-        int index = 1
-        for (explorer.init(shape, TopAbs_ShapeEnum.FACE); explorer.more(); explorer.next()) {
-            TopoDS_Shape s = explorer.current();
-            shapes.add(new ShapeVO(id: "Face_${index}", name: "Face ${index}", shape: s));
-            index++
-        }
-        session.shapes = shapes
-        render(template: 'shapesInfo', model: [shapes: shapes])
-    }
-
     def showShape(String id) {
         List<ShapeVO> shapes = session.shapes
         TopoDS_Shape shape = shapes.find {it.id == id}?.shape

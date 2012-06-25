@@ -30,20 +30,10 @@
 <div>
     <div id="content">
     </div>
+
     <div id="versionNumber">
-       Version : <td:versionNumber/>
+        Version : <td:versionNumber/>
     </div>
 </div>
-
-<script type="text/javascript">
-    $(document).ready(function () {
-        $(".showFace").click(function () {
-            var url = $(this).attr('rel');
-            $(".active-face").removeClass('active-face');
-            $(this).addClass('active-face');
-            return false;
-        })
-    })
-</script>
 </body>
 </html>
