@@ -28,7 +28,6 @@ $(document).ready(function () {
     $("#toolbox").draggable();
     enableJsTree();
     initialiseCanvas('content');
-    showShapeFromLocalStorage();
     jQuery.ajaxSetup({cache:true});
     setupUI();
     ajaxSubmit();
