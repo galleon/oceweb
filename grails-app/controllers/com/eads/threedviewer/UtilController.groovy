@@ -1,10 +1,11 @@
 package com.eads.threedviewer
 
 import com.eads.threedviewer.util.ShapeUtil
-import com.eads.threedviewer.vo.ShapeVO
 import grails.converters.JSON
 import occmeshextractor.OCCMeshExtractor
-import org.jcae.opencascade.jni.*
+import org.jcae.opencascade.jni.BRepPrimAPI_MakeBox
+import org.jcae.opencascade.jni.BRepPrimAPI_MakeSphere
+import org.jcae.opencascade.jni.TopoDS_Shape
 
 class UtilController {
 
@@ -40,12 +41,6 @@ class UtilController {
         data['faces'] = faces.tokenize(', ').findAll {it}.collect {it.toInteger()}
         data['vertices'] = vertices.tokenize(', ').findAll {it}.collect {it.toInteger()}
         render data as JSON
-    }
-
-    def showShape(String id) {
-        List<ShapeVO> shapes = session.shapes
-        TopoDS_Shape shape = shapes.find {it.id == id}?.shape
-        render generateData(shape) as JSON
     }
 
     def test() {
