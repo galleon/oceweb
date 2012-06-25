@@ -91,9 +91,11 @@ function closeModel() {
 }
 
 function showShape(id) {
+
     if (id) {
         var object = group.getChildByName(id + '');
         if (object) {
+
             debugStatement("Object found in group -: " + id)
             repaint();
             object.doubleSided = true;
@@ -104,6 +106,10 @@ function showShape(id) {
         }
     }
     animate();
+    /**
+     * Code for highlighting toggle visibility
+     */
+    $("#" + id).css('border', '1px solid red')
 }
 
 function showShapeFromRemote(id) {
@@ -141,8 +147,7 @@ function showShapeFromLocalStorage() {
 
 function addToGroup(object) {
     var id = object.name;
-    var visible = window.localStorage["visible_" + id] != '0';
-    setVisible(object, visible);
+    setVisible(object, true);
     group.add(object);
     addToLocalStorage(id);
 }
@@ -515,21 +520,43 @@ function defaultMenu(node) {
         items['mesh'] = null;
     }
     if (rel == "MESH") {
+        var parentMeshValue = $(node).children().filter('a').hasClass('parent_MESH');
         items = {
-            toggleVisibility:items.toggleVisibility,
-            deleteNode:items.deleteNode,
-            edit:{
-                label:"Edit",
+
+        }
+
+        if (parentMeshValue) {
+            items['toggleVisibility'] = {
+                label:"Toggle visibility",
+                "action":toggleVisibility,
                 "_class":"class",
-                "action":function (obj) {
-                    $("#project").jstree("rename", '#' + $(obj).attr('id'));
-                },
                 "separator_before":false,
                 "separator_after":true
             }
         }
-        var parentMesh = $(node).children().filter('a').hasClass('parent_MESH');
+        items['deleteNode'] = {
+            label:"Delete",
+            "action":confirmDelete,
+            "_class":"class",
+            "separator_before":false,
+            "separator_after":true
+        }
+        items['edit'] = {
+            //  deleteNode:items.deleteNode,
+            label:"Edit",
+            "_class":"class",
+            "action":function (obj) {
+                $("#project").jstree("rename", '#' + $(obj).attr('id'));
+            },
+            "separator_before":false,
+            "separator_after":true
+
+        }
+
+
+        var parentMesh = $(node).children().children().filter('a').hasClass('parent_MESH');
         if (!parentMesh) {
+
             items['compute'] = {
                 label:"Compute",
                 "_class":"class",
@@ -547,6 +574,13 @@ function defaultMenu(node) {
             }
             items['export'] = exportFile
         }
+    }
+    if (rel == "group") {
+
+        items = {
+            toggleVisibility:items.toggleVisibility
+        }
+
     }
     if (selectedId == "phtml_1") {
         items = {deleteNode:{
@@ -615,14 +649,18 @@ function defaultMenu(node) {
 }
 
 function toggleVisibility(node) {
+
     $.each($('#project').jstree('get_selected').children().filter('a'), function (index, val) {
+        //   debugger;
         var id = $(val).attr('id');
         toggleVisibilityById(id)
     });
 }
 
 function toggleVisibilityById(id) {
+
     var object = group.getChildByName(id);
+
     var isNotParentMesh = $("#" + id).hasClass('showObject');
     if (object) {
         if (isNotParentMesh) {
@@ -643,14 +681,17 @@ function toggleVisibilityById(id) {
 }
 
 function toggleVisibilityByObject(object) {
+    var objectId = object.name;
     if (object) {
         debugStatement("Object " + object.name + " is not parent mesh")
         var color = '';
         var visible;
         if (object.visible) {
+            $("#" + objectId).css('border', '0px')
             visible = false;
             color = getColorForRepaint(object.name);
         } else {
+            $("#" + objectId).css('border', '1px solid red')
             color = getColorForSelection(object.name);
             visible = true;
         }
@@ -673,7 +714,6 @@ function setVisible(object, visible) {
     if (object.name) {
         debugStatement("Setting visible " + visible + " for -: " + object.name)
         object.visible = visible;
-        window.localStorage["visible_" + object.name] = visible ? '1' : '0';
     }
 }
 
@@ -822,7 +862,6 @@ function repaint() {
 function getColorForRepaint(id) {
     return window.localStorage["actualColor_" + id]
 }
-
 function getColorForSelection(id) {
     var color = getLocalColor(id);
     if (!color) {
