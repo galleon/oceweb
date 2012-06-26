@@ -348,6 +348,7 @@ function render() {
 
 function ajaxSubmit() {
     $(".shapeForm").ajaxForm(function (response) {
+
         $("#templateHolder").dialog("close")
         if (response.error) {
             showError(response.error)
@@ -667,6 +668,7 @@ function showComputeForm(id){
         $('.ui-dialog').width('600px');
         $("#computeForm #cadObjectId").val(id);
     //    $("#firstContent").css('display','block')
+        ajaxSubmit();
         addRemoveComputeDialog();
     });
 }
