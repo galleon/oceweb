@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c325a411-a63e-4b00-8964-4c8ebb02039b" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/3dviewer.iws" afterPath="$PROJECT_DIR$/3dviewer.iws" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/web-app/js/application.js" afterPath="$PROJECT_DIR$/web-app/js/application.js" />
     </list>
     <ignored path="3dviewer.iws" />
@@ -75,7 +76,7 @@
       <file leaf-file-name="application.js" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/web-app/js/application.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="348" column="19" selection-start="11060" selection-end="11072" vertical-scroll-proportion="0.33203125">
+            <state line="573" column="0" selection-start="17791" selection-end="17791" vertical-scroll-proportion="0.38919926">
               <folding />
             </state>
           </provider>
@@ -84,7 +85,7 @@
       <file leaf-file-name="_compute.gsp" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/grails-app/views/cadObject/_compute.gsp">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="87" column="23" selection-start="4337" selection-end="4349" vertical-scroll-proportion="-7.2340426">
+            <state line="5" column="57" selection-start="289" selection-end="289" vertical-scroll-proportion="-1.5957447">
               <folding />
             </state>
           </provider>
@@ -620,14 +621,14 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/grails-app/views/cadObject/_compute.gsp">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="87" column="23" selection-start="4337" selection-end="4349" vertical-scroll-proportion="-7.2340426">
+        <state line="5" column="57" selection-start="289" selection-end="289" vertical-scroll-proportion="-1.5957447">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/web-app/js/application.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="348" column="19" selection-start="11060" selection-end="11072" vertical-scroll-proportion="0.33203125">
+        <state line="573" column="0" selection-start="17791" selection-end="17791" vertical-scroll-proportion="0.38919926">
           <folding />
         </state>
       </provider>

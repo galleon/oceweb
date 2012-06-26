@@ -572,10 +572,6 @@ function defaultMenu(node) {
                         $(this).val('');
                     })
 
-                    /**
-                     * show compute form
-                     */
-                  //  alert('id=='+id)
                     showComputeForm(id);
 
 
