@@ -5,6 +5,7 @@ import gnu.trove.TIntArrayList
 import gnu.trove.TIntIntHashMap
 
 import com.eads.threedviewer.dto.ShapeGroupDTO
+import com.eads.threedviewer.co.ResultCO
 
 public class UNVParser {
     private static final int TETRA4_MASK = 0x10000000;
@@ -14,7 +15,8 @@ public class UNVParser {
     private static final int TRIA6_MASK = 0x20000000;
     private static final int QUAD4_MASK = 0x40000000;
     private static final int BEAM2_MASK = 0x80000000;
-
+    private ResultCO resultCO;
+    private List<ResultCO> resultCOList = new ArrayList<ResultCO>();
     private float[] nodesCoordinates;
     private TIntIntHashMap nodesIndicesMap;
     private boolean hasBeam2, hasTria3, hasTria6, hasQuad4, hasTetra4, hasHexa8;
@@ -47,13 +49,13 @@ public class UNVParser {
         int groupId = groupNames.indexOf(groupName)
         int[] elids = surfaceGroups.get(groupId);
         int cnt = 0;
-        for (int val: elids) {
+        for (int val : elids) {
             if ((val & TRIA3_MASK) != 0)
                 cnt++;
         }
         int[] toReturn = new int[cnt * 3];
         cnt = 0;
-        for (int val: elids) {
+        for (int val : elids) {
             if ((val & TRIA3_MASK) == 0)
                 continue;
             int iid = (val & ~TRIA3_MASK);
@@ -68,13 +70,13 @@ public class UNVParser {
         int groupId = groupNames.indexOf(groupName)
         int[] elids = surfaceGroups.get(groupId);
         int cnt = 0;
-        for (int val: elids) {
+        for (int val : elids) {
             if ((val & QUAD4_MASK) != 0)
                 cnt++;
         }
         int[] toReturn = new int[cnt * 4];
         cnt = 0;
-        for (int val: elids) {
+        for (int val : elids) {
             if ((val & QUAD4_MASK) == 0)
                 continue;
             int iid = (val & ~QUAD4_MASK);
@@ -89,13 +91,13 @@ public class UNVParser {
     public int[] getBeam2FromGroup(int groupId) {
         int[] elids = surfaceGroups.get(groupId);
         int cnt = 0;
-        for (int val: elids) {
+        for (int val : elids) {
             if ((val & BEAM2_MASK) != 0)
                 cnt++;
         }
         int[] toReturn = new int[cnt * 2];
         cnt = 0;
-        for (int val: elids) {
+        for (int val : elids) {
             if ((val & BEAM2_MASK) == 0)
                 continue;
             int iid = (val & ~BEAM2_MASK);
@@ -108,13 +110,13 @@ public class UNVParser {
     public int[] getTria6FromGroup(int groupId) {
         int[] elids = surfaceGroups.get(groupId);
         int cnt = 0;
-        for (int val: elids) {
+        for (int val : elids) {
             if ((val & TRIA6_MASK) != 0)
                 cnt++;
         }
         int[] toReturn = new int[cnt * 6];
         cnt = 0;
-        for (int val: elids) {
+        for (int val : elids) {
             if ((val & TRIA6_MASK) == 0)
                 continue;
             int iid = (val & ~TRIA6_MASK);
@@ -178,7 +180,7 @@ public class UNVParser {
             surfaceGroupNames.add("");
             int[] group = new int[surfaceIndices.size()];
             int i = 0;
-            for (int val: elementSurfaceIndicesMap.getValues()) {
+            for (int val : elementSurfaceIndicesMap.getValues()) {
                 group[i] = val;
                 i++;
             }
@@ -191,7 +193,64 @@ public class UNVParser {
         elementVolumeIndicesMap = null;
     }
 
+    public List<ResultCO> parseUNVFileForResult(BufferedReader rd) throws IOException {
+        String line;
+        boolean readBlockStatus = false;
+        int blockID;
+        while ((line = rd.readLine()) != null) {
+            line = rd.readLine();
+            if (!readBlockStatus) {
+                if (line.trim().equalsIgnoreCase("2414"))
+                    blockID = Integer.parseInt(line.trim());
+            } else {
+                if (line.trim().equalsIgnoreCase("-1")) {
+                    readBlockStatus = false;
+                }
+            }
+            switch (blockID) {
+                case 2414:
+                    resultCO = new ResultCO();
+                    readGroupFromUNVFileForResult(rd, blockID);
+                    break;
+                default:
+                    while (!(line = rd.readLine()).equals("    -1")) {
+                        // Do nothing
+                    }
+            }
+        }
+        resultCOList;
+     }
+
+    private void readGroupFromUNVFileForResult(BufferedReader rd, int blockID) throws IOException {
+        String line
+        String name;
+        boolean startReadingGroup;
+        boolean readAfterFirstLine;
+        List<String> groupValueList = new ArrayList<String>();
+        while ((line = rd.readLine()) != null) {
+
+            if (line.trim().equalsIgnoreCase("-1"))
+                break;
+            if (line.trim().startsWith("plane_wave"))
+                resultCO.setName(line.trim());
+            if (line.trim().startsWith("1    ")) {
+                startReadingGroup = true;
+            }
+            if (startReadingGroup) {
+                if (readAfterFirstLine) {
+                    groupValueList.add(line.trim());
+                    readAfterFirstLine = false;
+                } else {
+                    readAfterFirstLine = true;
+                }
+            }
+        }
+        resultCO.setGroupObjects(groupValueList);
+        resultCOList.add(resultCO);
+    }
+
     private void readFace(BufferedReader rd) throws IOException {
+
         String line;
         while (!(line = rd.readLine().trim()).equals("-1")) {
             // first line: type of object
@@ -253,6 +312,12 @@ public class UNVParser {
             }
         }
     }
+
+
+
+
+
+
 
     private void readGroup(BufferedReader rd, int blockID) throws IOException {
         String line = rd.readLine();

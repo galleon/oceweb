@@ -5,6 +5,7 @@ import grails.validation.ValidationException
 import org.jcae.opencascade.jni.TopAbs_ShapeEnum
 import com.eads.threedviewer.co.*
 import com.eads.threedviewer.enums.ShapeType
+import com.eads.threedviewer.util.UNVParser
 
 class CADObjectController {
 
@@ -169,19 +170,24 @@ class CADObjectController {
         CADMeshObject cadMeshObject = co.id ? CADMeshObject.get(co.id) : null
         co.domains = populateDomainValues(params)
         Map result = ["success": "Simulation completed"]
+        String cadObjectId
         if (cadMeshObject) {
             File file = shapeService.runSimulation(cadMeshObject.findUnvFile(), co)
-            CADObject cadObject = new CADObject(type: ShapeType.SIMULATED, project: cadMeshObject.project, name: "S_" + cadMeshObject.name, parent: cadMeshObject)
-            cadObject = cadObjectService.save(cadObject)
-            if (cadObject?.id) {
-                fileService.saveFileOnFileSystem(file, cadObject.unvFilePath)
-                result = ["id": cadObject.id]
+            UNVParser parser = new UNVParser()
+            List<ResultCO> resultCOList = parser.parseUNVFileForResult(new BufferedReader(new FileReader(file)));
+            resultCOList.each {ResultCO resultCO ->
+                CADObject cadObject = new CADObject(type: ShapeType.SIMULATED, project: cadMeshObject.project, name: "S_" + resultCO.name, parent: cadMeshObject)
+                cadObject = cadObjectService.save(cadObject);
+                if (cadObject?.id) {
+                    fileService.saveUnvFilesOnFileSystem(file, cadObject.unvFilePath);
+                } else {
+                    result = ['error': "Object not found for id ${co.id}"]
+                }
             }
-        } else {
-            result = ['error': "Object not found for id ${co.id}"]
         }
         render result as JSON
     }
+
 
     private List<SimulationDomainCO> populateDomainValues(params) {
         List<SimulationDomainCO> domains = []
