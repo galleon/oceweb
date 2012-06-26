@@ -1,9 +1,14 @@
 import com.eads.threedviewer.CADObject
+import com.eads.threedviewer.util.UNVParser
+import com.eads.threedviewer.co.ResultCO
+import com.eads.threedviewer.enums.ShapeType
+import com.eads.threedviewer.CADMeshObject
+import com.eads.threedviewer.co.SimulationCO
 
 class BootStrap {
 
     def grailsApplication
-
+    def shapeService;
     def init = { servletContext ->
         File file = CADObject.findOrCreateFolder()
         if (!file.exists()) {
@@ -16,7 +21,12 @@ class BootStrap {
             file.text = process.getText()
             log.info "Adding version number to the application"
         }
+       // readGroupUnvFile();
     }
+
+
+
+
     def destroy = {
 
     }

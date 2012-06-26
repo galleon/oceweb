@@ -519,6 +519,11 @@ function defaultMenu(node) {
         items['explode'] = null;
         items['mesh'] = null;
     }
+    if(rel=='result'){
+        items={
+
+        }
+    }
     if (rel == "MESH") {
         var parentMeshValue = $(node).children().filter('a').hasClass('parent_MESH');
         items = {

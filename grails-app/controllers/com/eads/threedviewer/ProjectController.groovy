@@ -16,8 +16,10 @@ class ProjectController {
     def delete(Long id) {
         Project project = id ? Project.get(id) : null
         if (project) {
-            project.delete()
+            Project.withTransaction{project.delete();
         }
-        redirect(action: 'index')
+
+        }
+        redirect(action: 'index',params: ['name','project1'])
     }
 }
