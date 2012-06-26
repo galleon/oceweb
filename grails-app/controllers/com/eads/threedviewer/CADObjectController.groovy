@@ -111,6 +111,12 @@ class CADObjectController {
 
     }
 
+    def computePage(Long id){
+        CADObject  cadObject = CADMeshObject.get(id);
+        List<CADMeshObject> cadMeshObjectList= CADMeshObject.findAllByParentAndType(cadObject,"MESH")
+         render (template: '/cadObject/compute',model: [cadObject:cadMeshObjectList])
+    }
+
     def show(Long id) {
         Map result
         CADObject cadObject = id ? CADObject.get(id) : null

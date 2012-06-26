@@ -571,8 +571,12 @@ function defaultMenu(node) {
                         $(this).val('');
                     })
                     $("#computeForm #cadObjectId").val(id);
-                    $("#compute").dialog();
-                    $('.ui-dialog').width('600px');
+                    /**
+                     * show compute form
+                     */
+                    showComputeForm(id);
+
+
                 },
                 "separator_before":false,
                 "separator_after":true
@@ -653,6 +657,39 @@ function defaultMenu(node) {
     return items;
 }
 
+
+function showComputeForm(id){
+    var url = "CADObject/computePage?id="+id
+    $.get(url, function (response) {
+        $("#compute").html(response);
+        $("#compute").dialog();
+        $('.ui-dialog').width('600px');
+    //    $("#firstContent").css('display','block')
+        addRemoveComputeDialog();
+    });
+}
+
+function addRemoveComputeDialog(){
+    $(".addComputeDialog").live("click", function () {
+        var id = $(this).attr("id");
+        var value= parseInt(id)+1
+
+        var computeId =  "compute_"+value;
+        if($("#"+computeId) != 'undefined'){
+            $("#"+computeId).css('display','')
+        }
+       // $('.ui-dialog').width('600px');
+    });
+    $(".removeComputeDialog").live("click", function () {
+        var id = $(this).attr("id");
+        var value= parseInt(id)
+        var computeId =  "compute_"+value;
+        if($("#"+computeId) != 'undefined'){
+            $("#"+computeId).css('display','none')
+        }
+        $('.ui-dialog').width('600px');
+    });
+}
 function toggleVisibility(node) {
 
     $.each($('#project').jstree('get_selected').children().filter('a'), function (index, val) {
