@@ -570,10 +570,11 @@ function defaultMenu(node) {
                     $.each($("input[type='text']"), function () {
                         $(this).val('');
                     })
-                    $("#computeForm #cadObjectId").val(id);
+
                     /**
                      * show compute form
                      */
+                  //  alert('id=='+id)
                     showComputeForm(id);
 
 
@@ -664,6 +665,7 @@ function showComputeForm(id){
         $("#compute").html(response);
         $("#compute").dialog();
         $('.ui-dialog').width('600px');
+        $("#computeForm #cadObjectId").val(id);
     //    $("#firstContent").css('display','block')
         addRemoveComputeDialog();
     });

@@ -3,7 +3,7 @@
 
 <g:form action="runSimulation" controller="CADObject" name="computeForm" class="shapeForm">
     <fieldset class="form">
-        <g:hiddenField name="id" id="cadObjectId" value="${cadObject.id}"/>
+        <g:hiddenField name="id" id="cadObjectId" value=""/>
         <td:textField name="frequency" label="Frequency (MHZ)"/>
         <div class="fieldcontain required">
             <label>Angles</label>
@@ -45,10 +45,10 @@
                         <tr  class="domainContent" style="display:none" id="compute_${subCadObject.name}">
                     </g:else>
                     <td id='domainName'>${subCadObject.name}</td>
-                    <td><g:textField name="epsilon.0" class="small"/></td>
-                    <td><g:textField name="sigma.0" class="small"/></td>
-                    <td><g:textField name="mu.0" class="small"/></td>
-                    <td><g:textField name="sigma1.0" class="small"/></td>
+                    <td><g:textField name="epsilon.${subCadObject.name}" class="small"/></td>
+                    <td><g:textField name="sigma.${subCadObject.name}" class="small"/></td>
+                    <td><g:textField name="mu.${subCadObject.name}" class="small"/></td>
+                    <td><g:textField name="sigma1.${subCadObject.name}" class="small"/></td>
                     <g:if test="${totalCount != cadObject.size()}">
                         <td valign="middle" align="center"><a href="javascript:void(0)" id="${subCadObject.name}"
                                                               class="addComputeDialog"><img
