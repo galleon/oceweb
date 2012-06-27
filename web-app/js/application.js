@@ -205,29 +205,61 @@ function createMesh(response, name) {
     var object, color;
     var loader = new THREE.JSONLoader();
     loader.createModel(response, function (geometry) {
-        var material
-        if (response.wireframe) {
-            geometry = changeFaceOrientation(geometry);
-            material = new THREE.MeshLambertMaterial({color:0xffffff, shading:THREE.FlatShading, vertexColors:THREE.VertexColors, opacity:0.75 });
-        } else {
-            material = new THREE.MeshLambertMaterial({overdraw:true, shading:THREE.FlatShading, wireframe:response.wireframe});
+            if (response.simulated) {
+                var material
+                    geometry = changeFaceOrientation(geometry);
+                    var color, f, f2, f3, p, n, vertexIndex, radius = 10
+                    var faceIndices = [ 'a', 'b', 'c', 'd' ];
+                    for (var i = 0; i < geometry.faces.length; i++) {
+                        f = geometry.faces[ i ];
+                        n = ( f instanceof THREE.Face3 ) ? 3 : 4;
+                        for (var j = 0; j < n; j++) {
+                            vertexIndex = f[ faceIndices[ j ] ];
+                            p = geometry.vertices[ vertexIndex ];
+                            color = new THREE.Color(0xffffff);
+                            var colorValue = 0.0013 * i
+                            var colorValue1 = 0.0073 * i
+                            var colorValue2 = 0.0063 * i
+                            color.setHSV(colorValue, colorValue1, colorValue2)
+                            f.vertexColors[ j ] = color;
+                        }
+                    }
+                    material = [
+                        new THREE.MeshLambertMaterial({ color:0xffffff, shading:THREE.FlatShading, vertexColors:THREE.VertexColors}),
+                        new THREE.MeshBasicMaterial({ color:0x000000, shading:THREE.FlatShading, wireframe:true, transparent:true })
+                    ];
+                object = THREE.SceneUtils.createMultiMaterialObject(geometry, material);
+
+                object.updateMatrix();
+                object.doubleSided = true;
+                object.name = name + '';
+            } else {
+                var material
+                if (response.wireframe) {
+                    geometry = changeFaceOrientation(geometry);
+                    material = new THREE.MeshLambertMaterial({color:0xffffff, shading:THREE.FlatShading, vertexColors:THREE.VertexColors, opacity:0.75 });
+                } else {
+                    material = new THREE.MeshLambertMaterial({overdraw:true, shading:THREE.FlatShading, wireframe:response.wireframe});
+                }
+                color = selectionColor;
+                if (response.color) {
+                    color = response.color
+                }
+                var actualColor = response.color ? response.color : objectColor;
+                setActualColorOnLocal(name, actualColor);
+                var localColor = getLocalColor(name);
+                if (localColor) {
+                    color = localColor
+                }
+                object = new THREE.Mesh(geometry, material);
+                object.updateMatrix();
+
+                object.doubleSided = true;
+                object.name = name + '';
+                setColor(object, color);
+            }
         }
-        color = selectionColor;
-        if (response.color) {
-            color = response.color
-        }
-        var actualColor = response.color ? response.color : objectColor;
-        setActualColorOnLocal(name, actualColor);
-        var localColor = getLocalColor(name);
-        if (localColor) {
-            color = localColor
-        }
-        object = new THREE.Mesh(geometry, material);
-        object.updateMatrix();
-    })
-    object.doubleSided = true;
-    object.name = name + '';
-    setColor(object, color);
+    )
     return object
 }
 
@@ -247,11 +279,15 @@ function initialiseCanvas(containerId) {
     scene = new THREE.Scene();
     scene.add(camera);
 
+
     group = new THREE.Object3D();
     group.parent = scene;
-    renderer = new THREE.CanvasRenderer();
-    renderer.setSize(containerWidth, containerHeight);
-    renderer.sortObjects = false;
+    /*   renderer = new THREE.CanvasRenderer();
+     renderer.setSize(containerWidth, containerHeight);
+     */
+    renderer = new THREE.WebGLRenderer({ antialias:true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    //   renderer.sortObjects = false;
 
     trihedra = new THREE.Axes();
     trihedra.position.set(0, 0, 0);
@@ -520,8 +556,8 @@ function defaultMenu(node) {
         items['explode'] = null;
         items['mesh'] = null;
     }
-    if(rel=='result'){
-        items={
+    if (rel == 'result') {
+        items = {
 
         }
     }
@@ -656,36 +692,36 @@ function defaultMenu(node) {
 }
 
 
-function showComputeForm(id){
-    var url = "CADObject/computePage?id="+id
+function showComputeForm(id) {
+    var url = "CADObject/computePage?id=" + id
     $.get(url, function (response) {
         $("#compute").html(response);
         $("#compute").dialog();
         $('.ui-dialog').width('600px');
         $("#computeForm #cadObjectId").val(id);
-    //    $("#firstContent").css('display','block')
+        //    $("#firstContent").css('display','block')
         ajaxSubmit();
         addRemoveComputeDialog();
     });
 }
 
-function addRemoveComputeDialog(){
+function addRemoveComputeDialog() {
     $(".addComputeDialog").live("click", function () {
         var id = $(this).attr("id");
-        var value= parseInt(id)+1
+        var value = parseInt(id) + 1
 
-        var computeId =  "compute_"+value;
-        if($("#"+computeId) != 'undefined'){
-            $("#"+computeId).css('display','')
+        var computeId = "compute_" + value;
+        if ($("#" + computeId) != 'undefined') {
+            $("#" + computeId).css('display', '')
         }
-       // $('.ui-dialog').width('600px');
+        // $('.ui-dialog').width('600px');
     });
     $(".removeComputeDialog").live("click", function () {
         var id = $(this).attr("id");
-        var value= parseInt(id)
-        var computeId =  "compute_"+value;
-        if($("#"+computeId) != 'undefined'){
-            $("#"+computeId).css('display','none')
+        var value = parseInt(id)
+        var computeId = "compute_" + value;
+        if ($("#" + computeId) != 'undefined') {
+            $("#" + computeId).css('display', 'none')
         }
         $('.ui-dialog').width('600px');
     });
@@ -693,7 +729,7 @@ function addRemoveComputeDialog(){
 function toggleVisibility(node) {
 
     $.each($('#project').jstree('get_selected').children().filter('a'), function (index, val) {
-        //   debugger;
+
         var id = $(val).attr('id');
         toggleVisibilityById(id)
     });
@@ -724,7 +760,7 @@ function toggleVisibilityById(id) {
 
 function toggleVisibilityByObject(object) {
     var objectId = object.name;
-    if (object) {
+   if (object) {
         debugStatement("Object " + object.name + " is not parent mesh")
         var color = '';
         var visible;
@@ -747,8 +783,10 @@ function toggleVisibilityByObject(object) {
 function setColor(object, color) {
     if (object.name) {
         debugStatement("Setting color -: " + color + " of id -: " + object.name);
-        object.material.color.setHex(color);
-        window.localStorage["color_" + object.name] = color;
+        if (object.material != undefined) {
+            object.material.color.setHex(color);
+            window.localStorage["color_" + object.name] = color;
+        }
     }
 }
 

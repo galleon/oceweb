@@ -15,8 +15,8 @@
                 <g:set var="meshObject" value="${cadObject?.subCadObjects.findAll {CADObject subObjectData ->
                     subObjectData.isMesh()
                 }}"/>
-                <g:render template="cadMeshObjects" model="[cadMeshObject: meshObject]"/>
-                <g:render template="cadComputeObject" model="[cadSimulationObjects: simulationObject]"/>
+                <g:render template="cadMeshObjects" model="[cadMeshObject: meshObject,cadMainObject:cadObject]"/>
+                <g:render template="cadComputeObject" model="[cadSimulationObjects: simulationObject,cadMainObject:cadObject]"/>
                 <g:set var="subMeshSimuType" value="true"/>
             </g:if>
             <g:else>

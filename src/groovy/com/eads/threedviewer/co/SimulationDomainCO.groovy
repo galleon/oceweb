@@ -16,10 +16,5 @@ class SimulationDomainCO {
         sigma(nullable: false, blank: false)
         mu(nullable: false, blank: false)
         sigma1(nullable: false, blank: false)
-       /* name(nullable: false, blank: false, validator: {name,obj ->
-            if (!obj.epsilon && !obj.sigma && !obj.mu && !obj.sigma1)
-                return false;
-        })*/
-
-    }
+          }
 }

@@ -111,10 +111,10 @@ class CADObjectController {
 
     }
 
-    def computePage(Long id){
-        CADObject  cadObject = CADMeshObject.get(id);
-        List<CADMeshObject> cadMeshObjectList= CADMeshObject.findAllByParentAndType(cadObject,"MESH")
-         render (template: '/cadObject/compute',model: [cadObject:cadMeshObjectList])
+    def computePage(Long id) {
+        CADObject cadObject = CADMeshObject.get(id);
+        List<CADMeshObject> cadMeshObjectList = CADMeshObject.findAllByParentAndType(cadObject, "MESH")
+        render(template: '/cadObject/compute', model: [cadObject: cadMeshObjectList])
     }
 
     def show(Long id) {
@@ -123,6 +123,9 @@ class CADObjectController {
         if (cadObject) {
             try {
                 result = cadObject.readData()
+                if(cadObject?.type?.equals(ShapeType.SIMULATED)){
+                    result['simulated']='true';
+                }
             } catch (RuntimeException rte) {
                 result = ['error': rte.message]
             }
@@ -207,7 +210,7 @@ class CADObjectController {
             SimulationDomainCO simulationDomainCO = new SimulationDomainCO(data)
 
             if (simulationDomainCO.validate()) {
-                    domains.add(simulationDomainCO)
+                domains.add(simulationDomainCO)
             }
         }
 
