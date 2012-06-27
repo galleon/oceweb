@@ -35,22 +35,21 @@
                     <td width="25">&nbsp;</td>
                     <td>&nbsp;</td>
                 </tr>
-                <g:set var="totalCount" value="${"0".toInteger()}"/>
-                <g:each in="${cadObject}" var="subCadObject">
-                    <g:set var="totalCount" value="${totalCount?.toInteger() + 1}"/>
-                    <g:if test="${totalCount == 1}">
+                <g:each in="${cadObject}" var="subCadObject" status="index">
+                    <g:if test="${index == 0}">
                         <tr id="domainContent" class="domainContent" >
                     </g:if>
                     <g:else>
-                        <tr  class="domainContent" style="display:none" id="compute_${subCadObject.name}">
+                        <tr  class="domainContent" style="display:none" id="compute_${index}">
                     </g:else>
+                    <g:hiddenField name="name.${index}" value="${subCadObject.name}"/>
                     <td id='domainName'>${subCadObject.name}</td>
-                    <td><g:textField name="epsilon.${subCadObject.name}" class="small"/></td>
-                    <td><g:textField name="sigma.${subCadObject.name}" class="small"/></td>
-                    <td><g:textField name="mu.${subCadObject.name}" class="small"/></td>
-                    <td><g:textField name="sigma1.${subCadObject.name}" class="small"/></td>
-                    <g:if test="${totalCount != cadObject.size()}">
-                        <td valign="middle" align="center"><a href="javascript:void(0)" id="${subCadObject.name}"
+                    <td><g:textField name="epsilon.${index}" class="small"/></td>
+                    <td><g:textField name="sigma.${index}" class="small"/></td>
+                    <td><g:textField name="mu.${index}" class="small"/></td>
+                    <td><g:textField name="sigma1.${index}" class="small"/></td>
+                    <g:if test="${index != cadObject.size()-1}">
+                        <td valign="middle" align="center"><a href="javascript:void(0)" id="${index}"
                                                               class="addComputeDialog"><img
                                     src="${resource(dir: 'images', file: 'add.png')}" alt="Add">
                         </a>
@@ -60,10 +59,10 @@
                         <td>&nbsp;</td>
                     </g:else>
 
-                    <g:if test="${totalCount != 1}">
+                    <g:if test="${index != 0}">
                         <td valign="middle" align="center"><a href="javascript:void(0)"
 
-                                                              id="${subCadObject.name}" class="removeComputeDialog"><img
+                                                              id="${index}" class="removeComputeDialog"><img
                                     src="${resource(dir: 'images', file: 'remove.png')}" alt="Remove"></a>
                         </td>
                     </g:if>

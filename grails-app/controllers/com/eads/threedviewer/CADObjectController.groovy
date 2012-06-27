@@ -175,6 +175,7 @@ class CADObjectController {
     def runSimulation(SimulationCO co) {
         CADMeshObject cadMeshObject = co.id ? CADMeshObject.get(co.id) : null
         co.domains = populateDomainValues(params)
+
         Map result = ["success": "Simulation completed"]
         String cadObjectId
         if (cadMeshObject) {
@@ -200,13 +201,16 @@ class CADObjectController {
         params.findAll {it.key.contains('.')}.groupBy {it.key.toString().tokenize('.').last().toInteger()}.each {Integer key, value ->
             Map data = [:]
             value.each {dataKey, dataValue ->
+
                 data[dataKey.toString().tokenize(".").first()] = dataValue ? dataValue.toFloat() : null
             }
             SimulationDomainCO simulationDomainCO = new SimulationDomainCO(data)
+
             if (simulationDomainCO.validate()) {
-                domains.add(simulationDomainCO)
+                    domains.add(simulationDomainCO)
             }
         }
+
         return domains
     }
 
