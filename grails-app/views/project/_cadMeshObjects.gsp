@@ -2,13 +2,9 @@
 <g:each in="${cadMeshObject}" var="cadObjectValue">
     <g:set var="meshCountValue" value="${meshCountValue.toInteger() + 1}"/>
     <g:if test="${meshCountValue == 1}">
-        <ul>
-   <li rel="group" id='${"phtml_" + (cadObjectValue.id)}'>
-       <a href="${createLink(controller: 'CADObject', action: 'show', id: cadObjectValue.id)}"
-               href="javascript:void(0)" id="${cadObjectValue.id}"
-               class="${cadObjectValue.isMesh() && !cadObjectValue?.parent?.isMesh() ? '' : 'showObject'}
-        ${cadObjectValue.parent ? 'parent_' + cadObjectValue.parent.type : ''}"
-               rel='${createLink(controller: "CADObject", action: "create${cadObjectValue.type.value}", id: cadObjectValue.id)}'>Group</a>
+
+   <li rel="group" id='${"phtml_" + (count)}'>
+       <a href="javascript:void(0)">Group</a>
    <ul>
     </g:if>
 
@@ -21,5 +17,5 @@
     </li>
 </g:each>
 <g:if test="${meshCountValue != 0}">
-    </ul> </li></ul>
+    </ul> </li>
 </g:if>

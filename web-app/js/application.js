@@ -282,12 +282,8 @@ function initialiseCanvas(containerId) {
 
     group = new THREE.Object3D();
     group.parent = scene;
-    /*   renderer = new THREE.CanvasRenderer();
-     renderer.setSize(containerWidth, containerHeight);
-     */
-    renderer = new THREE.WebGLRenderer({ antialias:true });
+   renderer = new THREE.WebGLRenderer({ antialias:true });
     renderer.setSize(window.innerWidth, window.innerHeight);
-    //   renderer.sortObjects = false;
 
     trihedra = new THREE.Axes();
     trihedra.position.set(0, 0, 0);
@@ -567,7 +563,6 @@ function defaultMenu(node) {
 
         }
 
-        if (parentMeshValue) {
             items['toggleVisibility'] = {
                 label:"Toggle visibility",
                 "action":toggleVisibility,
@@ -575,7 +570,7 @@ function defaultMenu(node) {
                 "separator_before":false,
                 "separator_after":true
             }
-        }
+
         items['deleteNode'] = {
             label:"Delete",
             "action":confirmDelete,
@@ -621,7 +616,7 @@ function defaultMenu(node) {
     if (rel == "group") {
 
         items = {
-            toggleVisibility:items.toggleVisibility
+
         }
 
     }
@@ -731,6 +726,7 @@ function toggleVisibility(node) {
     $.each($('#project').jstree('get_selected').children().filter('a'), function (index, val) {
 
         var id = $(val).attr('id');
+
         toggleVisibilityById(id)
     });
 }
@@ -740,6 +736,7 @@ function toggleVisibilityById(id) {
     var object = group.getChildByName(id);
 
     var isNotParentMesh = $("#" + id).hasClass('showObject');
+
     if (object) {
         if (isNotParentMesh) {
             toggleVisibilityByObject(object);
@@ -750,7 +747,7 @@ function toggleVisibilityById(id) {
             showShape(id);
         } else {
             debugStatement("Object " + id + " is parent mesh")
-            $.each($("#" + id).parent().children().filter('ul').children().children().filter('a'), function (index, value) {
+            $.each($("#" + id).parent().children().filter('ul').children().filter('li').children().filter('ul').children().children().filter('a'), function (index, value) {
                 id = $(value).attr('id')
                 toggleVisibilityById(id)
             })
