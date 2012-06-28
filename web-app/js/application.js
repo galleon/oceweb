@@ -225,8 +225,7 @@ function createMesh(response, name) {
                         }
                     }
                     material = [
-                        new THREE.MeshLambertMaterial({ color:0xffffff, shading:THREE.FlatShading, vertexColors:THREE.VertexColors}),
-                        new THREE.MeshBasicMaterial({ color:0x000000, shading:THREE.FlatShading, wireframe:true, transparent:true })
+                        new THREE.MeshLambertMaterial({ color:0xffffff, shading:THREE.FlatShading, vertexColors:THREE.VertexColors})
                     ];
                 object = THREE.SceneUtils.createMultiMaterialObject(geometry, material);
 
@@ -732,7 +731,6 @@ function toggleVisibility(node) {
 }
 
 function toggleVisibilityById(id) {
-
     var object = group.getChildByName(id);
 
     var isNotParentMesh = $("#" + id).hasClass('showObject');
@@ -757,6 +755,7 @@ function toggleVisibilityById(id) {
 
 function toggleVisibilityByObject(object) {
     var objectId = object.name;
+
    if (object) {
         debugStatement("Object " + object.name + " is not parent mesh")
         var color = '';
@@ -770,6 +769,18 @@ function toggleVisibilityByObject(object) {
             color = getColorForSelection(object.name);
             visible = true;
         }
+       if(object.children != '' && object.children != undefined && object.children.length>0){
+           if ( object.children[0].visible) {
+               $("#" + objectId).css('border', '0px')
+               object.children[0].visible  = false;
+               color = getColorForRepaint(object.name);
+           } else {
+               $("#" + objectId).css('border', '1px solid red')
+               color = getColorForSelection(object.name);
+               object.children[0].visible  = true;
+           }
+
+       }
         setVisible(object, visible);
         setColor(object, color);
     } else {
