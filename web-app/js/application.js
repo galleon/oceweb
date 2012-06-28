@@ -207,31 +207,44 @@ function createMesh(response, name) {
     loader.createModel(response, function (geometry) {
             if (response.simulated) {
                 var material
-                    geometry = changeFaceOrientation(geometry);
-                    var color, f, f2, f3, p, n, vertexIndex, radius = 10
-                    var faceIndices = [ 'a', 'b', 'c', 'd' ];
-                    for (var i = 0; i < geometry.faces.length; i++) {
-                        f = geometry.faces[ i ];
-                        n = ( f instanceof THREE.Face3 ) ? 3 : 4;
-                        for (var j = 0; j < n; j++) {
-                            vertexIndex = f[ faceIndices[ j ] ];
-                            p = geometry.vertices[ vertexIndex ];
-                            color = new THREE.Color(0xffffff);
-                            var colorValue = 0.0013 * i
-                            var colorValue1 = 0.0073 * i
-                            var colorValue2 = 0.0063 * i
-                            color.setHSV(colorValue, colorValue1, colorValue2)
-                            f.vertexColors[ j ] = color;
-                        }
+                geometry = changeFaceOrientation(geometry);
+                var color, f, f2, f3, p, n, vertexIndex, radius = 10
+                var faceIndices = [ 'a', 'b', 'c', 'd' ];
+                for (var i = 0; i < geometry.faces.length; i++) {
+                    f = geometry.faces[ i ];
+                    n = ( f instanceof THREE.Face3 ) ? 3 : 4;
+                    for (var j = 0; j < n; j++) {
+                        vertexIndex = f[ faceIndices[ j ] ];
+                        p = geometry.vertices[ vertexIndex ];
+                        color = new THREE.Color(0xffffff);
+                        var colorValue = 0.0013 * i
+                        var colorValue1 = 0.0073 * i
+                        var colorValue2 = 0.0063 * i
+                        color.setHSV(colorValue, colorValue1, colorValue2)
+                        f.vertexColors[ j ] = color;
                     }
-                    material = [
-                        new THREE.MeshLambertMaterial({ color:0xffffff, shading:THREE.FlatShading, vertexColors:THREE.VertexColors})
-                    ];
+                }
+                material = [
+                    new THREE.MeshLambertMaterial({ color:0xffffff, shading:THREE.FlatShading, vertexColors:THREE.VertexColors})
+                ];
                 object = THREE.SceneUtils.createMultiMaterialObject(geometry, material);
 
                 object.updateMatrix();
                 object.doubleSided = true;
                 object.name = name + '';
+
+                $.each($("#" + name).parent().parent().children().children().filter('a'), function (index, val) {
+                    var objectId = $(val).attr('id')
+                    var otherObjects = group.getChildByName(objectId);
+                    if (otherObjects != undefined && otherObjects.children != '' && otherObjects.children != undefined && otherObjects.children.length > 0) {
+                        if (otherObjects.children[0].visible) {
+                            $("#" + objectId).css('border', '0px')
+                            otherObjects.children[0].visible = false;
+                        }
+
+                    }
+                });
+
             } else {
                 var material
                 if (response.wireframe) {
@@ -281,7 +294,7 @@ function initialiseCanvas(containerId) {
 
     group = new THREE.Object3D();
     group.parent = scene;
-   renderer = new THREE.WebGLRenderer({ antialias:true });
+    renderer = new THREE.WebGLRenderer({ antialias:true });
     renderer.setSize(window.innerWidth, window.innerHeight);
 
     trihedra = new THREE.Axes();
@@ -562,13 +575,13 @@ function defaultMenu(node) {
 
         }
 
-            items['toggleVisibility'] = {
-                label:"Toggle visibility",
-                "action":toggleVisibility,
-                "_class":"class",
-                "separator_before":false,
-                "separator_after":true
-            }
+        items['toggleVisibility'] = {
+            label:"Toggle visibility",
+            "action":toggleVisibility,
+            "_class":"class",
+            "separator_before":false,
+            "separator_after":true
+        }
 
         items['deleteNode'] = {
             label:"Delete",
@@ -756,7 +769,7 @@ function toggleVisibilityById(id) {
 function toggleVisibilityByObject(object) {
     var objectId = object.name;
 
-   if (object) {
+    if (object) {
         debugStatement("Object " + object.name + " is not parent mesh")
         var color = '';
         var visible;
@@ -769,18 +782,31 @@ function toggleVisibilityByObject(object) {
             color = getColorForSelection(object.name);
             visible = true;
         }
-       if(object.children != '' && object.children != undefined && object.children.length>0){
-           if ( object.children[0].visible) {
-               $("#" + objectId).css('border', '0px')
-               object.children[0].visible  = false;
-               color = getColorForRepaint(object.name);
-           } else {
-               $("#" + objectId).css('border', '1px solid red')
-               color = getColorForSelection(object.name);
-               object.children[0].visible  = true;
-           }
+        if (object.children != '' && object.children != undefined && object.children.length > 0) {
+            if (object.children[0].visible) {
+                $("#" + objectId).css('border', '0px')
+                object.children[0].visible = false;
+                color = getColorForRepaint(object.name);
+            } else {
+                $("#" + objectId).css('border', '1px solid red')
+                color = getColorForSelection(object.name);
+                object.children[0].visible = true;
+            }
+            $.each($("#" + objectId).parent().parent().children().children().filter('a'), function (index, val) {
 
-       }
+                var newObjectId = $(val).attr('id')
+                var otherObjects = group.getChildByName(newObjectId);
+                if (otherObjects != undefined && otherObjects.children != '' && otherObjects.children != undefined && otherObjects.children.length > 0 && objectId != newObjectId) {
+                    if (otherObjects.children[0].visible) {
+                        $("#" + newObjectId).css('border', '0px')
+                        otherObjects.children[0].visible = false;
+                    }
+                }
+            });
+
+
+
+        }
         setVisible(object, visible);
         setColor(object, color);
     } else {
