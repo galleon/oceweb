@@ -53,11 +53,20 @@
 <div id="toolbox">
     <div class="righttools clearfix">
         <div id="frameArea"><g:link uri="/">3-D Viewer</g:link></div>
+
         <g:if test="${project}">
             <g:render template="/project/toolbar"/>
         </g:if>
+
     </div>
+    <g:form action="changeScale">
+        <g:textField name="scale" onkeypress="return isNumberKey(event)" value="${grailsApplication.config.scale.size}" size="3"></g:textField>
+        <g:submitButton name="Change Scale" size="10"/>
+
+    </g:form>
 </div>
+
+
 <g:layoutBody/>
 <div id="spinner" class="${project ? 'info' : 'errormsg'} message" style="display: ${project ? 'none' : 'block'};">
     <p>

@@ -1,7 +1,7 @@
 package com.eads.threedviewer
 
 class ProjectController {
-
+    def grailsApplication
     def index(String name) {
         Project project = name ? Project.findOrSaveWhere([name: name]) : null
         List<Project> projects = Project.list()
@@ -21,5 +21,11 @@ class ProjectController {
 
         }
         redirect(action: 'index',params: ['name','project1'])
+    }
+
+    def changeScale(){
+        float scale = params.scale != null && !params.scale.equals('')? params.scale as Float: 10;
+        grailsApplication.config.scale.size = scale;
+        redirect(action: 'index')
     }
 }

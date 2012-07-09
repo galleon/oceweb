@@ -5,14 +5,17 @@ import groovy.util.logging.Log
 import org.jcae.opencascade.jni.BRepTools
 import org.jcae.opencascade.jni.BRep_Builder
 import org.jcae.opencascade.jni.TopoDS_Shape
+import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
 @Log
 class ShapeUtil {
 
-    public static String ls = System.getProperty("line.separator")
+     public static String ls = System.getProperty("line.separator")
+
 
     public static Map getDefaultData() {
-        return ['metadata': ['formatVersion': 3, 'generatedBy': 'tog'], 'scale': 10, 'materials': [], 'morphTargets': [], 'normals': [], 'colors': [], 'uvs': [[]]]
+        float scale = ConfigurationHolder.config.scale.size;
+        return ['metadata': ['formatVersion': 3, 'generatedBy': 'tog'], 'scale':scale, 'materials': [], 'morphTargets': [], 'normals': [], 'colors': [], 'uvs': [[]]]
     }
 
     public static Map getData(TopoDS_Shape shape) {
