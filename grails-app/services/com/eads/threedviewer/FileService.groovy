@@ -1,6 +1,7 @@
 package com.eads.threedviewer
 
 import org.codehaus.groovy.grails.web.context.ServletContextHolder
+import org.apache.commons.io.FileUtils
 
 class FileService {
 
@@ -21,8 +22,14 @@ class FileService {
             log.info "creating parent file ${newFile.parentFile}"
             newFile.parentFile.mkdirs()
         }
+
         log.info "Moving file ${file?.path} to ${filePath} file size is ${file?.bytes?.size()}"
-        (new AntBuilder()).copy(file: file, tofile: filePath)
+        // (new AntBuilder()).copy(file: file, tofile: filePath)
+        File copyFile = new File(filePath);
+        if (!copyFile.exists())
+            copyFile.createNewFile();
+
+        FileUtils.copyFile(file, copyFile)
         return newFile
     }
 
