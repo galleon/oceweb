@@ -207,5 +207,5 @@ fieldset{border: none}
 
 #scaleForm{margin-left: 6px;}
 
-#scaleForm #changeScaleButton{width: 50%;height: 30px;margin-right: -14px;size:10px;}
+#scaleForm #changeScaleButton{width: 50%;height: 24px;margin-right: -14px;size:10px;padding-bottom: 10px;padding-top:0px}
 
