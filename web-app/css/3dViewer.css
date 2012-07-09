@@ -207,5 +207,6 @@ fieldset{border: none}
 
 #scaleForm{margin-left: 6px;}
 
-#scaleForm #changeScaleButton{width: 52%;height: 24px;margin-right: -14px;size:10px;padding-bottom: 10px;padding-top:0px}
-
+#scaleForm #changeScaleButton{width: 52%;height:24px;margin-right: -14px;size:10px;padding-bottom: 10px;padding-top:0px; position:relative; border-radius:4px; -moz-border-radius:4px; -webkit-border-radius:4px; border: 0px;}
+#scaleForm input[type="text"]{ display:block; float:left;  margin-right:10px;  position:relative; border-radius:4px; -moz-border-radius:4px; -webkit-border-radius:4px; margin-top: 0px;}
+@media screen and (-webkit-min-device-pixel-ratio:0) { #scaleForm #changeScaleButton{padding-top:5px;}}
