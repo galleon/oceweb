@@ -42,7 +42,7 @@
 <body>
 <g:if test="${project}">
     <div id="projectTree" title="Project">
-        <g:render template="/project/cadObjects" model="[project: project,projects:projects]"/>
+        <g:render template="/project/cadObjects" model="[project: project, projects: projects]"/>
     </div>
 
 </g:if>
@@ -59,11 +59,16 @@
         </g:if>
 
     </div>
-    <g:form action="changeScale">
-        <g:textField name="scale" onkeypress="return isNumberKey(event)" value="${grailsApplication.config.scale.size}" size="3"></g:textField>
-        <g:submitButton name="Change Scale" size="10"/>
 
-    </g:form>
+    <div id="scaleForm">
+        <g:form action="changeScale">
+            <g:textField name="scale" onkeypress="return isNumberKey(event)"
+                         value="${grailsApplication.config.scale.size}" size="3"
+                         style="margin-left: 2px;"></g:textField>
+            <g:submitButton name="Change Scale" id="changeScaleButton"/>
+
+        </g:form>
+    </div>
 </div>
 
 

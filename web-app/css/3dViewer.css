@@ -204,3 +204,8 @@ fieldset{border: none}
 .angle{float: left; width: 50%;padding-top: 3px;}
 #versionNumber{bottom: 0px; position: absolute; right: 0pt;padding-right: 5px;padding-bottom: 5px}
 .visible {border: 1px solid red}
+
+#scaleForm{margin-left: 6px;}
+
+#scaleForm #changeScaleButton{width: 50%;height: 30px;margin-right: -14px;size:10px;}
+
