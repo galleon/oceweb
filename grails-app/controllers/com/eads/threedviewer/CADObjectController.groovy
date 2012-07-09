@@ -40,11 +40,13 @@ class CADObjectController {
     def saveExplode(ExplodeShapeCO co) {
         sendResponse(co)
     }
-    def changeScale(){
-        float scale = params.scale != null && !params.scale.equals('')? params.scale as Float: 10;
-        grailsApplication.config.scale.size = scale;
-        redirect(action: 'index' , controller: 'project')
+
+    def changeScale() {
+        float scale = params.scale != null && !params.scale.equals('') ? params.scale as Float : 10;
+        session.scale = scale
+        redirect(action: 'index', controller: 'project')
     }
+
     private Closure sendResponse = {ShapeCO co ->
         Map result
         CADObject cadObject
@@ -127,9 +129,14 @@ class CADObjectController {
         if (cadObject) {
             try {
                 result = cadObject.readData()
-                if(cadObject?.type?.equals(ShapeType.SIMULATED)){
-                    result['simulated']='true';
+                if (cadObject?.type?.equals(ShapeType.SIMULATED)) {
+                    result['simulated'] = 'true';
                 }
+                float scale = grailsApplication.config.scale.size
+                if (session.scale != null && session.scale != "")
+                    scale = session.scale as float
+
+                result['scale'] = scale;
             } catch (RuntimeException rte) {
                 result = ['error': rte.message]
             }
