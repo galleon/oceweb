@@ -103,6 +103,10 @@ class CADObject {
         return isType(ShapeType.MESH)
     }
 
+    Boolean isSimulated(){
+        return isType(ShapeType.SIMULATED)
+    }
+
     Boolean hasParentMesh() {
         return (parent && parent.isMesh())
     }
