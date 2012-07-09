@@ -61,7 +61,7 @@
     </div>
 
     <div id="scaleForm">
-        <g:form action="changeScale">
+        <g:form controller="CADObject" action="changeScale">
             <g:textField name="scale" onkeypress="return isNumberKey(event)"
                          value="${grailsApplication.config.scale.size}" size="3"
                          style="margin-left: 2px;"></g:textField>

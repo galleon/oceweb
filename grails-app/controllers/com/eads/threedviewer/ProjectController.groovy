@@ -23,9 +23,5 @@ class ProjectController {
         redirect(action: 'index',params: ['name','project1'])
     }
 
-    def changeScale(){
-        float scale = params.scale != null && !params.scale.equals('')? params.scale as Float: 10;
-        grailsApplication.config.scale.size = scale;
-        redirect(action: 'index')
-    }
+
 }
