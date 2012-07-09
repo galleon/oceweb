@@ -40,7 +40,11 @@ class CADObjectController {
     def saveExplode(ExplodeShapeCO co) {
         sendResponse(co)
     }
-
+    def changeScale(){
+        float scale = params.scale != null && !params.scale.equals('')? params.scale as Float: 10;
+        grailsApplication.config.scale.size = scale;
+        redirect(action: 'index' , controller: 'project')
+    }
     private Closure sendResponse = {ShapeCO co ->
         Map result
         CADObject cadObject
