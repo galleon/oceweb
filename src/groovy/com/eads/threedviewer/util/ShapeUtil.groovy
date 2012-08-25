@@ -10,12 +10,11 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder
 @Log
 class ShapeUtil {
 
-     public static String ls = System.getProperty("line.separator")
+    public static String ls = System.getProperty("line.separator")
 
 
     public static Map getDefaultData() {
-        float scale = ConfigurationHolder.config.scale.size;
-        return ['metadata': ['formatVersion': 3, 'generatedBy': 'tog'], 'scale':scale, 'materials': [], 'morphTargets': [], 'normals': [], 'colors': [], 'uvs': [[]]]
+        return ['metadata': ['formatVersion': 3, 'generatedBy': 'tog'], 'materials': [], 'morphTargets': [], 'normals': [], 'colors': [], 'uvs': [[]]]
     }
 
     public static Map getData(TopoDS_Shape shape) {
@@ -28,9 +27,10 @@ class ShapeUtil {
     public static Map getData(ShapeDTO shapeDTO) {
         Map data = defaultData
         data['edges'] = shapeDTO.edges
-        data['faces'] = shapeDTO.faces;
-        data['vertices'] = shapeDTO.vertices;
-        data['color'] = shapeDTO.color;
+        data['faces'] = shapeDTO.faces
+        data['vertices'] = shapeDTO.vertices
+        data['color'] = shapeDTO.color
+        data['colors'] = shapeDTO.resultDTO ? shapeDTO.resultDTO.resultValues : []
         return data
     }
 

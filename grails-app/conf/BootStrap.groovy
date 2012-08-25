@@ -1,9 +1,4 @@
 import com.eads.threedviewer.CADObject
-import com.eads.threedviewer.util.UNVParser
-import com.eads.threedviewer.co.ResultCO
-import com.eads.threedviewer.enums.ShapeType
-import com.eads.threedviewer.CADMeshObject
-import com.eads.threedviewer.co.SimulationCO
 
 class BootStrap {
 

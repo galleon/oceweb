@@ -80,7 +80,13 @@ class CADObject {
 
     ShapeDTO readCoordinates() {
         File file = new File(unvFilePath)
-        return (file.exists() ? new ShapeDTO(unvFilePath) : new ShapeDTO(findShape()))
+        ShapeDTO shapeDTO
+        if (file.exists()) {
+            shapeDTO = isSimulated() ? new ShapeDTO(unvFilePath, name) : new ShapeDTO(unvFilePath)
+        } else {
+            shapeDTO = new ShapeDTO(findShape())
+        }
+        return shapeDTO
     }
 
     Map readData() {
@@ -103,7 +109,7 @@ class CADObject {
         return isType(ShapeType.MESH)
     }
 
-    Boolean isSimulated(){
+    Boolean isSimulated() {
         return isType(ShapeType.SIMULATED)
     }
 

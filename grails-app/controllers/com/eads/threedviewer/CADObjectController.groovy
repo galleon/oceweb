@@ -1,11 +1,13 @@
 package com.eads.threedviewer
 
+import com.eads.threedviewer.enums.ShapeType
+import com.eads.threedviewer.util.UNVParser
 import grails.converters.JSON
 import grails.validation.ValidationException
 import org.jcae.opencascade.jni.TopAbs_ShapeEnum
 import com.eads.threedviewer.co.*
-import com.eads.threedviewer.enums.ShapeType
-import com.eads.threedviewer.util.UNVParser
+import com.eads.threedviewer.dto.ResultDTO
+import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
 class CADObjectController {
 
@@ -42,7 +44,7 @@ class CADObjectController {
     }
 
     def changeScale() {
-        float scale = params.scale != null && !params.scale.equals('') ? params.scale as Float : 10;
+        float scale = params.scale != null && !params.scale.equals('') ? params.scale as Float : ConfigurationHolder.config.scale.size;
         session.scale = scale
         redirect(action: 'index', controller: 'project')
     }
@@ -119,7 +121,7 @@ class CADObjectController {
 
     def computePage(Long id) {
         CADObject cadObject = CADMeshObject.get(id);
-        List<CADMeshObject> cadMeshObjectList = CADMeshObject.findAllByParentAndType(cadObject, "MESH")
+        List<CADMeshObject> cadMeshObjectList = CADMeshObject.findAllByParentAndType(cadObject, ShapeType.MESH)
         render(template: '/cadObject/compute', model: [cadObject: cadMeshObjectList])
     }
 
@@ -132,9 +134,7 @@ class CADObjectController {
                 if (cadObject.isSimulated()) {
                     result['simulated'] = 'true';
                 }
-
-                if (session.scale)
-                    result['scale'] = session.scale as float
+                result['scale'] = session.scale as float
 
             } catch (RuntimeException rte) {
                 result = ['error': rte.message]
@@ -194,9 +194,9 @@ class CADObjectController {
         if (cadMeshObject) {
             File file = shapeService.runSimulation(cadMeshObject.findUnvFile(), co)
             UNVParser parser = new UNVParser()
-            List<ResultCO> resultCOList = parser.parseUNVFileForResult(new BufferedReader(new FileReader(file)));
-            resultCOList.each {ResultCO resultCO ->
-                CADObject cadObject = new CADObject(type: ShapeType.SIMULATED, project: cadMeshObject.project, name: "S_" + resultCO.name, parent: cadMeshObject)
+            List<ResultDTO> resultCOList = parser.parseUNVFileForResult(file);
+            resultCOList.each {ResultDTO resultCO ->
+                CADObject cadObject = new CADObject(type: ShapeType.SIMULATED, project: cadMeshObject.project, name: resultCO.name, parent: cadMeshObject)
                 cadObject = cadObjectService.save(cadObject);
                 if (cadObject?.id) {
                     fileService.saveUnvFilesOnFileSystem(file, cadObject.unvFilePath);

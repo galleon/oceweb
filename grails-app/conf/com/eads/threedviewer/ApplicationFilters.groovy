@@ -1,5 +1,7 @@
 package com.eads.threedviewer
 
+import org.codehaus.groovy.grails.commons.ConfigurationHolder
+
 class ApplicationFilters {
 
     def filters = {
@@ -8,6 +10,7 @@ class ApplicationFilters {
         all(controller: '*', action: '*') {
             before = {
                 log.info "GrailsAccessLog:${params.findAll {!it.key.toString().toLowerCase().contains('password')}}"
+                session.scale = session.scale ?: ConfigurationHolder.config.scale.size
             }
         }
 

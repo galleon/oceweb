@@ -33,7 +33,27 @@ $(document).ready(function () {
     ajaxSubmit();
     closeModel();
     $("input:submit,input:button, button,a.modelLink").button();
-    $(".model").click(function () {
+    $(".addContent").live("click", function () {
+        var $content = $("#domainContent").clone();
+        $(".removeContent", $content).parent().show();
+        var $domainName = $("#domainName", $content);
+        $domainName.text("Domains");
+        $domainName.removeAttr("id");
+        $(this).parent().parent().parent().after($content);
+        $.each($("input[type='text']", $content), function (inputIndex, inputValue) {
+            $(inputValue).val("");
+        })
+        renameInputFields();
+    });
+    $(".removeContent").live("click", function () {
+        $(this).parent().parent().parent().remove();
+        renameInputFields();
+    });
+    bindShapeCreation();
+})
+
+function bindShapeCreation() {
+    $(".model").live("click", function () {
         if ($(this).hasClass('ajax')) {
             var url = $(this).attr("href")
             var title = $(this).attr("title")
@@ -50,23 +70,7 @@ $(document).ready(function () {
             $('.ui-dialog').width('340px');
         }
     });
-    $(".addContent").live("click", function () {
-        var $content = $("#domainContent").clone();
-        $(".removeContent", $content).parent().show();
-        var $domainName = $("#domainName", $content);
-        $domainName.text("Domains");
-        $domainName.removeAttr("id");
-        $(this).parent().parent().parent().after($content);
-        $.each($("input[type='text']", $content), function (inputIndex, inputValue) {
-            $(inputValue).val("");
-        })
-        renameInputFields();
-    });
-    $(".removeContent").live("click", function () {
-        $(this).parent().parent().parent().remove();
-        renameInputFields();
-    })
-})
+}
 
 function renameInputFields() {
     $.each($(".domainContent"), function (index, val) {
@@ -561,6 +565,7 @@ function defaultMenu(node) {
         "separator_after":true
     }
     if (rel == "SIMULATED") {
+        items['edit'] = null;
         items['explode'] = null;
         items['mesh'] = null;
     }

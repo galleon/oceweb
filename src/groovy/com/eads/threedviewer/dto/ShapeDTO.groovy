@@ -19,6 +19,7 @@ class ShapeDTO {
     List allFaces = []
     List edges = []
     List<ShapeGroupDTO> groups
+    ResultDTO resultDTO
 
     ShapeDTO() {}
 
@@ -26,7 +27,7 @@ class ShapeDTO {
         vertices = shapeDTOs ? shapeDTOs.first().vertices.flatten() : []
         faces = shapeDTOs ? shapeDTOs.faces.flatten() : []
         edges = shapeDTOs ? shapeDTOs.first().edges.flatten() : []
-        List<ShapeGroupDTO> shapeGroups = shapeDTOs.groups.flatten()
+        List<ShapeGroupDTO> shapeGroups = shapeDTOs ? shapeDTOs.groups.flatten() : []
         ShapeGroupDTO group = new ShapeGroupDTO(name: shapeGroups.name.join("_"), values: AppUtil.collate(shapeGroups.values.flatten().toList(), 2), entityCount: shapeGroups*.entityCount.flatten().sum())
         groups = [group]
     }
@@ -38,13 +39,14 @@ class ShapeDTO {
         groups = shapeDTO.groups.findAll {it.name == groupName}
     }
 
-    ShapeDTO(String fileName) {
+    ShapeDTO(String fileName, String resultGroupName = null) {
         List vertices = []
         List edges = []
         List faces = []
 
         UNVParser parser = new UNVParser()
-        parser.parse(new BufferedReader(new FileReader(fileName)))
+        BufferedReader bufferedReader = new BufferedReader(new FileReader(fileName))
+        parser.parse(bufferedReader)
         parser.groupNames.each {String groupName ->
             int[] triangles = parser.getTria3FromGroup(groupName)
             for (int i = 0; i < triangles.length;) {
@@ -69,6 +71,9 @@ class ShapeDTO {
         }
         parser.nodesCoordinates.each {nodeCoordinate ->
             vertices << nodeCoordinate
+        }
+        if (resultGroupName) {
+            resultDTO = parser.parseUNVFileForResult(new File(fileName)).find {it.name == resultGroupName}
         }
         this.allFaces = parser.faces
         this.groups = parser.groupInfo

@@ -1,7 +1,7 @@
 package com.eads.threedviewer
 
 class ProjectController {
-    def grailsApplication
+
     def index(String name) {
         Project project = name ? Project.findOrSaveWhere([name: name]) : null
         List<Project> projects = Project.list()
@@ -16,11 +16,12 @@ class ProjectController {
     def delete(Long id) {
         Project project = id ? Project.get(id) : null
         if (project) {
-            Project.withTransaction{project.delete();
-        }
+            Project.withTransaction {
+                project.delete();
+            }
 
         }
-        redirect(action: 'index',params: ['name','project1'])
+        redirect(action: 'index')
     }
 
 

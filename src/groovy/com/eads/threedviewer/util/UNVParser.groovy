@@ -5,7 +5,7 @@ import gnu.trove.TIntArrayList
 import gnu.trove.TIntIntHashMap
 
 import com.eads.threedviewer.dto.ShapeGroupDTO
-import com.eads.threedviewer.co.ResultCO
+import com.eads.threedviewer.dto.ResultDTO
 
 public class UNVParser {
     private static final int TETRA4_MASK = 0x10000000;
@@ -15,8 +15,7 @@ public class UNVParser {
     private static final int TRIA6_MASK = 0x20000000;
     private static final int QUAD4_MASK = 0x40000000;
     private static final int BEAM2_MASK = 0x80000000;
-    private ResultCO resultCO;
-    private List<ResultCO> resultCOList = new ArrayList<ResultCO>();
+    List<ResultDTO> resultCOList = new ArrayList<ResultDTO>();
     private float[] nodesCoordinates;
     private TIntIntHashMap nodesIndicesMap;
     private boolean hasBeam2, hasTria3, hasTria6, hasQuad4, hasTetra4, hasHexa8;
@@ -193,33 +192,44 @@ public class UNVParser {
         elementVolumeIndicesMap = null;
     }
 
-    public List<ResultCO> parseUNVFileForResult(BufferedReader rd) throws IOException {
-        String line;
-        boolean readBlockStatus = false;
-        int blockID;
-        while ((line = rd.readLine()) != null) {
-            line = rd.readLine();
-            if (!readBlockStatus) {
-                if (line.trim().equalsIgnoreCase("2414"))
-                    blockID = Integer.parseInt(line.trim());
-            } else {
-                if (line.trim().equalsIgnoreCase("-1")) {
-                    readBlockStatus = false;
-                }
+    public List<ResultDTO> parseUNVFileForResult(File file) throws IOException {
+        Integer blockID;
+        Boolean blockStarted = false
+        Boolean readGroupValues = false
+        ResultDTO resultCO
+        int index = 0
+        file.eachLine {String line ->
+            List<String> words = line.tokenize(" ")
+            String firstWord = words.first().trim()
+            blockID = firstWord.isInteger() ? Integer.parseInt(firstWord) : null
+            if (blockID == 2414) {
+                blockStarted = true
+                resultCO = new ResultDTO()
             }
-            switch (blockID) {
-                case 2414:
-                    resultCO = new ResultCO();
-                    readGroupFromUNVFileForResult(rd, blockID);
-                    break;
-                default:
-                    while (!(line = rd.readLine()).equals("    -1")) {
-                        // Do nothing
+            if (blockStarted) {
+                if (!resultCO?.name && !firstWord.isInteger()) {
+                    resultCO.name = line
+                }
+                if (readGroupValues && blockID != -1) {
+                    if ((index % 2)) {
+                        resultCO.resultValues.add(firstWord)
                     }
+                    index++
+                }
+                if (!resultCO?.resultValues && words.size() == 2 && words.every {it.isInteger()}) {
+                    readGroupValues = true
+                }
+                if (blockID == -1) {
+                    resultCOList.add(resultCO)
+                    blockStarted = false
+                    readGroupValues = false
+                    resultCO = null
+                    index = 0
+                }
             }
         }
         resultCOList;
-     }
+    }
 
     private void readGroupFromUNVFileForResult(BufferedReader rd, int blockID) throws IOException {
         String line
@@ -227,6 +237,8 @@ public class UNVParser {
         boolean startReadingGroup;
         boolean readAfterFirstLine;
         List<String> groupValueList = new ArrayList<String>();
+        ResultDTO resultCO = new ResultDTO();
+
         while ((line = rd.readLine()) != null) {
 
             if (line.trim().equalsIgnoreCase("-1"))
@@ -245,7 +257,7 @@ public class UNVParser {
                 }
             }
         }
-        resultCO.setGroupObjects(groupValueList);
+        resultCO.setResultValues(groupValueList);
         resultCOList.add(resultCO);
     }
 
