@@ -3,19 +3,26 @@
     <g:hiddenField name="projectId" value="${project.id}"/>
     <ul class="toolbox-list clearfix">
         <li><a title="Create Sphere" class="sphere model ajax"
-               href="${createLink(controller: 'CADObject',action: 'createSphere',params: ['project.id':project.id,'type':ShapeType.SPHERE])}"></a></li>
+               href="${createLink(controller: 'CADObject', action: 'createSphere', params: ['project.id': project.id, 'type': ShapeType.SPHERE])}"></a></li>
         <li><a title="Create Cube" class="cube model ajax"
-               href="${createLink(controller: 'CADObject',action: 'createCube',params: ['project.id':project.id,'type':ShapeType.CUBE])}"></a></li>
+               href="${createLink(controller: 'CADObject', action: 'createCube', params: ['project.id': project.id, 'type': ShapeType.CUBE])}"></a></li>
         <li><a title="Create Cylinder" class="cylinder model ajax"
-               href="${createLink(controller: 'CADObject',action: 'createCylinder',params:
-                ['project.id':project.id,'type':ShapeType.CYLINDER])}"></a></li>
+               href="${createLink(controller: 'CADObject', action: 'createCylinder', params:
+                       ['project.id': project.id, 'type': ShapeType.CYLINDER])}"></a></li>
         <li><a title="Create Cone" id="coneLink" class="cone model ajax"
-               href="${createLink(controller: 'CADObject',action: 'createCone',params:
-                ['project.id':project.id,'type':ShapeType.CONE])}"></a></li>
+               href="${createLink(controller: 'CADObject', action: 'createCone', params:
+                       ['project.id': project.id, 'type': ShapeType.CONE])}"></a></li>
         <li><a title="Import File" class="plane model ajax"
-               href="${createLink(controller: 'CADObject',action: 'createFile',params: ['project.id':project.id,'type':ShapeType.FILE])}"
+               href="${createLink(controller: 'CADObject', action: 'createFile', params: ['project.id': project.id, 'type': ShapeType.FILE])}"
                id="import"></a></li>
     </ul>
 
-    <div id="templateHolder" style="display: none;" ></div>
+    <div id="scaleForm">
+        <g:form controller="CADObject" action="changeScale" name="changeScaleForm">
+            <g:textField name="scale" onkeypress="return isNumberKey(event)" value="${session.scale}" size="3" style="margin-left: 2px;"/>
+            <g:submitButton name="Change Scale" id="changeScaleButton"/>
+        </g:form>
+    </div>
+
+    <div id="templateHolder" style="display: none;"></div>
 </g:if>

@@ -50,7 +50,20 @@ $(document).ready(function () {
         renameInputFields();
     });
     bindShapeCreation();
-})
+    bindChangeScale();
+});
+
+function bindChangeScale() {
+    $("#changeScaleForm").submit(function () {
+        var url = $(this).attr('action') + "?" + $(this).serialize();
+        $.post(url, function (response) {
+            $.each(getCurrentlyVisibleIds(), function (index, value) {
+                showShapeFromRemote(value);
+            })
+        })
+        return false;
+    })
+}
 
 function bindShapeCreation() {
     $(".model").live("click", function () {
@@ -133,20 +146,6 @@ function showShapeFromRemote(id) {
         debugStatement("No id passed");
     }
 
-}
-
-function showShapeFromLocalStorage() {
-    var objectIDs = getLocalShapeIds();
-    if (objectIDs) {
-        var projectShapeIds = getProjectShapeIds();
-        $.each(objectIDs, function (key, value) {
-            $.each(projectShapeIds, function (index, shapeId) {
-                if (parseInt(value) == parseInt(shapeId)) {
-                    showShape(value);
-                }
-            });
-        })
-    }
 }
 
 function addToGroup(object) {
@@ -1040,4 +1039,15 @@ function isNumberKey(evt) {
         return false;
 
     return true;
+}
+
+function getCurrentlyVisibleIds() {
+    var ids = [];
+    $(group.children).each(function () {
+        if (this.name && this.visible) {
+            var id = parseInt(this.name);
+            ids.push(id)
+        }
+    })
+    return ids;
 }

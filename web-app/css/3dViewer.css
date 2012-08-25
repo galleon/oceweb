@@ -7,10 +7,10 @@ body {
     font-size: 13px;
 }
 #toolbox {
-    cursor: pointer;
+  cursor: pointer;
   background: #444444;
   float: right;
-  height: 100px;
+  height: 88px;
   top: 0;
   left: 0;
   z-index: 2;
@@ -204,9 +204,7 @@ fieldset{border: none}
 .angle{float: left; width: 50%;padding-top: 3px;}
 #versionNumber{bottom: 0px; position: absolute; right: 0pt;padding-right: 5px;padding-bottom: 5px}
 .visible {border: 1px solid red}
-
-#scaleForm{margin-left: 6px;}
-
-#scaleForm #changeScaleButton{width: 52%;height:24px;margin-right: -14px;size:10px;padding-bottom: 10px;padding-top:0px; position:relative; border-radius:4px; -moz-border-radius:4px; -webkit-border-radius:4px; border: 0px;}
+#scaleForm{margin-left: 36px;}
+#scaleForm #changeScaleButton{height:24px;position:relative; border-radius:4px; -moz-border-radius:4px; -webkit-border-radius:4px; border: 0px;}
 #scaleForm input[type="text"]{ display:block; float:left;  margin-right:10px;  position:relative; border-radius:4px; -moz-border-radius:4px; -webkit-border-radius:4px; margin-top: 0px;}
 @media screen and (-webkit-min-device-pixel-ratio:0) { #scaleForm #changeScaleButton{padding-top:5px;}}

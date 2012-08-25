@@ -46,7 +46,7 @@ class CADObjectController {
     def changeScale() {
         float scale = params.scale != null && !params.scale.equals('') ? params.scale as Float : ConfigurationHolder.config.scale.size;
         session.scale = scale
-        redirect(action: 'index', controller: 'project')
+        render "success"
     }
 
     private Closure sendResponse = {ShapeCO co ->

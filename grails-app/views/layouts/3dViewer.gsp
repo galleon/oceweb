@@ -59,16 +59,6 @@
         </g:if>
 
     </div>
-
-    <div id="scaleForm">
-        <g:form controller="CADObject" action="changeScale">
-            <g:textField name="scale" onkeypress="return isNumberKey(event)"
-                         value="${session.scale}" size="3"
-                         style="margin-left: 2px;"></g:textField>
-            <g:submitButton name="Change Scale" id="changeScaleButton"/>
-
-        </g:form>
-    </div>
 </div>
 
 
