@@ -31,7 +31,7 @@ class ShapeUtil {
         data['vertices'] = shapeDTO.vertices
         data['scalingFactor'] = shapeDTO.scalingFactor
         data['color'] = shapeDTO.color
-        data['colors'] = shapeDTO.resultDTO ? shapeDTO.resultDTO.resultValues : []
+        data['colors'] = shapeDTO.resultDTO ? shapeDTO.resultDTO.calculatedResults : []
         return data
     }
 

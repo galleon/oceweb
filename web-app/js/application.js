@@ -183,9 +183,9 @@ function createMesh(response, name) {
                         vertexIndex = f[ faceIndices[ j ] ];
                         p = geometry.vertices[ vertexIndex ];
                         color = new THREE.Color(0xffffff);
-                        var colorValue = 0.0013 * i
-                        var colorValue1 = 0.0073 * i
-                        var colorValue2 = 0.0063 * i
+                        var colorValue = response.colors[i];
+                        var colorValue1 = response.colors[i];
+                        var colorValue2 = response.colors[i];
                         color.setHSV(colorValue, colorValue1, colorValue2)
                         f.vertexColors[ j ] = color;
                     }

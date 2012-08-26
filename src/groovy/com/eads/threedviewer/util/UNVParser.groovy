@@ -212,7 +212,7 @@ public class UNVParser {
                 }
                 if (readGroupValues && blockID != -1) {
                     if ((index % 2)) {
-                        resultCO.resultValues.add(firstWord)
+                        resultCO.resultValues.add(firstWord.toFloat())
                     }
                     index++
                 }
