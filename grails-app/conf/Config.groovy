@@ -98,7 +98,3 @@ log4j = {
             'org.hibernate',
             'net.sf.ehcache.hibernate'
 }
-
-
-//scale size
-scale.size=10

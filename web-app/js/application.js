@@ -5,7 +5,6 @@ var targetRotationOnMouseDown = 0;
 var targetRotationYOnMouseDown = 0;
 var mouseX = 0;
 var mouseY = 0;
-var fov = 50;
 var mouseXOnMouseDown = 0;
 var mouseYOnMouseDown = 0;
 var objectColor = 0x545354;
@@ -32,7 +31,6 @@ $(document).ready(function () {
     setupUI();
     ajaxSubmit();
     closeModel();
-    $("input:submit,input:button, button,a.modelLink").button();
     $(".addContent").live("click", function () {
         var $content = $("#domainContent").clone();
         $(".removeContent", $content).parent().show();
@@ -52,6 +50,10 @@ $(document).ready(function () {
     bindShapeCreation();
     bindChangeScale();
 });
+
+function setupButtonUI() {
+    $("input:submit,input:button, button,a.modelLink").button();
+}
 
 function bindChangeScale() {
     $("#changeScaleForm").submit(function () {
@@ -97,7 +99,7 @@ function renameInputFields() {
 
 function setupUI() {
     $('.ui-dialog').width('340px');
-    $("input:submit,input:button, button,a.modelLink").button();
+    setupButtonUI();
     closeModel();
 }
 
@@ -168,6 +170,7 @@ function createMesh(response, name) {
     var object, color;
     var loader = new THREE.JSONLoader();
     loader.createModel(response, function (geometry) {
+            addScaleFactorToLocalStorage(name, response.scalingFactor)
             if (response.simulated) {
                 var material
                 geometry = changeFaceOrientation(geometry);
@@ -233,9 +236,14 @@ function createMesh(response, name) {
                 object.name = name + '';
                 setColor(object, color);
             }
+            scaleObject(object, trihedra.scale.x)
         }
     )
     return object
+}
+
+function addScaleFactorToLocalStorage(id, value) {
+    localStorage["scalingFactor_" + id] = value;
 }
 
 function initialiseCanvas(containerId) {
@@ -245,6 +253,7 @@ function initialiseCanvas(containerId) {
     windowHalfX = containerWidth / 2;
     windowHalfY = containerHeight / 2;
 
+    var fov = 50;
     camera = new THREE.PerspectiveCamera(fov, containerWidth / containerHeight, 1, 1000);
     camera.target = new THREE.Vector3();
     camera.position.x = 0;
@@ -288,8 +297,20 @@ function initialiseCanvas(containerId) {
 function zoom(event, delta, deltaX, deltaY) {
     event.preventDefault();
     if (delta != 0) {
-        fov -= deltaY * 2;
-        camera.projectionMatrix = THREE.Matrix4.makePerspective(fov, containerWidth / containerHeight, 1, 1100);
+        $.each(group.children, function (index, value) {
+            var scalingFactor = localStorage["scalingFactor_" + value.name] ? parseFloat(localStorage["scalingFactor_" + value.name]) : 5;
+            var scale = deltaY / scalingFactor;
+            scaleObject(value, scale);
+        })
+    }
+}
+
+function scaleObject(object, scale) {
+    var newScale = object.scale.x + scale;
+    if (newScale > 0) {
+        object.scale.x = newScale;
+        object.scale.y = newScale;
+        object.scale.z = newScale;
     }
 }
 
@@ -599,10 +620,7 @@ function defaultMenu(node) {
                     $.each($("input[type='text']"), function () {
                         $(this).val('');
                     })
-
                     showComputeForm(id);
-
-
                 },
                 "separator_before":false,
                 "separator_after":true
@@ -683,7 +701,6 @@ function defaultMenu(node) {
     return items;
 }
 
-
 function showComputeForm(id) {
     var url = "CADObject/computePage?id=" + id
     $.get(url, function (response) {
@@ -691,9 +708,10 @@ function showComputeForm(id) {
         $("#compute").dialog();
         $('.ui-dialog').width('600px');
         $("#computeForm #cadObjectId").val(id);
-        //    $("#firstContent").css('display','block')
         ajaxSubmit();
         addRemoveComputeDialog();
+        setupButtonUI();
+        closeModel();
     });
 }
 
@@ -885,6 +903,7 @@ function removeChildren(id) {
 function removeFromLocalStorage(value) {
     localStorage.removeItem("color_" + value);
     localStorage.removeItem("visible_" + value);
+    localStorage.removeItem("scalingFactor_" + value);
 }
 
 function getContext() {

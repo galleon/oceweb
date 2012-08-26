@@ -116,6 +116,18 @@ class ShapeDTO {
         this.vertices = vertices
     }
 
+    Float getMinVertex() {
+        vertices.min {it}
+    }
+
+    Float getMaxVertex() {
+        vertices.max {it}
+    }
+
+    Float getScalingFactor() {
+        return (maxVertex - minVertex) / 10
+    }
+
     File createUnvFile(List<ShapeGroupDTO> shapeGroups = []) {
         String result = createFormattedContent(shapeGroups)
         return ShapeUtil.createUnvFile(result)

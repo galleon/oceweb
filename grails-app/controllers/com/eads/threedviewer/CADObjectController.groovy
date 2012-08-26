@@ -43,12 +43,6 @@ class CADObjectController {
         sendResponse(co)
     }
 
-    def changeScale() {
-        float scale = params.scale != null && !params.scale.equals('') ? params.scale as Float : ConfigurationHolder.config.scale.size;
-        session.scale = scale
-        render "success"
-    }
-
     private Closure sendResponse = {ShapeCO co ->
         Map result
         CADObject cadObject
@@ -134,8 +128,6 @@ class CADObjectController {
                 if (cadObject.isSimulated()) {
                     result['simulated'] = 'true';
                 }
-                result['scale'] = session.scale as float
-
             } catch (RuntimeException rte) {
                 result = ['error': rte.message]
             }

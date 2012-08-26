@@ -29,13 +29,10 @@ class ShapeUtil {
         data['edges'] = shapeDTO.edges
         data['faces'] = shapeDTO.faces
         data['vertices'] = shapeDTO.vertices
+        data['scalingFactor'] = shapeDTO.scalingFactor
         data['color'] = shapeDTO.color
         data['colors'] = shapeDTO.resultDTO ? shapeDTO.resultDTO.resultValues : []
         return data
-    }
-
-    public static Map getData(File file) {
-        return getData(getShape(file))
     }
 
     public static File createTempBrepFile(byte[] content) {

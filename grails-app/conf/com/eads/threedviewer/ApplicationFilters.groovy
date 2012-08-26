@@ -22,7 +22,6 @@ import com.eads.threedviewer.co.*
 import com.eads.threedviewer.dto.*
 import com.eads.threedviewer.enums.*
 """
-                session['_grails_console_last_code_'] = session['_grails_console_last_code_'] ?: importStatements
             }
         }
 

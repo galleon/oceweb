@@ -17,12 +17,5 @@
                id="import"></a></li>
     </ul>
 
-    <div id="scaleForm">
-        <g:form controller="CADObject" action="changeScale" name="changeScaleForm">
-            <g:textField name="scale" onkeypress="return isNumberKey(event)" value="${session.scale}" size="3" style="margin-left: 2px;"/>
-            <g:submitButton name="Change Scale" id="changeScaleButton"/>
-        </g:form>
-    </div>
-
     <div id="templateHolder" style="display: none;"></div>
 </g:if>
