@@ -112,7 +112,6 @@ function showShape(id) {
     if (id) {
         var object = group.getChildByName(id + '');
         if (object) {
-
             debugStatement("Object found in group -: " + id)
             repaint();
             object.doubleSided = true;
@@ -123,9 +122,10 @@ function showShape(id) {
         }
     }
     animate();
-    /**
-     * Code for highlighting toggle visibility
-     */
+    highlightInProjectTree(id);
+}
+
+function highlightInProjectTree(id) {
     $("#" + id).css('border', '1px solid red')
 }
 
@@ -152,51 +152,10 @@ function addToGroup(object) {
     var id = object.name;
     setVisible(object, true);
     group.add(object);
-    addToLocalStorage(id);
-}
-
-function addToLocalStorage(id) {
-    if (id) {
-        debugStatement("Found id to add to local storage -: " + id)
-        var currentIds = getLocalShapeIds() ? getLocalShapeIds() : [];
-        var found = false;
-        $.each(currentIds, function (key, value) {
-            if ((parseInt(id) == value)) {
-                found = true;
-            }
-        })
-        debugStatement("Value of found after reading from local storage is -: " + found)
-        if (!found) {
-            debugStatement("Id -: " + id + " not in local storage so adding it")
-            currentIds.push(parseInt(id))
-            window.localStorage.objectIDs = JSON.stringify(currentIds)
-        }
-    }
-}
-
-function getLocalShapeIds() {
-    var ids = window.localStorage.objectIDs ? JSON.parse(window.localStorage.objectIDs) : [];
-    var shapeIds = [];
-    $(ids).each(function (index, value) {
-        if ($.inArray(parseInt(value), shapeIds) == -1) {
-            shapeIds.push(parseInt(value))
-        }
-    });
-    debugStatement("Ids on local storage are -: " + $.unique(shapeIds))
-    return $.unique(shapeIds);
 }
 
 function getLocalColor(id) {
     return window.localStorage["color_" + id]
-}
-
-function getProjectShapeIds() {
-    var ids = [];
-    $.each($(".showObject"), function (index, val) {
-        ids.push(parseInt($(val).attr('id')))
-    })
-    debugStatement("Ids on Project tree are -: " + $.unique(ids))
-    return $.unique(ids);
 }
 
 function showError(message) {
@@ -1031,7 +990,7 @@ function changeFaceOrientation(geometry) {
 
 function isNumberKey(evt) {
 
-    var charCode = (evt.which) ? evt.which : event.keyCode
+    var charCode = (evt.which) ? evt.which : event.keyCode;
 
     if (charCode == 46)
         return true

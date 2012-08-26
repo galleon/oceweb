@@ -231,36 +231,6 @@ public class UNVParser {
         resultCOList;
     }
 
-    private void readGroupFromUNVFileForResult(BufferedReader rd, int blockID) throws IOException {
-        String line
-        String name;
-        boolean startReadingGroup;
-        boolean readAfterFirstLine;
-        List<String> groupValueList = new ArrayList<String>();
-        ResultDTO resultCO = new ResultDTO();
-
-        while ((line = rd.readLine()) != null) {
-
-            if (line.trim().equalsIgnoreCase("-1"))
-                break;
-            if (line.trim().startsWith("plane_wave"))
-                resultCO.setName(line.trim());
-            if (line.trim().startsWith("1    ")) {
-                startReadingGroup = true;
-            }
-            if (startReadingGroup) {
-                if (readAfterFirstLine) {
-                    groupValueList.add(line.trim());
-                    readAfterFirstLine = false;
-                } else {
-                    readAfterFirstLine = true;
-                }
-            }
-        }
-        resultCO.setResultValues(groupValueList);
-        resultCOList.add(resultCO);
-    }
-
     private void readFace(BufferedReader rd) throws IOException {
 
         String line;
