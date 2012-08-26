@@ -107,8 +107,8 @@ class CADObjectController {
         Map result
         if (co.validate()) {
             try {
-                cadObjectService.saveMesh(co)
-                result = ['success': 'Mesh created successfuly']
+                CADMeshObject cadMeshObject = cadObjectService.saveMesh(co)
+                result = ['ids': cadMeshObject.subCadObjects.id]
             } catch (RuntimeException rte) {
                 result = ['error': rte.message]
             }

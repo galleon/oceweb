@@ -134,6 +134,7 @@ function showShapeFromRemote(id) {
         var url = createLink('CADObject', 'show');
         debugStatement("Fetching  object from remote -: " + id);
         $.getJSON(url, {id:id}, function (response) {
+            highlightInProjectTree(id);
             if (response.error) {
                 showError(response.error)
             } else {
@@ -211,7 +212,7 @@ function createMesh(response, name) {
                 var material
                 if (response.wireframe) {
                     geometry = changeFaceOrientation(geometry);
-                    material = new THREE.MeshLambertMaterial({color:0xffffff, shading:THREE.FlatShading, vertexColors:THREE.VertexColors, opacity:0.75 });
+                    material = new THREE.MeshLambertMaterial({color:0xffffff, shading:THREE.FlatShading, wireframe:response.wireframe, vertexColors:THREE.VertexColors, opacity:0.75 });
                 } else {
                     material = new THREE.MeshLambertMaterial({overdraw:true, shading:THREE.FlatShading, wireframe:response.wireframe});
                 }
@@ -360,9 +361,15 @@ function ajaxSubmit() {
             showError(response.error)
         }
         else {
-            reloadProjectTree()
+            reloadProjectTree();
             if (response.success) {
                 showFlashSuccess(response.success);
+            }
+            if (response.ids) {
+                hideAll();
+                $.each(response.ids, function (index, value) {
+                    showShapeFromRemote(value)
+                })
             }
             if (response.id) {
                 removeObjects([response.id])
@@ -370,6 +377,21 @@ function ajaxSubmit() {
             }
             $(".closeModel").click();
         }
+    })
+}
+
+function hideAll() {
+    $.each(getCurrentlyVisibleIds(), function (index, value) {
+        var object = group.getChildByName(value + "");
+        if (object) {
+            object.visible = false;
+        }
+    })
+}
+
+function highLightVisible() {
+    $.each(getCurrentlyVisibleIds(), function (index, value) {
+        highlightInProjectTree(value);
     })
 }
 
@@ -741,13 +763,13 @@ function toggleVisibilityByObject(object) {
             visible = false;
             color = getColorForRepaint(object.name);
         } else {
-            $("#" + objectId).css('border', '1px solid red')
+            highlightInProjectTree(objectId);
             color = getColorForSelection(object.name);
             visible = true;
         }
         if (object.children != '' && object.children != undefined && object.children.length > 0) {
             if (object.children[0].visible) {
-                $("#" + objectId).css('border', '0px')
+                highlightInProjectTree(objectId);
                 object.children[0].visible = false;
                 color = getColorForRepaint(object.name);
             } else {
@@ -843,7 +865,21 @@ function removeObjects(ids) {
         } else {
             debugStatement("Object not found -: " + value);
         }
+        if ($("#" + value).siblings().find('ul').length > 0) {
+            removeChildren(value);
+        }
     })
+}
+
+function removeChildren(id) {
+    var rel = $($("#" + id).parent()).attr('rel');
+    if (rel == "MESH") {
+        var ids = [];
+        $.each($("a.showObject", $("#" + id).parent()), function (index, value) {
+            ids.push($(value).attr('id'))
+        })
+        removeObjects(ids);
+    }
 }
 
 function removeFromLocalStorage(value) {
@@ -916,6 +952,7 @@ function reloadProjectTree() {
             enableJsTree();
             setupUI();
             ajaxSubmit();
+            highLightVisible();
         }
     })
 }

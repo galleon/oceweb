@@ -295,12 +295,6 @@ public class UNVParser {
         }
     }
 
-
-
-
-
-
-
     private void readGroup(BufferedReader rd, int blockID) throws IOException {
         String line = rd.readLine();
         while (!line.trim().equals("-1")) {
