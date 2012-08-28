@@ -172,6 +172,8 @@ function createMesh(response, name) {
     loader.createModel(response, function (geometry) {
             addScaleFactorToLocalStorage(name, response.scalingFactor)
             if (response.simulated) {
+                addNumbersToColorBar(response.barNumbers);
+                showColorBar();
                 var material
                 geometry = changeFaceOrientation(geometry);
                 var color, f, f2, f3, p, n, vertexIndex, radius = 10
@@ -212,6 +214,7 @@ function createMesh(response, name) {
                 });
 
             } else {
+                hideColorBar();
                 var material
                 if (response.wireframe) {
                     geometry = changeFaceOrientation(geometry);
@@ -286,15 +289,36 @@ function initialiseCanvas(containerId) {
     scene.add(directionalLight);
 
     scene.add(group);
-    var barPositionX = (window.innerWidth / 3) - 50;
+    var barPositionX = (window.innerWidth / 3) - 10;
     addColorBarToScene(15, 1, barPositionX);
-
+    hideColorBar();
     $(container).html(renderer.domElement);
     $(container).bind('mousedown', onDocumentMouseDown);
     $(container).mousewheel(zoom);
     stats = new Stats();
     $("#frameArea").append($(stats.domElement).find('div>div:first').css({'float':'right', 'margin-right':'13px', 'padding-top':'6px'}));
     animate();
+}
+
+function hideColorBar() {
+    $.each(colorBar.children, function () {
+        this.visible = false;
+    })
+    $("#barNumbers").remove();
+}
+
+function showColorBar() {
+    $.each(colorBar.children, function () {
+        this.visible = true;
+    })
+}
+
+function addNumbersToColorBar(values) {
+    var content = "<div id='barNumbers'>";
+    $.each(values, function (index, value) {
+        content += "<div class='barNumber'>" + value + "</div>"
+    })
+    $('body').append(content + "</div>");
 }
 
 function addColorBarToScene(width, height, barPositionX) {

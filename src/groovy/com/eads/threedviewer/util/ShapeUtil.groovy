@@ -32,6 +32,7 @@ class ShapeUtil {
         data['scalingFactor'] = shapeDTO.scalingFactor
         data['color'] = shapeDTO.color
         data['colors'] = shapeDTO.resultDTO ? shapeDTO.resultDTO.calculatedResults : []
+        data['barNumbers'] = shapeDTO.resultDTO ? shapeDTO.resultDTO.barNumbers : []
         return data
     }
 

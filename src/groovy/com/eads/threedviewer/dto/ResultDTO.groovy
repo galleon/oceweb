@@ -17,4 +17,11 @@ class ResultDTO {
     Float getMaxValue() {
         resultValues.max {it}
     }
+
+    List<Float> getBarNumbers() {
+        Float maxValue = maxValue
+        Float minValue = minValue
+        Float midValue = (maxValue && minValue) ? (maxValue + minValue) / 2 : null
+        return midValue ? [maxValue, (maxValue + midValue) / 2, midValue, (midValue + minValue) / 2, minValue] : []
+    }
 }
