@@ -300,14 +300,7 @@ function initialiseCanvas(containerId) {
 function addColorBarToScene(width, height, barPositionX) {
     colorBar = new THREE.Object3D();
     for (var i = 0; i < 256; i++) {
-        var col, factor;
-        if (i < 128) {
-            factor = ((i / 128) * 255);
-            col = convertRGBToHexColorCode(255 - factor, factor, 0);
-        } else {
-            factor = (((i - 128) / 128) * 255);
-            col = convertRGBToHexColorCode(0, 255 - factor, factor);
-        }
+        var col = getColor(i)
         var geometry = new THREE.PlaneGeometry(width, height);
         var material = new THREE.MeshBasicMaterial({
             color:parseInt(col, 16)
@@ -324,7 +317,15 @@ function addColorBarToScene(width, height, barPositionX) {
 }
 
 function getColor(number) {
-
+    var col, factor;
+    if (number < 128) {
+        factor = ((number / 128) * 255);
+        col = convertRGBToHexColorCode(255 - factor, factor, 0);
+    } else {
+        factor = (((number - 128) / 128) * 255);
+        col = convertRGBToHexColorCode(0, 255 - factor, factor);
+    }
+    return col
 }
 
 function convertDecToHex(dec) {
