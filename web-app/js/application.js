@@ -1,4 +1,4 @@
-var group, stats, camera, renderer, containerWidth, containerHeight, scene, container, trihedra, projector, windowHalfX, windowHalfY;
+var group, stats, camera, renderer, containerWidth, containerHeight, scene, container, trihedra, projector, windowHalfX, windowHalfY, colorBar;
 var targetRotation = 0;
 var targetRotationY = 0;
 var targetRotationOnMouseDown = 0;
@@ -286,12 +286,60 @@ function initialiseCanvas(containerId) {
     scene.add(directionalLight);
 
     scene.add(group);
+    var barPositionX = (window.innerWidth / 3) - 50;
+    addColorBarToScene(15, 1, barPositionX);
+
     $(container).html(renderer.domElement);
     $(container).bind('mousedown', onDocumentMouseDown);
     $(container).mousewheel(zoom);
     stats = new Stats();
     $("#frameArea").append($(stats.domElement).find('div>div:first').css({'float':'right', 'margin-right':'13px', 'padding-top':'6px'}));
     animate();
+}
+
+function addColorBarToScene(width, height, barPositionX) {
+    colorBar = new THREE.Object3D();
+    for (var i = 0; i < 256; i++) {
+        var col, factor;
+        if (i < 128) {
+            factor = ((i / 128) * 255);
+            col = convertRGBToHexColorCode(255 - factor, factor, 0);
+        } else {
+            factor = (((i - 128) / 128) * 255);
+            col = convertRGBToHexColorCode(0, 255 - factor, factor);
+        }
+        var geometry = new THREE.PlaneGeometry(width, height);
+        var material = new THREE.MeshBasicMaterial({
+            color:parseInt(col, 16)
+        });
+        var meshBar = new THREE.Mesh(geometry, material);
+        meshBar.position.y = i + 1;
+        meshBar.overdraw = true;
+        colorBar.add(meshBar)
+    }
+    colorBar.position.x = barPositionX
+    colorBar.position.y = -200
+    scene.add(colorBar);
+    return colorBar
+}
+
+function getColor(number) {
+
+}
+
+function convertDecToHex(dec) {
+    var hex = parseInt(dec).toString(16);
+    if (hex.length == 1) {
+        hex = "0" + hex;
+    }
+    return hex;
+}
+
+function convertRGBToHexColorCode(r, g, b) {
+    var rhex = convertDecToHex(r);
+    var ghex = convertDecToHex(g);
+    var bhex = convertDecToHex(b);
+    return (rhex + ghex + bhex);
 }
 
 function zoom(event, delta, deltaX, deltaY) {
