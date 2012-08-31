@@ -237,8 +237,9 @@ function createMesh(response, name) {
                     object.name = name + '';
                     setColor(object, color);
                 }
+                var deltaY = trihedra.scale.x < .5 ? -1 : 1;
                 for (i = 0; i < getNumberOfRotations(); i++) {
-                    zoomObject(object, 1)
+                    zoomObject(object, deltaY)
                 }
             }
     )
@@ -311,8 +312,7 @@ function zoom(event, delta, deltaX, deltaY) {
 }
 
 function zoomObject(object, deltaY) {
-    if(trihedra.scale.x<0)
-      deltaY = -1;
+
     var scalingFactor = localStorage["scalingFactor_" + object.name] ? parseFloat(localStorage["scalingFactor_" + object.name]) : 5;
     var scale = deltaY / scalingFactor;
     scaleObject(object, scale);
