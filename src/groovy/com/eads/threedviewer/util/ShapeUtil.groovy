@@ -5,7 +5,6 @@ import groovy.util.logging.Log
 import org.jcae.opencascade.jni.BRepTools
 import org.jcae.opencascade.jni.BRep_Builder
 import org.jcae.opencascade.jni.TopoDS_Shape
-import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
 @Log
 class ShapeUtil {

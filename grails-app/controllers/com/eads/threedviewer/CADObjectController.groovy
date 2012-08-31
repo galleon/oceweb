@@ -1,13 +1,12 @@
 package com.eads.threedviewer
 
+import com.eads.threedviewer.dto.ResultDTO
 import com.eads.threedviewer.enums.ShapeType
 import com.eads.threedviewer.util.UNVParser
 import grails.converters.JSON
 import grails.validation.ValidationException
 import org.jcae.opencascade.jni.TopAbs_ShapeEnum
 import com.eads.threedviewer.co.*
-import com.eads.threedviewer.dto.ResultDTO
-import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
 class CADObjectController {
 
@@ -183,7 +182,6 @@ class CADObjectController {
         co.domains = populateDomainValues(params)
 
         Map result = ["success": "Simulation completed"]
-        String cadObjectId
         if (cadMeshObject) {
             File file = shapeService.runSimulation(cadMeshObject.findUnvFile(), co)
             UNVParser parser = new UNVParser()
@@ -200,7 +198,6 @@ class CADObjectController {
         }
         render result as JSON
     }
-
 
     private List<SimulationDomainCO> populateDomainValues(params) {
         List<SimulationDomainCO> domains = []
