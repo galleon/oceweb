@@ -311,6 +311,8 @@ function zoom(event, delta, deltaX, deltaY) {
 }
 
 function zoomObject(object, deltaY) {
+    if(trihedra.scale.x<0)
+      deltaY = -1;
     var scalingFactor = localStorage["scalingFactor_" + object.name] ? parseFloat(localStorage["scalingFactor_" + object.name]) : 5;
     var scale = deltaY / scalingFactor;
     scaleObject(object, scale);
