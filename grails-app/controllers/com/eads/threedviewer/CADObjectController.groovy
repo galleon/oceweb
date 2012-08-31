@@ -150,6 +150,7 @@ class CADObjectController {
         render result as JSON
     }
 
+
     def booleanOperation(BooleanOperationCO co) {
         CADObject cadObject
         Map result

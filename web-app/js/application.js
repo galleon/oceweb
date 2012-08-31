@@ -170,76 +170,83 @@ function createMesh(response, name) {
     var object, color;
     var loader = new THREE.JSONLoader();
     loader.createModel(response, function (geometry) {
-            addScaleFactorToLocalStorage(name, response.scalingFactor)
-            if (response.simulated) {
-                var material
-                geometry = changeFaceOrientation(geometry);
-                var color, f, f2, f3, p, n, vertexIndex, radius = 10
-                var faceIndices = [ 'a', 'b', 'c', 'd' ];
-                for (var i = 0; i < geometry.faces.length; i++) {
-                    f = geometry.faces[ i ];
-                    n = ( f instanceof THREE.Face3 ) ? 3 : 4;
-                    for (var j = 0; j < n; j++) {
-                        vertexIndex = f[ faceIndices[ j ] ];
-                        p = geometry.vertices[ vertexIndex ];
-                        color = new THREE.Color(0xffffff);
-                        var colorValue = response.colors[i];
-                        var colorValue1 = response.colors[i];
-                        var colorValue2 = response.colors[i];
-                        color.setHSV(colorValue, colorValue1, colorValue2)
-                        f.vertexColors[ j ] = color;
-                    }
-                }
-                material = [
-                    new THREE.MeshLambertMaterial({ color:0xffffff, shading:THREE.FlatShading, vertexColors:THREE.VertexColors})
-                ];
-                object = THREE.SceneUtils.createMultiMaterialObject(geometry, material);
-
-                object.updateMatrix();
-                object.doubleSided = true;
-                object.name = name + '';
-
-                $.each($("#" + name).parent().parent().children().children().filter('a'), function (index, val) {
-                    var objectId = $(val).attr('id')
-                    var otherObjects = group.getChildByName(objectId);
-                    if (otherObjects != undefined && otherObjects.children != '' && otherObjects.children != undefined && otherObjects.children.length > 0) {
-                        if (otherObjects.children[0].visible) {
-                            $("#" + objectId).css('border', '0px')
-                            otherObjects.children[0].visible = false;
-                        }
-
-                    }
-                });
-
-            } else {
-                var material
-                if (response.wireframe) {
+                addScaleFactorToLocalStorage(name, response.scalingFactor)
+                if (response.simulated) {
+                    var material
                     geometry = changeFaceOrientation(geometry);
-                    material = new THREE.MeshLambertMaterial({color:0xffffff, shading:THREE.FlatShading, wireframe:response.wireframe, vertexColors:THREE.VertexColors, opacity:0.75 });
-                } else {
-                    material = new THREE.MeshLambertMaterial({overdraw:true, shading:THREE.FlatShading, wireframe:response.wireframe});
-                }
-                color = selectionColor;
-                if (response.color) {
-                    color = response.color
-                }
-                var actualColor = response.color ? response.color : objectColor;
-                setActualColorOnLocal(name, actualColor);
-                var localColor = getLocalColor(name);
-                if (localColor) {
-                    color = localColor
-                }
-                object = new THREE.Mesh(geometry, material);
-                object.updateMatrix();
+                    var color, f, f2, f3, p, n, vertexIndex, radius = 10
+                    var faceIndices = [ 'a', 'b', 'c', 'd' ];
+                    for (var i = 0; i < geometry.faces.length; i++) {
+                        f = geometry.faces[ i ];
+                        n = ( f instanceof THREE.Face3 ) ? 3 : 4;
+                        for (var j = 0; j < n; j++) {
+                            vertexIndex = f[ faceIndices[ j ] ];
+                            p = geometry.vertices[ vertexIndex ];
+                            color = new THREE.Color(0xffffff);
+                            var colorValue = response.colors[i];
+                            var colorValue1 = response.colors[i];
+                            var colorValue2 = response.colors[i];
+                            color.setHSV(colorValue, colorValue1, colorValue2)
+                            f.vertexColors[ j ] = color;
+                        }
+                    }
+                    material = [
+                        new THREE.MeshLambertMaterial({ color:0xffffff, shading:THREE.FlatShading, vertexColors:THREE.VertexColors})
+                    ];
+                    object = THREE.SceneUtils.createMultiMaterialObject(geometry, material);
 
-                object.doubleSided = true;
-                object.name = name + '';
-                setColor(object, color);
+                    object.updateMatrix();
+                    object.doubleSided = true;
+                    object.name = name + '';
+
+                    $.each($("#" + name).parent().parent().children().children().filter('a'), function (index, val) {
+                        var objectId = $(val).attr('id')
+                        var otherObjects = group.getChildByName(objectId);
+                        if (otherObjects != undefined && otherObjects.children != '' && otherObjects.children != undefined && otherObjects.children.length > 0) {
+                            if (otherObjects.children[0].visible) {
+                                $("#" + objectId).css('border', '0px')
+                                otherObjects.children[0].visible = false;
+                            }
+
+                        }
+                    });
+
+                } else {
+                    var material
+                    if (response.wireframe) {
+                        geometry = changeFaceOrientation(geometry);
+                        material = new THREE.MeshLambertMaterial({color:0xffffff, shading:THREE.FlatShading, wireframe:response.wireframe, vertexColors:THREE.VertexColors, opacity:0.75 });
+                    } else {
+                        material = new THREE.MeshLambertMaterial({overdraw:true, shading:THREE.FlatShading, wireframe:response.wireframe});
+                    }
+                    color = selectionColor;
+                    if (response.color) {
+                        color
+                                = response.color
+                    }
+                    var actualColor = response.color ? response.color : objectColor;
+                    setActualColorOnLocal(name, actualColor);
+                    var localColor = getLocalColor(name);
+                    if (localColor) {
+                        color = localColor
+                    }
+                    object = new THREE.Mesh(geometry, material);
+                    object.updateMatrix();
+
+                    object.doubleSided = true;
+                    object.name = name + '';
+                    setColor(object, color);
+                }
+                for (i = 0; i < getNumberOfRotations(); i++) {
+                    zoomObject(object, 1)
+                }
             }
-            scaleObject(object, trihedra.scale.x)
-        }
     )
     return object
+}
+
+function getNumberOfRotations() {
+    return Math.ceil((trihedra.scale.x - 0.5) / (0.2));
 }
 
 function addScaleFactorToLocalStorage(id, value) {
@@ -298,15 +305,20 @@ function zoom(event, delta, deltaX, deltaY) {
     event.preventDefault();
     if (delta != 0) {
         $.each(group.children, function (index, value) {
-            var scalingFactor = localStorage["scalingFactor_" + value.name] ? parseFloat(localStorage["scalingFactor_" + value.name]) : 5;
-            var scale = deltaY / scalingFactor;
-            scaleObject(value, scale);
+            zoomObject(value, deltaY)
         })
     }
 }
 
+function zoomObject(object, deltaY) {
+    var scalingFactor = localStorage["scalingFactor_" + object.name] ? parseFloat(localStorage["scalingFactor_" + object.name]) : 5;
+    var scale = deltaY / scalingFactor;
+    scaleObject(object, scale);
+}
+
 function scaleObject(object, scale) {
     var newScale = object.scale.x + scale;
+    console.debug("scale -: " + scale + " new " + newScale)
     if (newScale > 0) {
         object.scale.x = newScale;
         object.scale.y = newScale;
@@ -482,17 +494,17 @@ function enableJsTree() {
             }
         }
     }).bind("rename.jstree", function (e, data) {
-            var id = data.rslt.obj.children().filter('a').attr("id")
-            var name = data.rslt.new_name;
-            $.post(createLink('CADObject', 'rename'), {id:id, name:name}, function (response) {
-                if (response.success) {
-                    showFlashSuccess(response.success)
-                }
-                if (response.error) {
-                    showFlashError(response.error)
-                }
+                var id = data.rslt.obj.children().filter('a').attr("id")
+                var name = data.rslt.new_name;
+                $.post(createLink('CADObject', 'rename'), {id:id, name:name}, function (response) {
+                    if (response.success) {
+                        showFlashSuccess(response.success)
+                    }
+                    if (response.error) {
+                        showFlashError(response.error)
+                    }
+                })
             })
-        })
 }
 
 function defaultMenu(node) {
